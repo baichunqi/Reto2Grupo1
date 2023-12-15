@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
+    <item android:drawable="@android:color/transparent" android:duration="1000" />
+    <item android:drawable="@drawable/solo_logo_elorrieta1" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta2" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta3" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta4" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta5" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta6" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta7" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta8" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta9" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta10" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta12" android:duration="500" />
+    <item android:drawable="@drawable/solo_logo_elorrieta13" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta14" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta15" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta16" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta18" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta19" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta20" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta21" android:duration="27" />
+    <item android:drawable="@drawable/solo_logo_elorrieta" android:duration="27" />
+</animation-list>
