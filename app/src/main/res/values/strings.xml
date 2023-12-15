@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Reto2Grupo1</string>
+    <string name="login">Login</string>
+    <string name="Registrar">Registrar</string>
+    <string name="nombreDeUsuario">Nombre de usuario</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="guardarUsuarioYContraseña">Guardar Usuario Y Contraseña</string>
+    <string name="titulo">ElorChat</string>
+    <string name="cambiarFoto">Cambiar tu foto</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <string name="dni">DNI</string>
+    <string name="Direccion">Dirección</string>
+    <string name="telefono1">Telefono1</string>
+    <string name="telefono2">Telefono2</string>
+    <string name="repetirContraseña">RepetirContraseña</string>
+    <string name="ciclo">Ciclo formativo</string>
+    <string name="curso">Curso</string>
+    <string name="fctdual">FCT/DUAL</string>
+    <string name="cambioDeContraseña">Cambio de Contraseña</string>
 </resources>
