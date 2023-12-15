@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.reto2grupo1"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.reto2grupo1"
         minSdk = 30
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
