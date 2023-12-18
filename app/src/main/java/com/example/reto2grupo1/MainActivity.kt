@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity() {
         textView.startAnimation(fadeIn)
         val logoAnimation = findViewById<ImageView>(R.id.logoElorrieta)
         logoAnimation.setImageResource(R.drawable.logoanimation)
-        val runningVessel = logoAnimation.drawable as AnimationDrawable
-        runningVessel.start()
+        val elorrietaLogo = logoAnimation.drawable as AnimationDrawable
+        elorrietaLogo.start()
     }
 
     fun IntentCall(){
