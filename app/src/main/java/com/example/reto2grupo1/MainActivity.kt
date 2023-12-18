@@ -28,6 +28,5 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
             finish()
         }, 2300)
-
     }
 }
