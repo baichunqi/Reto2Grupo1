@@ -7,21 +7,22 @@
     android:background="@color/back"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/logoElorrieta"
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/textView3"
         android:layout_width="305dp"
         android:layout_height="251dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.24" />
+        app:layout_constraintVertical_bias="0.24"
+        android:src="@drawable/logo_elorrieta"
+        />
 
     <TextView
         android:id="@+id/tituloInicio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="412dp"
         android:text="ElorChat"
         android:textColor="#000000"
         android:textSize="48sp"

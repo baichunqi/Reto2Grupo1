@@ -1,12 +1,11 @@
 package com.example.reto2grupo1
 
 import android.content.Intent
-import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reto2grupo1.ui.login.LoginActivity
@@ -21,31 +20,14 @@ class MainActivity : AppCompatActivity() {
         val fadeIn = AlphaAnimation(0f, 1f)
         fadeIn.duration = 2000
 
-        fadeIn.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(p0: Animation?) {
-            }
-
-            override fun onAnimationEnd(animation: Animation) {
-                IntentCall()
-            }
-
-            override fun onAnimationRepeat(p0: Animation?) {
-            }
-        })
-
-
         textView.visibility = View.VISIBLE
-
         textView.startAnimation(fadeIn)
-        val logoAnimation = findViewById<ImageView>(R.id.logoElorrieta)
-        logoAnimation.setImageResource(R.drawable.logoanimation)
-        val elorrietaLogo = logoAnimation.drawable as AnimationDrawable
-        elorrietaLogo.start()
-    }
 
-    fun IntentCall(){
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
+        Handler(Looper.getMainLooper()).postDelayed({
+            val i = Intent(this, LoginActivity::class.java)
+            startActivity(i)
+            finish()
+        }, 1900)
+
     }
 }
