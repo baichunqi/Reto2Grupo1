@@ -6,12 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.data.repository.ChatListRepository
+import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ChatListViewModelFactory(
-    private val chatListRepository: ChatListRepository,
+    private val chatListRepository: RemoteChatDataSource,
 ) : ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>, extras : CreationExtras):T{
         return ChatListViewModel(chatListRepository) as T
