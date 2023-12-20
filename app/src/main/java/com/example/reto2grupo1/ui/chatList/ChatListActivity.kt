@@ -2,26 +2,33 @@ package com.example.reto2grupo1.ui.chatList
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import com.example.reto2grupo1.R
+import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.register.RegisterActivity
 
 
 class ChatListActivity  : ComponentActivity()  {
 
+    private lateinit var chatListAdapter: ChatListAdapter
+    private val chatRepository = RemoteChatListDataSource()
+
+    private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatRepository)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityChatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        chatListAdapter = ChatListAdapter()
+        binding.recyclerView.adapter = chatListAdapter
 
         binding.imageView7.setOnClickListener() {
             val intent = Intent(this, RegisterActivity::class.java)
@@ -32,6 +39,8 @@ class ChatListActivity  : ComponentActivity()  {
         binding.imageView8.setOnClickListener() {
             showPopup(it)
         }
+
+
     }
 
     fun showPopup(v : View){

@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -53,4 +54,13 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.17")
     implementation("androidx.compose.runtime:runtime:1.5.0")
+    //Picasso para incrustar imagenes por url (vaersion cambiada a 2.71829 anterior 2.71828, comprobar si funciona)
+    //implementation ("com.squareup.picasso:picasso:2.71828")
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    //use viewmodels
+    api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.activity:activity-ktx")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx")
 }
