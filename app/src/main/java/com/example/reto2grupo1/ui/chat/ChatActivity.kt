@@ -15,7 +15,7 @@ class ChatActivity : ComponentActivity() {
     private lateinit var chatAdapter: ChatAdapter
     private val messageRepository = RemoteChatDataSource()
 
-    private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(messageRepository)
+    private val viewModel: ChatViewModel by viewModels { ChatViewModelFactory(messageRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ChatListViewModelFactory(
-    private val chatListRepository: RemoteChatDataSource,
+    private val chatListRepository: ChatListRepository,
 ) : ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>, extras : CreationExtras):T{
         return ChatListViewModel(chatListRepository) as T

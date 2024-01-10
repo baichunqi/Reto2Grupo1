@@ -18,4 +18,6 @@
     <string name="curso">Curso</string>
     <string name="fctdual">FCT/DUAL</string>
     <string name="cambioDeContraseña">Cambio de Contraseña</string>
+    <string name="noSePudoObtenerImagen">No se pudo obtener la imagen</string>
+    <string name="revisarCampos">debes revisar que los campos sean correctos para poder continuar</string>
 </resources>

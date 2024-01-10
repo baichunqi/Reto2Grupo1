@@ -17,9 +17,9 @@ import com.example.reto2grupo1.ui.register.RegisterActivity
 class ChatListActivity  : ComponentActivity()  {
 
     private lateinit var chatListAdapter: ChatListAdapter
-    private val chatRepository = RemoteChatListDataSource()
+    private val chatListRepository = RemoteChatListDataSource()
 
-    private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatRepository)
+    private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatListRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
