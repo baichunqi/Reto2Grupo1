@@ -6,7 +6,8 @@ import java.util.Date
 
 @Parcelize
 data class Message (
-    val id: Int,
+    val id: Integer,
     val messageContent : String,
+    val AuthorName : String,
     val date : Date,
 ): Parcelable

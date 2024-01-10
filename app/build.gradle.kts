@@ -63,4 +63,6 @@ dependencies {
     api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx")
+    //sockets
+    implementation("io.socket:socket.io-client:2.0.0")
 }

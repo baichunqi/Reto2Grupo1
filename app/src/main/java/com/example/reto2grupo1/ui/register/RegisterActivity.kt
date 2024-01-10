@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -13,6 +14,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.example.reto2grupo1.databinding.ActivityRegisterBinding
@@ -20,6 +22,7 @@ import com.example.reto2grupo1.ui.chatList.ChatListActivity
 
 class RegisterActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityRegisterBinding.inflate(layoutInflater)
@@ -61,7 +64,7 @@ class RegisterActivity : ComponentActivity() {
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback<ActivityResult> {
                 if (it.resultCode == AppCompatActivity.RESULT_OK) {
-                    val imageBitmap = it.data?.extras?.get("data") as? Bitmap
+                    val imageBitmap = it.data?.extras?.getParcelable("data",Bitmap::class.java)
                     imageBitmap?.let {
                         binding.imageView5.setImageBitmap(imageBitmap)
                     } ?: run {
