@@ -17,7 +17,7 @@ import com.example.reto2grupo1.utils.Resource
 
 class ChatActivity : ComponentActivity() {
 
-    private val TAG = "ShatActivity"
+    private val TAG = "ChatActivity"
     private lateinit var chatAdapter: ChatAdapter
     private val messageRepository = RemoteChatDataSource()
 
