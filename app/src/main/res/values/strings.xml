@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Reto2Grupo1</string>
-    <string name="login">Login</string>
+    <string name="Email">Email</string>
+    <string name="Login">LOGIN</string>
     <string name="Registrar">Registrar</string>
     <string name="nombreDeUsuario">Nombre de usuario</string>
     <string name="contraseña">Contraseña</string>

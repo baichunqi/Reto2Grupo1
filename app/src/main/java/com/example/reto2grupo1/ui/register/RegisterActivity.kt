@@ -14,19 +14,67 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import com.example.reto2grupo1.MyApp
+import com.example.reto2grupo1.data.User
+import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
+import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
 import com.example.reto2grupo1.databinding.ActivityRegisterBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
+import com.example.reto2grupo1.ui.login.LoginViewModel
+import com.example.reto2grupo1.ui.login.LoginViewModelFactory
+import com.example.reto2grupo1.utils.Resource
 
 class RegisterActivity : ComponentActivity() {
+    private val authenticationRepository = RemoteAuthenticationRepository();
+    private val userRepository = RemoteUserDataSource();
 
+    private val viewModel: RegisterViewModel by viewModels {
+        RegisterActivityViewModelFactory(
+            userRepository,authenticationRepository
+        )
+    }
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val data2 = viewModel.takeInfo()
+        Log.e("prueba", data2.toString())
+
+
+
+        viewModel.user.observe(this, Observer {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    it.data?.let { data ->
+                        Log.e("Antes de guardar", data.name.toString())
+                        binding.editTextLogin.setText(data.email)
+                        binding.editTextNombre.setText(data.name.toString())
+                        binding.editTextApellido.setText(data.surname)
+                        binding.editTextDNI.setText(data.dni)
+                        binding.editTextDirecciN.setText(data.address)
+                        binding.editTextTelefono1.setText(data.phone.toString())
+
+                    }
+                }
+                Resource.Status.ERROR -> {
+
+
+                }
+                Resource.Status.LOADING -> {
+                    // de momento
+                }
+            }})
+
+
+
 
         var defaultPass : Boolean = false
         if (savedInstanceState == null) {

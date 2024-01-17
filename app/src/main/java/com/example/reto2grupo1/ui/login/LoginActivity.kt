@@ -5,35 +5,104 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
+import com.example.reto2grupo1.MyApp
+import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
 import com.example.reto2grupo1.databinding.ActivityLoginBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
+import com.example.reto2grupo1.utils.Resource
 
 class LoginActivity : ComponentActivity() {
 
+    private val authenticationRepository = RemoteAuthenticationRepository();
+
+    private val viewModel: LoginViewModel by viewModels {
+        LoginViewModelFactory(
+            authenticationRepository
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // cargamos el XML en la actividad
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.editTextUsername.setText("1")
-        binding.editTextPassword.setText("Elorrieta00")
+        val extras = intent.extras
+        if (extras != null) {
+            val dato1 = extras.getString("email")
+            val dato2 = extras.getString("password")
+            binding.editTextUsername.setText(dato1)
+            binding.editTextPassword.setText(dato2)
+        }
+
+        val savedUsername = MyApp.userPreferences.fetchAuthLogin()
+        val savedPassword = MyApp.userPreferences.fetchAuthToken()
+        if (!savedUsername.isNullOrBlank() && !savedPassword.isNullOrBlank()) {
+            binding.editTextUsername.setText(savedUsername)
+            binding.editTextPassword.setText(savedPassword)
+            binding.checkBox2.isChecked = true
+        }
 
         binding.buttonLogin.setOnClickListener() {
-            if(binding.editTextUsername.text.isNullOrEmpty()){
-                Toast.makeText(this, "El usuario no puede estar vacio",Toast.LENGTH_SHORT).show()
-            }else if(binding.editTextPassword.text.isNullOrEmpty()){
-                Toast.makeText(this, "La contraseña no puede estar vacia",Toast.LENGTH_SHORT).show()
-            } else if (binding.editTextPassword.text!!.toString() == "Elorrieta00"){
-                val intentRegister = Intent(this, RegisterActivity::class.java)
-                intentRegister.putExtra("defaultPass", true)
-                startActivity(intentRegister)
-                finish()
-            } else if (binding.editTextPassword.text!= null){
-                intent = Intent(this, ChatListActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+
+            viewModel.onLoginClick(
+                binding.editTextUsername.text.toString(),
+                binding.editTextPassword.text.toString()
+            )
         }
+        viewModel.login.observe(this, Observer {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
+                    it.data?.let { data ->
+                        Log.e("Antes de guardar", "antes de guardar")
+                        MyApp.userPreferences.restartPreference()
+
+                        if (binding.checkBox2.isChecked) {
+                            MyApp.userPreferences.saveAuthTokenWithPs(
+                                data.email,
+                                data.accessToken
+                            )
+                        } else if (!binding.checkBox2.isChecked) {
+                            MyApp.userPreferences.restartPreference()
+                            MyApp.userPreferences.saveAuthToken(
+                                data.email,
+                                data.accessToken
+                            )
+                        }
+                        Log.e("Despues de guardar", "Despues de guardar")
+
+                        val intent = Intent(this, RegisterActivity::class.java).apply {
+
+                            Log.e("PruebaInicia", "Cargando los chats")
+                        }
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+                Resource.Status.ERROR -> {
+                    val errorMessage = it.message ?: "Unknown error"
+                    if (errorMessage.contains("400")) {
+                        Toast.makeText(this, "Username o Password incorrecto", Toast.LENGTH_LONG)
+                            .show()
+                    } else if (errorMessage.contains("401")) {
+                        Toast.makeText(this, "No autorizado", Toast.LENGTH_LONG).show()
+                        // Otro manejo de errores
+
+                    } else if (errorMessage.contains("404")) {
+                        Toast.makeText(this, "Error con el servidor", Toast.LENGTH_LONG).show()
+                        // Otro manejo de errores
+                    } else {
+                        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                    }
+                    //Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+
+                }
+                Resource.Status.LOADING -> {
+                    // de momento
+                }
+            }})
     }
 }
