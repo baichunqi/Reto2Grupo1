@@ -3,7 +3,6 @@ package com.example.reto2grupo1.ui.register
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,27 +17,30 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.example.reto2grupo1.MyApp
-import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
 import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
 import com.example.reto2grupo1.databinding.ActivityRegisterBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
-import com.example.reto2grupo1.ui.login.LoginViewModel
-import com.example.reto2grupo1.ui.login.LoginViewModelFactory
 import com.example.reto2grupo1.utils.Resource
+import java.io.File
+import java.io.FileOutputStream
+
 
 class RegisterActivity : ComponentActivity() {
     private val authenticationRepository = RemoteAuthenticationRepository();
     private val userRepository = RemoteUserDataSource();
+
 
     private val viewModel: RegisterViewModel by viewModels {
         RegisterActivityViewModelFactory(
             userRepository,authenticationRepository
         )
     }
+
+    private var selectedImage: File? = null
+
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +49,6 @@ class RegisterActivity : ComponentActivity() {
 
         val data2 = viewModel.takeInfo()
         Log.e("prueba", data2.toString())
-
-
 
         viewModel.user.observe(this, Observer {
             when (it.status) {
@@ -72,8 +72,6 @@ class RegisterActivity : ComponentActivity() {
                     // de momento
                 }
             }})
-
-
 
 
         var defaultPass : Boolean = false
@@ -112,28 +110,44 @@ class RegisterActivity : ComponentActivity() {
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback<ActivityResult> {
                 if (it.resultCode == AppCompatActivity.RESULT_OK) {
-                    val imageBitmap = it.data?.extras?.getParcelable("data",Bitmap::class.java)
+                    val imageBitmap = it.data?.extras?.getParcelable("data", Bitmap::class.java)
                     imageBitmap?.let {
                         binding.imageView5.setImageBitmap(imageBitmap)
+                        selectedImage = saveBitmapToFile(it)
                     } ?: run {
                         Toast.makeText(this, "@string/noSePudoObtenerImagen", Toast.LENGTH_LONG).show()
                     }
                 }
             })
 
+
+
         fun dispatchTakePictureIntent() {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             try {
                 startActivityIntent.launch(takePictureIntent)
+                Log.i("pruebas", "wdentr?")
+                selectedImage?.let { it1 -> viewModel.uploadPhotoToServer(it1)}
+                Log.i("pruebas", "wdentrr?")
             } catch (e: ActivityNotFoundException) {
                 Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT)
             }
         }
 
         binding.buttonCambiarFoto.setOnClickListener {
+            Log.i("pruebas", "entr?")
             dispatchTakePictureIntent()
         }
 
+    }
+    private fun saveBitmapToFile(bitmap: Bitmap): File {
+        val file = File.createTempFile("image", ".jpg", cacheDir)
+        val stream = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        stream.flush()
+        stream.close()
+
+        return file
     }
 
 
