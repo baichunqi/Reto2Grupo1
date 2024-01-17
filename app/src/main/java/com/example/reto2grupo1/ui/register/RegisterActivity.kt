@@ -17,10 +17,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.example.reto2grupo1.data.repository.remote.RetrofitClient
 import com.example.reto2grupo1.databinding.ActivityRegisterBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
+import okhttp3.MultipartBody
+import java.io.File
+import java.io.FileOutputStream
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
 
 class RegisterActivity : ComponentActivity() {
+
+    private var selectedImage: File? = null
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,14 +73,17 @@ class RegisterActivity : ComponentActivity() {
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback<ActivityResult> {
                 if (it.resultCode == AppCompatActivity.RESULT_OK) {
-                    val imageBitmap = it.data?.extras?.getParcelable("data",Bitmap::class.java)
+                    val imageBitmap = it.data?.extras?.getParcelable("data", Bitmap::class.java)
                     imageBitmap?.let {
                         binding.imageView5.setImageBitmap(imageBitmap)
+                        selectedImage = saveBitmapToFile(it)
                     } ?: run {
                         Toast.makeText(this, "@string/noSePudoObtenerImagen", Toast.LENGTH_LONG).show()
                     }
                 }
             })
+
+
 
         fun dispatchTakePictureIntent() {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -84,9 +96,20 @@ class RegisterActivity : ComponentActivity() {
 
         binding.buttonCambiarFoto.setOnClickListener {
             dispatchTakePictureIntent()
+            selectedImage?.let { it1 -> uploadPhoto(it1) }
         }
 
     }
+    private fun saveBitmapToFile(bitmap: Bitmap): File {
+        val file = File.createTempFile("image", ".jpg", cacheDir)
+        val stream = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        stream.flush()
+        stream.close()
+
+        return file
+    }
+
 
 
 }
