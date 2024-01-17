@@ -1,7 +1,6 @@
 package com.example.reto2grupo1.ui.register
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -36,13 +35,22 @@ class RegisterViewModel(
         }
     }
 
+
+
     suspend fun changePass(passChange : PassChange) : Resource<Int> {
         return withContext(Dispatchers.IO){
             userRepository.changePass(passChange)
         }
     }
 
+    fun uploadPhotoToServer(file:File){
+        viewModelScope.launch{
+            uploadPhoto(file)
+        }
+    }
+
     suspend fun uploadPhoto(file: File) {
+        Log.i("pruebas", "ha entrado")
         return withContext(Dispatchers.IO){
             val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
             val photoPart = MultipartBody.Part.createFormData("photo", file.name, requestFile)
@@ -54,10 +62,11 @@ class RegisterViewModel(
                 if (response.isSuccessful) {
                     Log.i("pruebas", "Se ha subido con exito")
                 } else {
+                    Log.i("pruebas", response.toString())
                     Log.i("pruebas", "Error al subir foto")
                 }
             } catch (e: Exception) {
-                Log.e("UploadPhoto", "Error: ${e.message}", e)
+                Log.i("errorPruebas", e.toString())
             }
         }
 

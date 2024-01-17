@@ -3,7 +3,6 @@ package com.example.reto2grupo1.ui.register
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -14,21 +13,24 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.example.reto2grupo1.data.repository.remote.RetrofitClient
+import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
 import com.example.reto2grupo1.databinding.ActivityRegisterBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
-import okhttp3.MultipartBody
 import java.io.File
 import java.io.FileOutputStream
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.asRequestBody
 
 class RegisterActivity : ComponentActivity() {
 
+    private var userRepository = RemoteUserDataSource();
     private var selectedImage: File? = null
+
+    private val viewModel:RegisterViewModel by viewModels {RegisterActivityViewModelFactory(
+        userRepository
+    )  }
 
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -89,14 +91,20 @@ class RegisterActivity : ComponentActivity() {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             try {
                 startActivityIntent.launch(takePictureIntent)
+                Log.i("pruebas", "wdentr?")
+                selectedImage?.let { it1 -> viewModel.uploadPhotoToServer(it1)}
+                Log.i("pruebas", "wdentrr?")
             } catch (e: ActivityNotFoundException) {
                 Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT)
             }
         }
 
         binding.buttonCambiarFoto.setOnClickListener {
+            Log.i("pruebas", "entr?")
             dispatchTakePictureIntent()
-            selectedImage?.let { it1 -> uploadPhoto(it1) }
+
+
+
         }
 
     }
