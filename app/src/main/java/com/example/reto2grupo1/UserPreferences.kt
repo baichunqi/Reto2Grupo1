@@ -13,14 +13,17 @@ class UserPreferences() {
     companion object {
         const val USER_TOKEN = "user_token"
         const val USER_EMAIL="email"
+        const val USER_CONTRASENYA="contrasenya"
+
     }
 
     /**
      * Function to save auth token
      */
-    fun saveAuthTokenWithPs( email:String, token: String) {
+    fun saveAuthTokenWithPs( contrasenya:String,email:String, token: String) {
         val editor = sharedPreferences.edit()
 
+        editor.putString(USER_CONTRASENYA, contrasenya)
 
         editor.putString(USER_EMAIL, email)
         editor.putString(USER_TOKEN, token)
@@ -36,6 +39,9 @@ class UserPreferences() {
         editor.putString(USER_EMAIL, email)
         editor.putString(USER_TOKEN, token)
         editor.apply()
+    }
+    fun fetchAuthPassword():String?{
+        return sharedPreferences.getString(USER_CONTRASENYA, null)
     }
 
     fun fetchAuthLogin():String?{

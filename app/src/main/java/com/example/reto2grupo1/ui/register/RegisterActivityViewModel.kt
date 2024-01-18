@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto2grupo1.data.PassChange
 import com.example.reto2grupo1.data.User
+import com.example.reto2grupo1.data.UserUpdate
 import com.example.reto2grupo1.data.repository.AuthenticationRepository
 import com.example.reto2grupo1.data.repository.UserRepository
 import com.example.reto2grupo1.data.repository.remote.RetrofitClient
@@ -17,6 +18,7 @@ import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.Address
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -39,6 +41,23 @@ class RegisterViewModel(
 ) : ViewModel(){
     private val _user = MutableLiveData<Resource<User>>()
     val user : LiveData<Resource<User>> get() = _user
+
+
+    private val _userUpdate = MutableLiveData<Resource<UserUpdate>>()
+    val userUpdate : LiveData<Resource<UserUpdate>> get() = _userUpdate
+
+
+    fun update(email:String,name:String,surname:String,password:String,phone:Int,dni:String,address: String){
+        val userUpdate = UserUpdate(email,name,surname,password,phone,dni,address)
+        viewModelScope.launch {
+            updateUser(userUpdate)
+        }
+    }
+    suspend fun updateUser(userUpdate: UserUpdate){
+        return withContext(Dispatchers.IO){
+            authenticationRepository.updateUser(userUpdate)
+        }
+    }
     fun changePassUser(passChange: PassChange){
         viewModelScope.launch{
             changePass(passChange)

@@ -18,6 +18,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import com.example.reto2grupo1.data.User
+import com.example.reto2grupo1.data.UserUpdate
 import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
 import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
 import com.example.reto2grupo1.databinding.ActivityRegisterBinding
@@ -139,6 +141,26 @@ class RegisterActivity : ComponentActivity() {
             dispatchTakePictureIntent()
         }
 
+
+        binding.buttonCambioDeContraseA.setOnClickListener {
+            if (binding.editTextContraseA.text.toString() == binding.editTextRepetirContraseA.text.toString()) {
+                viewModel.update(
+                    binding.editTextLogin.text.toString(),
+                    binding.editTextNombre.text.toString(),
+                    binding.editTextApellido.text.toString(),
+                    binding.editTextContraseA.text.toString(),
+                    binding.editTextTelefono1.text.toString().toInt(),
+                    binding.editTextDNI.text.toString(),
+                    binding.editTextDirecciN.text.toString()
+
+                )
+            } else {
+                Toast.makeText(this, "Las contraseñas no son iguales", Toast.LENGTH_SHORT).show()
+                binding.editTextContraseA.setText(" ")
+                binding.editTextRepetirContraseA.setText(" ")
+            }
+
+        }
     }
     private fun saveBitmapToFile(bitmap: Bitmap): File {
         val file = File.createTempFile("image", ".jpg", cacheDir)
@@ -149,6 +171,8 @@ class RegisterActivity : ComponentActivity() {
 
         return file
     }
+
+
 
 
 }

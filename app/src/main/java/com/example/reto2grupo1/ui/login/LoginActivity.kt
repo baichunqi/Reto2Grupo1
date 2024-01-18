@@ -39,11 +39,18 @@ class LoginActivity : ComponentActivity() {
         }
 
         val savedUsername = MyApp.userPreferences.fetchAuthLogin()
-        val savedPassword = MyApp.userPreferences.fetchAuthToken()
+        val savedPassword = MyApp.userPreferences.fetchAuthPassword()
         if (!savedUsername.isNullOrBlank() && !savedPassword.isNullOrBlank()) {
             binding.editTextUsername.setText(savedUsername)
             binding.editTextPassword.setText(savedPassword)
             binding.checkBox2.isChecked = true
+        }
+        if (!binding.checkBox2.isChecked){
+            binding.editTextUsername.setText("")
+            binding.editTextPassword.setText("")
+            MyApp.userPreferences.restartPreference()
+            binding.checkBox2.isChecked = false
+
         }
 
         binding.buttonLogin.setOnClickListener() {
@@ -62,8 +69,10 @@ class LoginActivity : ComponentActivity() {
 
                         if (binding.checkBox2.isChecked) {
                             MyApp.userPreferences.saveAuthTokenWithPs(
+                                binding.editTextPassword.text.toString(),
                                 data.email,
-                                data.accessToken
+                                data.accessToken,
+
                             )
                         } else if (!binding.checkBox2.isChecked) {
                             MyApp.userPreferences.restartPreference()

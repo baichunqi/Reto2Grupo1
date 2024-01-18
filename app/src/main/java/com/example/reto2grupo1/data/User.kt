@@ -13,3 +13,14 @@ data class User (
     val dni:String,
     val address:String,
 ) : Parcelable
+
+
+@Parcelize
+data class UserUpdate(
+    var email:String,
+    val name: String,
+    val surname:String,
+    val password:String,
+    val phone:Int,
+    val dni:String,
+    val address:String):Parcelable
