@@ -28,8 +28,8 @@ class ChatListAdapter(
     inner class ChatListViewHolder(private val binding: ItemChatListBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(chat : Chat){
 //            binding.ImageChat.setImageBitmap()
-            binding.textViewNombreChat.text = chat.nombreChat
-            binding.textViewUltimoMensaje.text = chat.ultimoMensaje
+            binding.textViewNombreChat.text = chat.name
+            binding.textViewUltimoMensaje.text = chat.message.text
     // Con esto cargamos la imagen desde una URL que puede ser el servidor de Laravel
 //            val thumbnailUrl = song.imagen
 //            Log.i("Prueba", "" + thumbnailUrl)
@@ -42,7 +42,7 @@ class ChatListAdapter(
 
     class ChatListDiffCallback: DiffUtil.ItemCallback<Chat>() {
         override fun areItemsTheSame(oldItem : Chat, newItem: Chat): Boolean {
-            return oldItem.nombreChat == newItem.nombreChat
+            return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(oldItem: Chat, newItem: Chat): Boolean {

@@ -2,16 +2,20 @@ package com.example.reto2grupo1.ui.chatList
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuInflater
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
+import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.register.RegisterActivity
+import com.example.reto2grupo1.utils.Resource
 
 
 class ChatListActivity  : ComponentActivity()  {
@@ -40,6 +44,23 @@ class ChatListActivity  : ComponentActivity()  {
             showPopup(it)
         }
 
+        viewModel.chats.observe(this, Observer {
+            when(it.status){
+                Resource.Status.SUCCESS -> {
+                    if (!it.data.isNullOrEmpty()) {
+                        Log.i("PruebaChat", "Ha ocurrido un cambio en la lista")
+                        Log.i("PruebaChat", it.data.toString())
+                        chatListAdapter.submitList(it.data)
+                    }
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                }
+                Resource.Status.LOADING -> {
+                    // No implementado
+                }
+            }
+        })
 
     }
 

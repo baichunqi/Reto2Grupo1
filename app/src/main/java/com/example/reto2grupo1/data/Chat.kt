@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Chat (
     val id : Int,
-    val nombreChat : String,
-    val ultimoMensaje : String,
+    val name : String,
+    val message : Message,
+    val private : Boolean,
 ) : Parcelable

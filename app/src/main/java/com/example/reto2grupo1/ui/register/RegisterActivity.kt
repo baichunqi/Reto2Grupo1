@@ -56,9 +56,9 @@ class RegisterActivity : ComponentActivity() {
             when (it.status) {
                 Resource.Status.SUCCESS -> {
                     it.data?.let { data ->
-                        Log.e("Antes de guardar", data.name.toString())
+                        Log.e("Antes de guardar", data.toString())
                         binding.editTextLogin.setText(data.email)
-                        binding.editTextNombre.setText(data.name.toString())
+                        binding.editTextNombre.setText(data.name)
                         binding.editTextApellido.setText(data.surname)
                         binding.editTextDNI.setText(data.dni)
                         binding.editTextDirecciN.setText(data.address)
@@ -81,8 +81,10 @@ class RegisterActivity : ComponentActivity() {
             val extras = intent.extras
             if (extras == null) {
                 defaultPass = false
+
             } else {
                 defaultPass = extras.getBoolean("defaultPass")
+                Log.i("pass", defaultPass.toString())
             }
         }
 

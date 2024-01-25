@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    const val API_URI = "http://10.0.2.2:8080/api/"
+    const val API_URI = "http://10.5.7.48:8080/api/"
     //const val API_URI = "http://10.5.7.202:80/api/"
 
 

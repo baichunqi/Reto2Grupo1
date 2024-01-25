@@ -22,13 +22,13 @@ class ChatAdapter(
     inner class ChatViewHolder(private val binding: ItemChatObjectRecieveBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(message: Message){
 //            binding.ImageViewFoto.setImageBitmap()
-            binding.TextViewMensaje.text = message.messageContent
+            binding.TextViewMensaje.text = message.text
             binding.textViewTiempo.text = message.date.toString()
         }
     }
     class ChatDiffCallback: DiffUtil.ItemCallback<Message>(){
         override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
-            return oldItem.messageContent == newItem.messageContent
+            return oldItem.text == newItem.text
         }
 
         override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {

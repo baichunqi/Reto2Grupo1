@@ -16,6 +16,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface APIInterface {
 
@@ -37,6 +38,8 @@ interface APIInterface {
     @PUT("auth/users")
     suspend fun update(@Body user: UserUpdate): Response<User>
 
+    @GET("chats/{id}")
+    suspend fun getChats(@Path("id") id : Int): Response<List<Chat>>
 
     @Multipart
     @POST("uploadPhoto")

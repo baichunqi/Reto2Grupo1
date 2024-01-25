@@ -82,13 +82,23 @@ class LoginActivity : ComponentActivity() {
                             )
                         }
                         Log.e("Despues de guardar", "Despues de guardar")
-
+                            val pass = binding.editTextPassword.text.toString()
+                        if (pass == "Elorrieta00"){
                         val intent = Intent(this, RegisterActivity::class.java).apply {
 
                             Log.e("PruebaInicia", "Cargando los chats")
                         }
                         startActivity(intent)
                         finish()
+                        } else{
+                            val intentChat = Intent(this, ChatListActivity::class.java).apply {
+
+                                Log.e("PruebaInicia", "Cargando intent chats")
+
+                            }
+                            startActivity(intentChat)
+                            finish()
+                        }
                     }
                 }
                 Resource.Status.ERROR -> {
@@ -112,6 +122,7 @@ class LoginActivity : ComponentActivity() {
                 Resource.Status.LOADING -> {
                     // de momento
                 }
-            }})
+            }
+        })
     }
 }
