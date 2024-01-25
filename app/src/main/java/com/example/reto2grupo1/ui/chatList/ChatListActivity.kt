@@ -70,14 +70,11 @@ class ChatListActivity  : ComponentActivity()  {
         inflater.inflate(R.menu.menu, popup.menu)
         popup.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId){
-                R.id.settings-> {
+                R.id.CrearGrupo-> {
                     Toast.makeText(this, "Ajustes", Toast.LENGTH_SHORT).show()
                 }
-                R.id.help-> {
+                R.id.UnirseGrupo-> {
                     Toast.makeText(this, "Ayuda", Toast.LENGTH_SHORT).show()
-                }
-                R.id.aboutUs-> {
-                    Toast.makeText(this, "Sobre nosotros", Toast.LENGTH_SHORT).show()
                 }
             }
             true
