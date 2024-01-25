@@ -38,6 +38,10 @@ class ChatActivity : ComponentActivity() {
         binding.textViewNombreChat.text = chatName
         Log.i("idChat", chatId.toString())
 
+        binding.imageViewBack.setOnClickListener(){
+            finish()
+        }
+
         onMessagesChange()
         connectToSocket(binding)
     }
