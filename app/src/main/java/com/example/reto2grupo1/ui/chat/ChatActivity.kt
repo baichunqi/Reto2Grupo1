@@ -32,6 +32,12 @@ class ChatActivity : ComponentActivity() {
         chatAdapter = ChatAdapter()
         binding.chatView.adapter = chatAdapter
 
+        val intent = intent
+        val chatId = intent.getStringExtra("id")
+        val chatName = intent.getStringExtra("name")
+        binding.textViewNombreChat.text = chatName
+        Log.i("idChat", chatId.toString())
+
         onMessagesChange()
         connectToSocket(binding)
     }

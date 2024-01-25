@@ -12,8 +12,10 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
+import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
+import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
 
@@ -31,7 +33,7 @@ class ChatListActivity  : ComponentActivity()  {
         val binding = ActivityChatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        chatListAdapter = ChatListAdapter()
+        chatListAdapter = ChatListAdapter(this)
         binding.recyclerView.adapter = chatListAdapter
 
         binding.imageView7.setOnClickListener() {
@@ -49,7 +51,7 @@ class ChatListActivity  : ComponentActivity()  {
                 Resource.Status.SUCCESS -> {
                     if (!it.data.isNullOrEmpty()) {
                         Log.i("PruebaChat", "Ha ocurrido un cambio en la lista")
-                        Log.i("PruebaChat", it.data.toString())
+                        Log.i("PruebaChat", viewModel.chats.value.toString())
                         chatListAdapter.submitList(it.data)
                     }
                 }
@@ -62,6 +64,13 @@ class ChatListActivity  : ComponentActivity()  {
             }
         })
 
+    }
+
+    infix fun selectChat(chat : Chat){
+        val intent = Intent(this, ChatActivity::class.java)
+        intent.putExtra("id",chat.id.toString())
+        intent.putExtra("name", chat.name)
+        startActivity(intent)
     }
 
     fun showPopup(v : View){
