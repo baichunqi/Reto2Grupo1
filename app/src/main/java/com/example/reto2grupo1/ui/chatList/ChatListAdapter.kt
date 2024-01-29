@@ -34,10 +34,10 @@ class ChatListAdapter(private val context: Context)
         } else {
             chatListFull.filter {
                 if(esPublico){
-                    it.name.lowercase(Locale.getDefault()).contains(searchText).and(!it.is_private)
+                    it.name.lowercase(Locale.getDefault()).contains(searchText).and(!it.private)
 
                 } else {
-                    it.name.lowercase(Locale.getDefault()).contains(searchText).and( it.is_private)
+                    it.name.lowercase(Locale.getDefault()).contains(searchText).and( it.private)
 
                 }
                 // Puedes agregar otros campos aquí para el filtrado

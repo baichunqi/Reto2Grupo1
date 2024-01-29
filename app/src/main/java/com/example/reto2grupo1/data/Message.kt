@@ -8,6 +8,6 @@ import java.util.Date
 data class Message (
     val id: Integer,
     val text : String,
-    val user_id : String,
+    val userId : String,
     val date : Date,
 ): Parcelable
