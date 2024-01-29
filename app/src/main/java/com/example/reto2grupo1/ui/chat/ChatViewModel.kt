@@ -44,15 +44,17 @@ class ChatViewModel(
     private val _connected = MutableLiveData<Resource<Boolean>>()
     val connected: LiveData<Resource<Boolean>> get() = _connected
 
-    private val SOCKET_HOST = "http://10.5.7.48:8085/"
+    private val SOCKET_HOST = "http://10.0.2.2:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
     private val SOCKET_ROOM = "1"
 
     fun startSocket(){
-     val socketOptions = createSocketOptions()
+        Log.d("a","b")
+        val socketOptions = createSocketOptions()
         mSocket = IO.socket(SOCKET_HOST, socketOptions)
         mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
+        mSocket.on("connect_error", onConnectError())
         mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
         viewModelScope.launch {
@@ -89,6 +91,13 @@ class ChatViewModel(
             _connected.postValue(Resource.success(true))
         }
     }
+    private fun onConnectError(): Emitter.Listener {
+        return Emitter.Listener {
+            // Manejar el mensaje recibido
+            Log.e(TAG, "no conectado")
+            Log.d(TAG, "no conectado $it")
+        }
+    }
     private fun onDisconnect(): Emitter.Listener {
         return Emitter.Listener {
             // Manejar el mensaje recibido
@@ -98,6 +107,7 @@ class ChatViewModel(
     }
 
     private fun onNewMessage(): Emitter.Listener {
+
         return Emitter.Listener {
             // en teoria deberia ser siempre jsonObject, obviamente si siempre lo gestionamos asi
             if (it[0] is JSONObject) {

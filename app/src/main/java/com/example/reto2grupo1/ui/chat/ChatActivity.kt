@@ -32,6 +32,9 @@ class ChatActivity : ComponentActivity() {
         chatAdapter = ChatAdapter()
         binding.chatView.adapter = chatAdapter
 
+
+        viewModel.startSocket()
+
         val intent = intent
         val chatId = intent.getStringExtra("id")
         val chatName = intent.getStringExtra("name")
@@ -98,7 +101,6 @@ class ChatActivity : ComponentActivity() {
     private fun connectToSocket(binding: ActivityChatBinding) {
         binding.imageView9.setOnClickListener() {
             Log.e("pulsado", "enviar pulsado")
-            viewModel.startSocket()
             val message = binding.editTextUsername2.text.toString();
             binding.editTextUsername2.setText("")
             viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
