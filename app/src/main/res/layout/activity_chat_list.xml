@@ -27,7 +27,7 @@
         android:textSize="48sp"
         android:textStyle="bold|italic"
         android:typeface="normal"
-        app:layout_constraintBottom_toTopOf="@+id/editTextLogin"
+        app:layout_constraintBottom_toTopOf="@+id/editTextSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -49,13 +49,13 @@
         android:layout_width="81sp"
         android:layout_height="74sp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toStartOf="@+id/editTextLogin"
+        app:layout_constraintEnd_toStartOf="@+id/editTextSearch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
         android:src="@drawable/more_options" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editTextLogin"
+        android:id="@+id/editTextSearch"
         android:layout_width="218dp"
         android:layout_height="57dp"
         android:background="@drawable/stylo_borde_editext"
@@ -71,7 +71,7 @@
         android:layout_height="74sp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editTextLogin"
+        app:layout_constraintStart_toEndOf="@+id/editTextSearch"
         app:layout_constraintTop_toBottomOf="@+id/imageView7"
         android:src="@drawable/filter" />
 

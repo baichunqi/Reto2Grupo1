@@ -8,5 +8,5 @@ data class Chat (
     val id : Int,
     val name : String,
     val message : String,
-    val is_private : Boolean,
+    val private : Boolean,
 ) : Parcelable

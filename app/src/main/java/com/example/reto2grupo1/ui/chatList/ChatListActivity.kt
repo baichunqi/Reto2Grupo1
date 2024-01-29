@@ -9,13 +9,12 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
-import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
-import com.example.reto2grupo1.databinding.ActivityCreateChatBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
@@ -26,7 +25,7 @@ class ChatListActivity  : ComponentActivity()  {
 
     private lateinit var chatListAdapter: ChatListAdapter
     private val chatListRepository = RemoteChatListDataSource()
-
+    private var esPublico : Boolean = true
     private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatListRepository)
     }
 
@@ -44,8 +43,16 @@ class ChatListActivity  : ComponentActivity()  {
             finish()
         }
 
+        binding.editTextSearch.addTextChangedListener(){
+            chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
+        }
+
         binding.imageView8.setOnClickListener() {
             showPopup(it)
+        }
+
+        binding.imageView9.setOnClickListener(){
+            showPopupFilter(it, binding.editTextSearch.text.toString())
         }
 
         viewModel.chats.observe(this, Observer {
@@ -55,6 +62,8 @@ class ChatListActivity  : ComponentActivity()  {
                         Log.i("PruebaChat", "Ha ocurrido un cambio en la lista")
                         Log.i("PruebaChat", viewModel.chats.value.toString())
                         chatListAdapter.submitList(it.data)
+                        chatListAdapter.submitChatList(it.data)
+                        chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
                     }
                 }
                 Resource.Status.ERROR -> {
@@ -65,6 +74,7 @@ class ChatListActivity  : ComponentActivity()  {
                 }
             }
         })
+
 
     }
 
@@ -93,5 +103,26 @@ class ChatListActivity  : ComponentActivity()  {
             true
         }
         popup.show()
+    }
+
+    fun showPopupFilter(v: View, filterText: String){
+        val popup = PopupMenu(this, v)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.menu_filter, popup.menu)
+        popup.setOnMenuItemClickListener { menuItem ->
+            when(menuItem.itemId){
+                R.id.publicGroup-> {
+                    esPublico = true
+                    chatListAdapter.filter(filterText, esPublico)
+                }
+                R.id.privateGroup-> {
+                    esPublico = false
+                    chatListAdapter.filter(filterText, esPublico)
+                }
+            }
+            true
+        }
+        popup.show()
+
     }
 }

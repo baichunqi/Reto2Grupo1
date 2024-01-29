@@ -9,10 +9,6 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.databinding.ActivityChatBinding
-import com.example.reto2grupo1.databinding.ActivityLoginBinding
-import com.example.reto2grupo1.ui.chatList.ChatListAdapter
-import com.example.reto2grupo1.ui.chatList.ChatListViewModel
-import com.example.reto2grupo1.ui.chatList.ChatListViewModelFactory
 import com.example.reto2grupo1.utils.Resource
 
 class ChatActivity : ComponentActivity() {
@@ -28,15 +24,15 @@ class ChatActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        chatAdapter = ChatAdapter()
+        val chatId = intent.getStringExtra("id")
+        chatAdapter = ChatAdapter(chatId)
         binding.chatView.adapter = chatAdapter
 
 
         viewModel.startSocket()
 
         val intent = intent
-        val chatId = intent.getStringExtra("id")
+
         val chatName = intent.getStringExtra("name")
         binding.textViewNombreChat.text = chatName
         Log.i("idChat", chatId.toString())

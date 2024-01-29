@@ -31,6 +31,7 @@ class ChatListViewModel(
     private var _chats = MutableLiveData<Resource<List<Chat>>>()
 
     val chats : LiveData<Resource<List<Chat>>> get() = _chats
+
     init{
         getChats()
     }
