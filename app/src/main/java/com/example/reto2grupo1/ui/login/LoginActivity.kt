@@ -66,7 +66,7 @@ class LoginActivity : ComponentActivity() {
                     it.data?.let { data ->
                         Log.e("Antes de guardar", "antes de guardar")
                         MyApp.userPreferences.restartPreference()
-
+    Log.e("Token", data.accessToken)
                         if (binding.checkBox2.isChecked) {
                             MyApp.userPreferences.saveAuthTokenWithPs(
                                 binding.editTextPassword.text.toString(),

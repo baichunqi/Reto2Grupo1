@@ -41,9 +41,31 @@ class ChatActivity : ComponentActivity() {
         binding.imageViewBack.setOnClickListener(){
             finish()
         }
-
-        onMessagesChange()
+        if (chatId != null) {
+            viewModel.getChatContent(chatId.toInt())
+        }
         connectToSocket(binding)
+        onMessagesChange()
+        viewModel.connected.observe(this,Observer{
+         when (it.status){
+             Resource.Status.SUCCESS -> {
+                 Log.d(TAG, "conect observe success")
+
+             }
+             Resource.Status.ERROR -> {
+                 Log.d(TAG, "conect observe error")
+                 Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+             }
+             Resource.Status.LOADING -> {
+                 // de momento
+                 Log.d(TAG, "conect observe loading")
+                 val toast = Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG)
+                 toast.setGravity(Gravity.TOP, 0, 0)
+                 toast.show()
+             }
+         }
+        })
+
     }
 
 
@@ -74,13 +96,14 @@ class ChatActivity : ComponentActivity() {
     }
 
     private fun connectToSocket(binding: ActivityChatBinding) {
-            viewModel.startSocket()
-
         binding.imageView9.setOnClickListener() {
+            Log.e("pulsado", "enviar pulsado")
+            viewModel.startSocket()
             val message = binding.editTextUsername2.text.toString();
             binding.editTextUsername2.setText("")
-            viewModel.onSendMessage(message)
+            viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
         }
     }
+
 
 }

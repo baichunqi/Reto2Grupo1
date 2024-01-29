@@ -23,7 +23,7 @@ class ChatAdapter(
         fun bind(message: Message){
 //            binding.ImageViewFoto.setImageBitmap()
             binding.TextViewMensaje.text = message.text
-            binding.textViewTiempo.text = message.date.toString()
+            binding.textViewTiempo.text = message.user_id
         }
     }
     class ChatDiffCallback: DiffUtil.ItemCallback<Message>(){

@@ -5,5 +5,5 @@ import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.utils.Resource
 
 interface ChatListRepository {
-     suspend fun getChatList(id: Int): Resource<List<Chat>>
+     suspend fun getChatList(): Resource<List<Chat>>
 }

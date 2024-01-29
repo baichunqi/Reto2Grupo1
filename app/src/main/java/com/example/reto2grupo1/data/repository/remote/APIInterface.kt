@@ -28,7 +28,8 @@ interface APIInterface {
     suspend fun getChatList(@Body user: User): Response<List<Chat>>
     @GET("chat")
     suspend fun getChatContent(@Body chat: Chat): Response<List<Message>>
-
+    @GET("messages/{chatId}")
+    suspend fun getMessagesFromChat(@Path("chatId") id :Int) : Response<List<Message>>
 
     @POST("auth/login")
     suspend fun login(@Body authenticationRequest : AuthenticationRequest): Response<AuthenticationResponse>
@@ -38,8 +39,8 @@ interface APIInterface {
     @PUT("auth/users")
     suspend fun update(@Body user: UserUpdate): Response<User>
 
-    @GET("chats/{id}")
-    suspend fun getChats(@Path("id") id : Int): Response<List<Chat>>
+    @GET("chats")
+    suspend fun getChats(): Response<List<Chat>>
 
     @Multipart
     @POST("uploadPhoto")

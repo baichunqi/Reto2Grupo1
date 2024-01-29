@@ -70,6 +70,7 @@ class ChatListActivity  : ComponentActivity()  {
         val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra("id",chat.id.toString())
         intent.putExtra("name", chat.name)
+        //Añadir la conexion
         startActivity(intent)
     }
 

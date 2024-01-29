@@ -32,18 +32,18 @@ class ChatListViewModel(
 
     val chats : LiveData<Resource<List<Chat>>> get() = _chats
     init{
-        getChats(6)
+        getChats()
     }
- fun getChats(id : Int){
+ fun getChats( ){
      viewModelScope.launch {
-         val repoResponse = getUserChatList(id)
+         val repoResponse = getUserChatList()
          _chats.value = repoResponse
      }
  }
 
-    suspend fun getUserChatList(id: Int) : Resource<List<Chat>> {
+    suspend fun getUserChatList( ) : Resource<List<Chat>> {
     return withContext(Dispatchers.IO){
-            chatListRepository.getChatList(id)
+            chatListRepository.getChatList()
         }
     }
 }
