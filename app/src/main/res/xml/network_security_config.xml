@@ -11,6 +11,6 @@
         <domain includeSubdomains="false">10.5.7.202</domain>
         <domain includeSubdomains="false">10.5.7.23</domain>
 
-        <domain includeSubdomains="false">10.5.7.48</domain>
+        <domain includeSubdomains="false">10.5.7.83</domain>
     </domain-config>
 </network-security-config>

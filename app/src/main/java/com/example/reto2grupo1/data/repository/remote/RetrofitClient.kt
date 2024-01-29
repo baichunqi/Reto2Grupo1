@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.math.log
 
 object RetrofitClient {
 
@@ -16,6 +17,8 @@ object RetrofitClient {
     var client = OkHttpClient.Builder().addInterceptor { chain ->
         Log.i("prueba", "client")
          val authToken = MyApp.userPreferences.fetchAuthToken()
+        Log.e("TOken", "Beate $authToken")
+
         val newRequest: Request = chain.request().newBuilder()
             .addHeader("Authorization", "Bearer $authToken")
             .build()

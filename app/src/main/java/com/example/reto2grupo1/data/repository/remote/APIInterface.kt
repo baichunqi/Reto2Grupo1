@@ -28,7 +28,8 @@ interface APIInterface {
     suspend fun getChatList(@Body user: User): Response<List<Chat>>
     @GET("chat")
     suspend fun getChatContent(@Body chat: Chat): Response<List<Message>>
-
+    @GET("messages/{chatId}")
+    suspend fun getMessagesFromChat(@Path("chatId") id :Int) : Response<List<Message>>
 
     @POST("auth/login")
     suspend fun login(@Body authenticationRequest : AuthenticationRequest): Response<AuthenticationResponse>
@@ -40,6 +41,7 @@ interface APIInterface {
 
     @GET("chats")
     suspend fun getChats(): Response<List<Chat>>
+
 
     // TODO hay que implementarlo en el servidor
     @POST("createChat")

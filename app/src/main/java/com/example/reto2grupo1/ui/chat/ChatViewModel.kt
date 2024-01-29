@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.data.repository.ChatRepository
@@ -43,19 +44,17 @@ class ChatViewModel(
     private val _connected = MutableLiveData<Resource<Boolean>>()
     val connected: LiveData<Resource<Boolean>> get() = _connected
 
-    private val SOCKET_HOST = "http://10.5.7.202:8085/"
+    private val SOCKET_HOST = "http://10.5.7.48:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
+    private val SOCKET_ROOM = "1"
 
     fun startSocket(){
      val socketOptions = createSocketOptions()
         mSocket = IO.socket(SOCKET_HOST, socketOptions)
-
         mSocket.on(SocketEvents.ON_CONNECT.value, onConnect())
         mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
-
         mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
-
         viewModelScope.launch {
             connect()
         }
@@ -69,11 +68,12 @@ class ChatViewModel(
 
     private fun createSocketOptions(): IO.Options {
         val options = IO.Options()
-
-        // Add custom headers
+        val authToken : String? = MyApp.userPreferences.fetchAuthToken()
+        Log.e("TokenTocreateSocket", authToken.toString())
+        // Add custom header
         val headers = mutableMapOf<String, MutableList<String>>()
         // TODO el token tendria que salir de las sharedPrefernces para conectarse
-        headers[AUTHORIZATION_HEADER] = mutableListOf("Bearer AppJwt:1:Mikel")
+        headers[AUTHORIZATION_HEADER] = mutableListOf("Bearer ${authToken.toString()}")
 
         options.extraHeaders = headers
         return options
@@ -83,7 +83,6 @@ class ChatViewModel(
         return Emitter.Listener {
             // Manejar el mensaje recibido
             Log.d(TAG, "conectado")
-
             // no vale poner value por que da error al estar en otro hilo
             // IllegalStateException: Cannot invoke setValue on a background thread
             // en funcion asincrona obligado post
@@ -150,22 +149,23 @@ class ChatViewModel(
         }
     }
 
-    fun onSendMessage(message: String) {
+    fun onSendMessage(message: String, id : String) {
         Log.d(TAG, "onSendMessage $message")
         // la sala esta hardcodeada..
-        val socketMessage = SocketMessageReq("SOCKET_ROOM", message)
+        val socketMessage = SocketMessageReq(id, message)
         val jsonObject = JSONObject(Gson().toJson(socketMessage))
         mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
     }
 
-    fun getChatContent(chat : Chat){
+    fun getChatContent(id: Int){
         viewModelScope.launch {
-            getChatMessages(chat)
+            val repoResponse  = getChatMessages(id)
+            _messages.value = repoResponse
         }
     }
-    suspend fun getChatMessages(chat : Chat){
+    suspend fun getChatMessages(id: Int) : Resource<List<Message>>{
         return withContext(Dispatchers.IO){
-            chatRepository.getChat(chat)
+            chatRepository.getChatMessages(id)
         }
     }
 }

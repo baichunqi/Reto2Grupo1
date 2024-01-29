@@ -34,16 +34,16 @@ class ChatListViewModel(
     init{
         getChats()
     }
- fun getChats(){
-     viewModelScope.launch {
-         val repoResponse = getUserChatList()
-         _chats.value = repoResponse
-     }
- }
 
-    suspend fun getUserChatList() : Resource<List<Chat>> {
-    return withContext(Dispatchers.IO){
-            chatListRepository.getChatList()
+    fun getChats() {
+        viewModelScope.launch {
+            val repoResponse = getUserChatList()
+            _chats.value = repoResponse
         }
     }
-}
+     suspend fun getUserChatList(): Resource<List<Chat>> {
+         return withContext(Dispatchers.IO) {
+             chatListRepository.getChatList()
+         }
+     }
+ }
