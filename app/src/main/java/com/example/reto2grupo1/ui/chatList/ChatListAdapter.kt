@@ -1,7 +1,6 @@
 package com.example.reto2grupo1.ui.chatList
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -10,11 +9,43 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.databinding.ItemChatListBinding
-import kotlinx.coroutines.NonDisposableHandle.parent
+import java.util.Locale
 
 class ChatListAdapter(private val context: Context)
     : ListAdapter<Chat, ChatListAdapter.ChatListViewHolder>(ChatListDiffCallback()) {
 
+    private var chatListFull: List<Chat> = emptyList()
+    private var chatListFiltered: List<Chat> = emptyList()
+
+
+
+    // Método para establecer la lista completa de canciones y actualizar la lista filtrada
+    fun submitChatList(chats: List<Chat>?) {
+        if (chats != null) {
+            chatListFull = chats
+        }
+        filter("",  true) // Al recibir una nueva lista de canciones, mostramos todas las canciones
+    }
+    fun filter(text: String, esPublico : Boolean) {
+        val searchText = text.trim().lowercase(Locale.getDefault())
+
+        chatListFiltered = if (searchText.isEmpty()) {
+            chatListFull // Restauramos la lista completa si el texto está vacío
+        } else {
+            chatListFull.filter {
+                if(esPublico){
+                    it.name.lowercase(Locale.getDefault()).contains(searchText).and(!it.is_private)
+
+                } else {
+                    it.name.lowercase(Locale.getDefault()).contains(searchText).and( it.is_private)
+
+                }
+                // Puedes agregar otros campos aquí para el filtrado
+            }
+        }
+
+        submitList(chatListFiltered) // Mostramos los resultados filtrados en el RecyclerView
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListViewHolder {
         val binding = ItemChatListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ChatListViewHolder(binding)
