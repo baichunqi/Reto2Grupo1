@@ -1,6 +1,7 @@
 package com.example.reto2grupo1.ui.createGroup
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
@@ -24,6 +25,7 @@ class CreateGroupActivity : ComponentActivity()  {
                 private = true
             // TODO falta especificar los datos que hay que pasarle
             viewModel.createChat(name, private)
+            Toast.makeText(this, "Grupo creado correctamente", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
