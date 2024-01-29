@@ -156,6 +156,10 @@ class RegisterActivity : ComponentActivity() {
                     binding.editTextDirecciN.text.toString()
 
                 )
+                Toast.makeText(this, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
+                intent = Intent(this, ChatListActivity::class.java)
+                startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(this, "Las contraseñas no son iguales", Toast.LENGTH_SHORT).show()
                 binding.editTextContraseA.setText(" ")

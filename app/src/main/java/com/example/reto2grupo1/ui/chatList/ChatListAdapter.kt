@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -28,8 +29,7 @@ class ChatListAdapter(private val context: Context)
     inner class ChatListViewHolder(private val binding: ItemChatListBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(chat : Chat){
             binding.textViewNombreChat.text = chat.name
-            if(chat.message != null)
-                binding.textViewUltimoMensaje.text = chat.message.text
+            binding.buttonJoin.isVisible = false
             // Llamada a la función selectChat al hacer clic en un elemento
             binding.root.setOnClickListener {
                 (context as ChatListActivity)selectChat(chat)

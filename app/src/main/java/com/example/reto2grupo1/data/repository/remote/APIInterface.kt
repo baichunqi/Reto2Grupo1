@@ -42,6 +42,11 @@ interface APIInterface {
     @GET("chats")
     suspend fun getChats(): Response<List<Chat>>
 
+
+    // TODO hay que implementarlo en el servidor
+    @POST("createChat")
+    suspend fun createChat(name : String, private : Boolean) : Response<Boolean>
+
     @Multipart
     @POST("uploadPhoto")
     suspend fun uploadPhoto(@Part photo: MultipartBody.Part): Response<String>

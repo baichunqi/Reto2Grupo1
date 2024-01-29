@@ -8,7 +8,7 @@
 
     <ImageView
         android:id="@+id/ImageChat"
-        android:layout_width="1dp"
+        android:layout_width="10dp"
         android:layout_height="74dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
@@ -35,14 +35,14 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textViewUltimoMensaje"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:autoSizeMaxTextSize="5sp"
-            android:paddingTop="0dp"
-            android:text="TextView" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonJoin"
+        android:layout_width="34dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:autoSizeTextType="none"
+        android:text="Unirse" />
 
 </LinearLayout>

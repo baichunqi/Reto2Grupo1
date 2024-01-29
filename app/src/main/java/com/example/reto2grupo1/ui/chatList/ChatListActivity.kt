@@ -15,7 +15,9 @@ import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
+import com.example.reto2grupo1.databinding.ActivityCreateChatBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
+import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
 
@@ -81,7 +83,8 @@ class ChatListActivity  : ComponentActivity()  {
         popup.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId){
                 R.id.CrearGrupo-> {
-                    Toast.makeText(this, "Ajustes", Toast.LENGTH_SHORT).show()
+                    intent = Intent(this, CreateGroupActivity::class.java)
+                    startActivity(intent)
                 }
                 R.id.UnirseGrupo-> {
                     Toast.makeText(this, "Ayuda", Toast.LENGTH_SHORT).show()
