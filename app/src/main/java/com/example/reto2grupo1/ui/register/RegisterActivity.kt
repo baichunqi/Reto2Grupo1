@@ -146,16 +146,20 @@ class RegisterActivity : ComponentActivity() {
 
         binding.buttonCambioDeContraseA.setOnClickListener {
             if (binding.editTextContraseA.text.toString() == binding.editTextRepetirContraseA.text.toString()) {
-                viewModel.update(
-                    binding.editTextLogin.text.toString(),
-                    binding.editTextNombre.text.toString(),
-                    binding.editTextApellido.text.toString(),
-                    binding.editTextContraseA.text.toString(),
-                    binding.editTextTelefono1.text.toString().toInt(),
-                    binding.editTextDNI.text.toString(),
-                    binding.editTextDirecciN.text.toString()
+                if (binding.editTextContraseA.text.toString() != "Elorrieta00") {
+                    viewModel.update(
+                        binding.editTextLogin.text.toString(),
+                        binding.editTextNombre.text.toString(),
+                        binding.editTextApellido.text.toString(),
+                        binding.editTextContraseA.text.toString(),
+                        binding.editTextTelefono1.text.toString().toInt(),
+                        binding.editTextDNI.text.toString(),
+                        binding.editTextDirecciN.text.toString()
 
-                )
+                    )
+                } else {
+                    Toast.makeText(this, "La contraseña no puede ser igual a la de por defecto", Toast.LENGTH_SHORT).show()
+                }
                 Toast.makeText(this, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
                 intent = Intent(this, ChatListActivity::class.java)
                 startActivity(intent)
