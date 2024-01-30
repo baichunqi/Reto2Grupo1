@@ -45,7 +45,7 @@ class ChatAdapter(chatId: String?) : ListAdapter<Message, ChatAdapter.ChatViewHo
 //            binding.ImageViewFoto.setImageBitmap()
             Log.i("Mensaje", message.toString())
             binding.TextViewMensaje.text = message.text
-            binding.textViewTiempo.text = message.userId
+            binding.textViewTiempo.text = message.userId.toString()
 
         }
     }

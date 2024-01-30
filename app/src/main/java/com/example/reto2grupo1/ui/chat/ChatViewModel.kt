@@ -107,7 +107,7 @@ class ChatViewModel(
     }
 
     private fun onNewMessage(): Emitter.Listener {
-
+        Log.d("OnnewMeesaje","OnnewMeesaje")
         return Emitter.Listener {
             // en teoria deberia ser siempre jsonObject, obviamente si siempre lo gestionamos asi
             if (it[0] is JSONObject) {
@@ -146,7 +146,7 @@ class ChatViewModel(
 
     private fun updateMessageListWithNewMessage(message: SocketMessageRes) {
         try {
-            val incomingMessage = Message(message.authorId,message.message, message.authorName, message.date)
+            val incomingMessage = Message(message.authorId,message.message, message.authorName, message.room)
             val msgsList = _messages.value?.data?.toMutableList()
             if (msgsList != null) {
                 msgsList.add(incomingMessage)
@@ -164,6 +164,7 @@ class ChatViewModel(
         // la sala esta hardcodeada..
         val socketMessage = SocketMessageReq(id, message)
         val jsonObject = JSONObject(Gson().toJson(socketMessage))
+        Log.d("json", jsonObject.toString())
         mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
     }
 
