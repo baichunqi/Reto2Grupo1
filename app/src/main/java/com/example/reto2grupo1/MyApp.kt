@@ -3,12 +3,14 @@ package com.example.reto2grupo1
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import com.example.reto2grupo1.data.repository.local.MyAppRoomDataBase
 
 class MyApp : Application(){
 
     companion object {
         lateinit var context: Context;
         lateinit var userPreferences: UserPreferences;
+        lateinit var db: MyAppRoomDataBase
     }
 
     // Called when the application is starting, before any other application objects have been created.

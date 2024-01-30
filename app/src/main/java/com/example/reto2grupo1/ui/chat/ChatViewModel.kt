@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto2grupo1.MyApp
-import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.data.repository.ChatRepository
 import com.example.reto2grupo1.data.socket.SocketEvents
@@ -174,7 +173,7 @@ class ChatViewModel(
             _messages.value = repoResponse
         }
     }
-    suspend fun getChatMessages(id: Int) : Resource<List<Message>>{
+    private suspend fun getChatMessages(id: Int) : Resource<List<Message>>{
         return withContext(Dispatchers.IO){
             chatRepository.getChatMessages(id)
         }

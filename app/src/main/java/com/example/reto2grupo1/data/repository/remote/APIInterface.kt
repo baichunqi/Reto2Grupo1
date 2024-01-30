@@ -24,7 +24,7 @@ interface APIInterface {
     suspend fun getUser(): Response<User>
     @PUT("password")
     suspend fun changePass(@Body passChange: PassChange):Response<Int>
-    @GET("chatList")
+                                        @GET("chatList")
     suspend fun getChatList(@Body user: User): Response<List<Chat>>
     @GET("chat")
     suspend fun getChatContent(@Body chat: Chat): Response<List<Message>>
