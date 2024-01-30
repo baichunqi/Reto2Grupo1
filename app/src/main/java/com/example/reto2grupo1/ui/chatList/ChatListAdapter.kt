@@ -59,7 +59,7 @@ class ChatListAdapter(private val context: Context)
 
     inner class ChatListViewHolder(private val binding: ItemChatListBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(chat : Chat){
-            binding.textViewNombreChat.text = chat.name
+            binding.txtAddUser.text = chat.name
             binding.buttonJoin.isVisible = false
             // Llamada a la función selectChat al hacer clic en un elemento
             binding.root.setOnClickListener {

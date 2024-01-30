@@ -1,14 +1,22 @@
 package com.example.reto2grupo1.ui.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.MenuInflater
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
+import com.example.reto2grupo1.databinding.ActivityAddUserBinding
 import com.example.reto2grupo1.databinding.ActivityChatBinding
+import com.example.reto2grupo1.ui.AddUser.AddUserActivity
+import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.utils.Resource
 
 class ChatActivity : ComponentActivity() {
@@ -34,7 +42,7 @@ class ChatActivity : ComponentActivity() {
         val intent = intent
 
         val chatName = intent.getStringExtra("name")
-        binding.textViewNombreChat.text = chatName
+        binding.txtAddUser.text = chatName
         Log.i("idChat", chatId.toString())
 
         binding.imageViewBack.setOnClickListener(){
@@ -65,6 +73,9 @@ class ChatActivity : ComponentActivity() {
          }
         })
 
+        binding.imageView8.setOnClickListener() {
+            showPopup(it)
+        }
     }
 
 
@@ -101,6 +112,27 @@ class ChatActivity : ComponentActivity() {
             binding.editTextUsername2.setText("")
             viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
         }
+    }
+
+    fun showPopup(v : View){
+        val popup = PopupMenu(this, v)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.menu_chat, popup.menu)
+        popup.setOnMenuItemClickListener() { menuItem ->
+            when(menuItem.itemId){
+                R.id.addUser-> {
+                    intent = Intent(this, AddUserActivity::class.java)
+                    val chatId = intent.getStringExtra("id")
+                    intent.putExtra("id",chatId)
+                    startActivity(intent)
+                }
+                R.id.delUser-> {
+                    Toast.makeText(this, "Borrar usuario", Toast.LENGTH_SHORT).show()
+                }
+            }
+            true
+        }
+        popup.show()
     }
 
 

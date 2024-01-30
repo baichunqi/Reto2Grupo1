@@ -39,6 +39,9 @@ interface APIInterface {
     @PUT("auth/users")
     suspend fun update(@Body user: UserUpdate): Response<User>
 
+    @GET("auth/users")
+    suspend fun getAllUsers() : Response<List<User>>
+
     @GET("chats")
     suspend fun getChats(): Response<List<Chat>>
 
