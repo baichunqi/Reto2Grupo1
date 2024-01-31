@@ -51,7 +51,7 @@ class JoinChatViewModel(
         }
     }
 
-    fun joinToChat(chatId: Int){
+    fun joinToChat(chatId: Int?){
         Log.d("estoentra3","estoentra3");
 
         viewModelScope.launch {
@@ -61,7 +61,7 @@ class JoinChatViewModel(
             _join.value = response
         }
     }
-    suspend fun joinChat(chatId:Int): Resource<Boolean> {
+    suspend fun joinChat(chatId:Int?): Resource<Boolean> {
         return withContext(Dispatchers.IO){
             Log.d("estoentra5", "estoentra4 $chatId");
 
