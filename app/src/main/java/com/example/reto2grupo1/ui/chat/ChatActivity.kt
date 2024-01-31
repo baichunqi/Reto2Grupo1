@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.reto2grupo1.R
+import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.databinding.ActivityAddUserBinding
 import com.example.reto2grupo1.databinding.ActivityChatBinding
@@ -24,7 +25,6 @@ class ChatActivity : ComponentActivity() {
     private val TAG = "ChatActivity"
     private lateinit var chatAdapter: ChatAdapter
     private val messageRepository = RemoteChatDataSource()
-
     private val viewModel: ChatViewModel by viewModels { ChatViewModelFactory(messageRepository)
     }
 
@@ -110,7 +110,7 @@ class ChatActivity : ComponentActivity() {
             Log.e("pulsado", "enviar pulsado")
             val message = binding.editTextUsername2.text.toString();
             binding.editTextUsername2.setText("")
-            viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+            viewModel.  onSendMessage(message, intent.getStringExtra("id").toString())
         }
     }
 

@@ -8,5 +8,5 @@ data class DbChat(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     val name : String,
     val message : String,
-    val private : Boolean,
+    val privateChat : Boolean,
 )

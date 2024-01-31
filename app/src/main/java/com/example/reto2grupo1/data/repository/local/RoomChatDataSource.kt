@@ -24,13 +24,14 @@ class RoomChatDataSource : CommonChatRepository {
 
 }
 fun Chat.toDbChat() = DbChat(id, name, message, private)
-fun DbChat.toChat() = Chat(id, name, message, private)
+fun DbChat.toChat() = Chat(id, name, message, privateChat)
 
 @Dao
-interface ChatDao{
+interface ChatDao {
     @Query("SELECT * FROM chats order by id asc")
     suspend fun getChats(): List<DbChat>
 
     @Insert
     suspend fun addChat(chat:DbChat):Long
+
 }

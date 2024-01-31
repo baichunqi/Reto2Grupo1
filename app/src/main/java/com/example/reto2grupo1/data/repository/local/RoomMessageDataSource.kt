@@ -16,6 +16,7 @@ class RoomMessageDataSource : CommonMessageRepository{
     override suspend fun getChatMessages(id : Int) : Resource<List<Message>>{
         val response = messageDao.getMessages(id).map { it.toMessage() }
         return Resource.success(response)
+
     }
 
     override suspend fun createMessage(message: Message): Resource<Void> {
@@ -25,6 +26,7 @@ class RoomMessageDataSource : CommonMessageRepository{
         } catch (ex:SQLiteConstraintException){
             return Resource.error(ex.message!!)
         }
+
     }
 
 }
@@ -34,9 +36,10 @@ fun DbMessage.toMessage() = Message(id, text, userId, chatId)
 
 @Dao
 interface MessageDao{
-    @Query("Select * from messages order by id asc")
+    @Query("Select * from messages WHERE chatId=:id order by id asc")
     suspend fun getMessages(id: Int): List<DbMessage>
 
     @Insert
     suspend fun addMessage(message: DbMessage) :Long
+
 }

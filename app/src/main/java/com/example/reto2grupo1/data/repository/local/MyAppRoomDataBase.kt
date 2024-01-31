@@ -8,7 +8,7 @@ import com.example.reto2grupo1.data.DbMessage
 
 @Database(
     entities = [DbChat::class, DbMessage::class],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 abstract class MyAppRoomDataBase : RoomDatabase() {
