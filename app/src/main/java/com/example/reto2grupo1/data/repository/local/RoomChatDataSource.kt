@@ -23,8 +23,8 @@ class RoomChatDataSource : CommonChatRepository {
 
 
 }
-fun Chat.toDbChat() = DbChat(id, name, message, private)
-fun DbChat.toChat() = Chat(id, name, message, privateChat)
+fun Chat.toDbChat() = DbChat(id, name, message , private)
+fun DbChat.toChat() = Chat(id, name, "", privateChat)
 
 @Dao
 interface ChatDao {
