@@ -6,4 +6,5 @@ import com.example.reto2grupo1.utils.Resource
 interface CommonChatRepository {
     suspend fun getChats():Resource<List<Chat>>
     suspend fun createChat(chat: Chat) : Resource<Int>
+    suspend fun deleteChat(chatId: Int): Resource<Void>
 }

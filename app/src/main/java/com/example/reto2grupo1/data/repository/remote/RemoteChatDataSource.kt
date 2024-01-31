@@ -19,4 +19,7 @@ class RemoteChatDataSource : BaseDataSource(), ChatRepository {
     override suspend fun assignUser(chatId: Int, userId: Int): Resource<Void> = getResult {
         RetrofitClient.apiInterface.assignUser(chatId, userId)
     }
+    override suspend fun deleteChat(chatId: Int): Resource<Void> = getResult {
+        RetrofitClient.apiInterface.deleteChat(chatId)
+    }
 }
