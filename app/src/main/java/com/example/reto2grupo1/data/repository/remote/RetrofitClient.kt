@@ -10,20 +10,19 @@ import kotlin.math.log
 
 object RetrofitClient {
 
-    const val API_URI = "http://10.5.7.22:8080/api/"
+    const val API_URI = "http://10.5.7.13:8081/api/"
     //const val API_URI = "http://10.5.7.202:80/api/"
 
 
     var client = OkHttpClient.Builder().addInterceptor { chain ->
-        Log.i("prueba", "client")
          val authToken = MyApp.userPreferences.fetchAuthToken()
-        Log.e("TOken", "Beate $authToken")
 
         val newRequest: Request = chain.request().newBuilder()
             .addHeader("Authorization", "Bearer $authToken")
             .build()
         chain.proceed(newRequest)
     }.build()
+
 
     val retrofitClient: Retrofit.Builder by lazy {
         Retrofit.Builder()

@@ -48,11 +48,13 @@ class ChatActivity : ComponentActivity() {
         binding.imageViewBack.setOnClickListener(){
             finish()
         }
+
         if (chatId != null) {
             viewModel.getChatContent(chatId.toInt())
         }
         connectToSocket(binding)
         onMessagesChange()
+
         viewModel.connected.observe(this,Observer{
          when (it.status){
              Resource.Status.SUCCESS -> {
@@ -109,8 +111,10 @@ class ChatActivity : ComponentActivity() {
         binding.imageView9.setOnClickListener() {
             Log.e("pulsado", "enviar pulsado")
             val message = binding.editTextUsername2.text.toString();
+            Log.i("EnviMessage", message)
+            Log.i("EnviMessage", intent.getStringExtra("id").toString())
             binding.editTextUsername2.setText("")
-            viewModel.  onSendMessage(message, intent.getStringExtra("id").toString())
+            viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
         }
     }
 
@@ -133,6 +137,10 @@ class ChatActivity : ComponentActivity() {
         }
         popup.show()
     }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("pruebaDestroy", "Desconectando")
+        viewModel.stopSocket()
+    }
 
 }

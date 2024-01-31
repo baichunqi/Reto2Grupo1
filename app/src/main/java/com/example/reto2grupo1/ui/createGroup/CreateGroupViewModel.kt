@@ -1,9 +1,12 @@
 package com.example.reto2grupo1.ui.createGroup
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.CreateGroupRepository
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -22,15 +25,19 @@ class CreateGroupViewModel (
     private val createGroupRepository: CreateGroupRepository
 ) : ViewModel(){
 
-    fun createChat(name : String, private : Boolean){
+    private val _createChatResult = MutableLiveData<Resource<Void>>()
+    val createChatResult: LiveData<Resource<Void>> get() = _createChatResult
+
+    fun createChat(chat : Chat){
         viewModelScope.launch{
-            val repoResponse = createChatRepo(name, private)
+            val repoResponse = createChatRepo(chat)
+            _createChatResult.value = repoResponse
         }
     }
 
-    suspend fun createChatRepo(name : String, private : Boolean) : Resource<Boolean> {
+    suspend fun createChatRepo(chat : Chat) : Resource<Void> {
         return withContext(Dispatchers.IO){
-            createGroupRepository.createChat(name, private)
+            createGroupRepository.createChat(chat)
         }
     }
 }
