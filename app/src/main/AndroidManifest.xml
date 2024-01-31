@@ -45,6 +45,8 @@
 
         <activity android:name=".ui.createGroup.CreateGroupActivity"></activity>
 
+        <activity android:name=".ui.AddUser.AddUserActivity"></activity>
+
     </application>
 
 </manifest>

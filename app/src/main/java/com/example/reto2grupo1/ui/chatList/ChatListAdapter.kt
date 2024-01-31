@@ -18,33 +18,27 @@ class ChatListAdapter(private val context: Context)
     private var chatListFiltered: List<Chat> = emptyList()
 
 
-
-    // Método para establecer la lista completa de canciones y actualizar la lista filtrada
     fun submitChatList(chats: List<Chat>?) {
         if (chats != null) {
             chatListFull = chats
         }
-        filter("",  true) // Al recibir una nueva lista de canciones, mostramos todas las canciones
+        filter("",  true)
     }
     fun filter(text: String, esPublico : Boolean) {
         val searchText = text.trim().lowercase(Locale.getDefault())
 
         chatListFiltered = if (searchText.isEmpty()) {
-            chatListFull // Restauramos la lista completa si el texto está vacío
+            chatListFull
         } else {
             chatListFull.filter {
                 if(esPublico){
                     it.name.lowercase(Locale.getDefault()).contains(searchText).and(!it.private)
-
                 } else {
                     it.name.lowercase(Locale.getDefault()).contains(searchText).and( it.private)
-
                 }
-                // Puedes agregar otros campos aquí para el filtrado
             }
         }
-
-        submitList(chatListFiltered) // Mostramos los resultados filtrados en el RecyclerView
+        submitList(chatListFiltered)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListViewHolder {
         val binding = ItemChatListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -59,7 +53,7 @@ class ChatListAdapter(private val context: Context)
 
     inner class ChatListViewHolder(private val binding: ItemChatListBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(chat : Chat){
-            binding.textViewNombreChat.text = chat.name
+            binding.txtAddUser.text = chat.name
             binding.buttonJoin.isVisible = false
             // Llamada a la función selectChat al hacer clic en un elemento
             binding.root.setOnClickListener {

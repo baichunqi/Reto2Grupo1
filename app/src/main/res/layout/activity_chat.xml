@@ -43,7 +43,7 @@
         android:src="@drawable/settings_icon_symbol_vector" />
 
     <TextView
-        android:id="@+id/textViewNombreChat"
+        android:id="@+id/txtAddUser"
         android:layout_width="212dp"
         android:layout_height="39dp"
         android:text="@string/nombre"

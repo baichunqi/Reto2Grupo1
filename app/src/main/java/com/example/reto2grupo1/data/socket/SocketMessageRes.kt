@@ -7,6 +7,6 @@ data class SocketMessageRes (
     val room: String,
     val message: String,
     val authorName: String,
-    val authorId: Integer,
+    val authorId: Int,
     val date : Date,
 )

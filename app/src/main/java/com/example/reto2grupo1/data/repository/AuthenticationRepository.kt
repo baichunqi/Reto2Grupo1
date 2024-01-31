@@ -11,4 +11,5 @@ interface AuthenticationRepository {
     suspend fun myInfo() : Resource<User>
     suspend fun updateUser(user: UserUpdate) : Resource<User>
 
+    suspend fun getAllUsers() : Resource<List<User>>
 }

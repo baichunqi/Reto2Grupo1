@@ -11,8 +11,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
+import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
@@ -20,6 +22,7 @@ import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
+import kotlinx.coroutines.launch
 
 
 class ChatListActivity  : ComponentActivity()  {
@@ -27,6 +30,7 @@ class ChatListActivity  : ComponentActivity()  {
     private lateinit var chatListAdapter: ChatListAdapter
     private val chatListRepository = RemoteChatListDataSource()
     private var esPublico : Boolean = true
+    private var chatRepository = RoomChatDataSource()
     private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatListRepository)
     }
 
@@ -75,6 +79,25 @@ class ChatListActivity  : ComponentActivity()  {
                 }
             }
         })
+
+        lifecycleScope.launch {
+            val chatsResource = chatRepository.getChats()
+            when (chatsResource.status) {
+                Resource.Status.SUCCESS -> {
+                    val chats = chatsResource.data
+                    chatListAdapter.submitList(chats)
+                    chatListAdapter.submitChatList(chats)
+                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
+                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
+                }
+                Resource.Status.ERROR -> {
+                    // Manejar el error, si es necesario
+                }
+                Resource.Status.LOADING -> {
+                    // Manejar el estado de carga, si es necesario
+                }
+            }
+        }
 
 
     }

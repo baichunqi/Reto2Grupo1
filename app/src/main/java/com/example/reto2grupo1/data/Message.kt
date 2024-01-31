@@ -5,10 +5,10 @@ import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 @Parcelize
-data class Message (
-    val id: Integer,
-    val text : String,
-    val userId : String,
-    val chatId : String,
+data class Message(
+    val id: Int?,
+    val text: String,
+    val userId: String,
+    val chatId: String,
 
-): Parcelable
+    ): Parcelable

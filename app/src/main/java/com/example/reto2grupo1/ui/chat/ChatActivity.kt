@@ -1,22 +1,30 @@
 package com.example.reto2grupo1.ui.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.MenuInflater
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import com.example.reto2grupo1.R
+import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
+import com.example.reto2grupo1.databinding.ActivityAddUserBinding
 import com.example.reto2grupo1.databinding.ActivityChatBinding
+import com.example.reto2grupo1.ui.AddUser.AddUserActivity
+import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.utils.Resource
 
 class ChatActivity : ComponentActivity() {
-
+    var chatId : String = ""
     private val TAG = "ChatActivity"
     private lateinit var chatAdapter: ChatAdapter
     private val messageRepository = RemoteChatDataSource()
-
     private val viewModel: ChatViewModel by viewModels { ChatViewModelFactory(messageRepository)
     }
 
@@ -24,7 +32,7 @@ class ChatActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val chatId = intent.getStringExtra("id")
+        chatId = intent.getStringExtra("id").toString()
         chatAdapter = ChatAdapter(chatId)
         binding.chatView.adapter = chatAdapter
 
@@ -34,7 +42,7 @@ class ChatActivity : ComponentActivity() {
         val intent = intent
 
         val chatName = intent.getStringExtra("name")
-        binding.textViewNombreChat.text = chatName
+        binding.txtAddUser.text = chatName
         Log.i("idChat", chatId.toString())
 
         binding.imageViewBack.setOnClickListener(){
@@ -65,6 +73,9 @@ class ChatActivity : ComponentActivity() {
          }
         })
 
+        binding.imageView8.setOnClickListener() {
+            showPopup(it)
+        }
     }
 
 
@@ -99,8 +110,28 @@ class ChatActivity : ComponentActivity() {
             Log.e("pulsado", "enviar pulsado")
             val message = binding.editTextUsername2.text.toString();
             binding.editTextUsername2.setText("")
-            viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+            viewModel.  onSendMessage(message, intent.getStringExtra("id").toString())
         }
+    }
+
+    fun showPopup(v : View){
+        val popup = PopupMenu(this, v)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.menu_chat, popup.menu)
+        popup.setOnMenuItemClickListener() { menuItem ->
+            when(menuItem.itemId){
+                R.id.addUser-> {
+                    intent = Intent(this, AddUserActivity::class.java)
+                    intent.putExtra("id",chatId)
+                    startActivity(intent)
+                }
+                R.id.delUser-> {
+                    Toast.makeText(this, "Borrar usuario", Toast.LENGTH_SHORT).show()
+                }
+            }
+            true
+        }
+        popup.show()
     }
 
 
