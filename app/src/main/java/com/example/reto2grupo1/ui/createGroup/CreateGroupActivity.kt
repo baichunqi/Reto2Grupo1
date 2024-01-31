@@ -41,12 +41,22 @@ class CreateGroupActivity : ComponentActivity()  {
         }
         viewModel.createChatResult.observe(this, Observer {
             when (it.status){
+
                 Resource.Status.SUCCESS -> {
                     Toast.makeText(this, "Grupo creado", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, "Comprueba si tienes privilegios o estas conectado a internet", Toast.LENGTH_LONG).show()
+                    val errorMessage = it.message
+                    if (errorMessage != null) {
+                        if (errorMessage.contains("403")) {
+                            Toast.makeText(this, "Compruebe sus privilegios", Toast.LENGTH_LONG)
+                                .show()
+                        } else if (errorMessage.contains("201")){
+                            Toast.makeText(this, "Grupo creado", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    }
                 }
                 Resource.Status.LOADING -> {
 

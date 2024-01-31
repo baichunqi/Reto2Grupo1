@@ -64,12 +64,13 @@ class JoinChatListAdapter(private val context: Context)
 
     inner class JoinChatListViewHolder(private val binding: ItemChatListBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(chat : Chat){
-            binding.txtAddUser.text = chat.name
+            binding.textViewNombreChat.text = chat.name
             binding.buttonJoin.isVisible = true
             // Llamada a la función selectChat al hacer clic en un elemento
             binding.buttonJoin.setOnClickListener {
                 Log.d("estoentra","estoentra");
-                (context as JoinChatActivity)joinChat(chat)
+                if(chat.id != null)
+                (context as JoinChatActivity)joinChat(chat.id)
 
             }
         }
