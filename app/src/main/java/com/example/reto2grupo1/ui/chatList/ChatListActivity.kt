@@ -22,6 +22,8 @@ import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -35,6 +37,8 @@ class ChatListActivity  : ComponentActivity()  {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        syncData()
         super.onCreate(savedInstanceState)
         val binding = ActivityChatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -44,8 +48,9 @@ class ChatListActivity  : ComponentActivity()  {
 
         binding.imageView7.setOnClickListener() {
             val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
             finish()
+            startActivity(intent)
+
         }
 
         binding.editTextSearch.addTextChangedListener(){
@@ -150,4 +155,29 @@ class ChatListActivity  : ComponentActivity()  {
         popup.show()
 
     }
+    private fun syncData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            // Obtener datos del repositorio remoto
+            val remoteData = chatListRepository.getChatList()
+
+            // Verificar si hay cambios antes de sincronizar
+            if (remoteData.status == Resource.Status.SUCCESS) {
+                val remoteChats = remoteData.data ?: emptyList()
+                val localChats = chatRepository.getChats().data ?: emptyList()
+
+                // Identificar chats que necesitan ser agregados o actualizados
+                val chatsToAddOrUpdate = remoteChats.filter { remoteChat ->
+                    !localChats.any { it.id == remoteChat.id }
+                }
+
+                // Agregar o actualizar chats en el repositorio local
+                chatsToAddOrUpdate.forEach { chat ->
+                    chatRepository.createChat(chat)
+                }
+            }
+        }
+    }
+
+
+
 }

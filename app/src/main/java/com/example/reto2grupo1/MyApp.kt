@@ -25,6 +25,7 @@ class MyApp : Application(){
         // Required initialization logic here!
         db = Room
             .databaseBuilder(this,MyAppRoomDataBase::class.java,"chat.db")
+            .fallbackToDestructiveMigration()
             .build()
     }
 

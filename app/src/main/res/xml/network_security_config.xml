@@ -12,5 +12,6 @@
         <domain includeSubdomains="false">10.5.7.13</domain>
 
         <domain includeSubdomains="false">10.5.7.22</domain>
+        <domain includeSubdomains="false">10.5.7.13</domain>
     </domain-config>
 </network-security-config>

@@ -46,7 +46,7 @@ interface APIInterface {
     @GET("chats")
     suspend fun getChats(): Response<List<Chat>>
     @POST("chats/join")
-    suspend fun joinChat(@Query("chatId") chatId: Int) : Response<Boolean>
+    suspend fun joinChat(@Query("chatId") chatId: Int?) : Response<Boolean>
 
 
     @POST("chats/assign")

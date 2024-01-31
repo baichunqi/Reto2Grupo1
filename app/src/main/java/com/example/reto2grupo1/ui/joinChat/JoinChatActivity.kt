@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityJoinpublicchatBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
@@ -48,9 +47,9 @@ class JoinChatActivity : ComponentActivity(){
             }
         })
     }
-    infix fun joinChat(chat: Chat){
+    infix fun joinChat(chatId : Int){
         Log.d("estoentra2","estoentra2");
-        chat.id?.let { viewModel.joinToChat(it) }
+        viewModel.joinToChat(chatId)
         val intent = Intent(this, ChatListActivity::class.java)
         startActivity(intent)
     }

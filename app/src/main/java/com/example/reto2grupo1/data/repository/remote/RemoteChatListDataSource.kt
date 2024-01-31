@@ -7,10 +7,9 @@ import com.example.reto2grupo1.utils.Resource
 
 class RemoteChatListDataSource : BaseDataSource(), ChatListRepository {
     override suspend fun getChatList() = getResult {
-        Log.i("pruebaChat", "Entra en chatList")
         RetrofitClient.apiInterface.getChats()
-
     }
+
     override suspend fun getAllPublicChat(): Resource<List<Chat>>  = getResult {
         RetrofitClient.apiInterface.getAllPublicChats()
     }
