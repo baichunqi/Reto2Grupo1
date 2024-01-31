@@ -21,7 +21,7 @@ import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.utils.Resource
 
 class ChatActivity : ComponentActivity() {
-
+    var chatId : String = ""
     private val TAG = "ChatActivity"
     private lateinit var chatAdapter: ChatAdapter
     private val messageRepository = RemoteChatDataSource()
@@ -32,7 +32,7 @@ class ChatActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val chatId = intent.getStringExtra("id")
+        chatId = intent.getStringExtra("id").toString()
         chatAdapter = ChatAdapter(chatId)
         binding.chatView.adapter = chatAdapter
 
@@ -122,7 +122,6 @@ class ChatActivity : ComponentActivity() {
             when(menuItem.itemId){
                 R.id.addUser-> {
                     intent = Intent(this, AddUserActivity::class.java)
-                    val chatId = intent.getStringExtra("id")
                     intent.putExtra("id",chatId)
                     startActivity(intent)
                 }

@@ -17,6 +17,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface APIInterface {
 
@@ -24,7 +25,7 @@ interface APIInterface {
     suspend fun getUser(): Response<User>
     @PUT("password")
     suspend fun changePass(@Body passChange: PassChange):Response<Int>
-                                        @GET("chatList")
+    @GET("chatList")
     suspend fun getChatList(@Body user: User): Response<List<Chat>>
     @GET("chat")
     suspend fun getChatContent(@Body chat: Chat): Response<List<Message>>
@@ -44,7 +45,8 @@ interface APIInterface {
 
     @GET("chats")
     suspend fun getChats(): Response<List<Chat>>
-
+    @POST("chats/assign")
+    suspend fun assignUser(@Query("chatId")chatId: Int,@Query("userId") userId: Int): Response<Void>
 
     // TODO hay que implementarlo en el servidor
     @POST("createChat")

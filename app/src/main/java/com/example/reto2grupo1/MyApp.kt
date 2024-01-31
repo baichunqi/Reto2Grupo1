@@ -6,6 +6,8 @@ import android.content.res.Configuration
 import androidx.room.Room
 import com.example.reto2grupo1.data.repository.local.MyAppRoomDataBase
 
+//import com.example.reto2grupo1.data.repository.local.MyAppRoomDataBase
+
 class MyApp : Application(){
 
     companion object {
