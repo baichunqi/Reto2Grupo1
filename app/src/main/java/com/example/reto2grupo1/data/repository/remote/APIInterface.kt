@@ -52,10 +52,8 @@ interface APIInterface {
 
     @POST("chats/assign")
     suspend fun assignUser(@Query("chatId")chatId: Int,@Query("userId") userId: Int): Response<Void>
-
-    // TODO hay que implementarlo en el servidor
-    @POST("createChat")
-    suspend fun createChat(name : String, private : Boolean) : Response<Boolean>
+    @POST("chats")
+    suspend fun createChat(@Body chat : Chat) : Response<Void>
 
     @Multipart
     @POST("uploadPhoto")

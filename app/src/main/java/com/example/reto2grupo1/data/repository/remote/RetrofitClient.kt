@@ -15,15 +15,14 @@ object RetrofitClient {
 
 
     var client = OkHttpClient.Builder().addInterceptor { chain ->
-        Log.i("prueba", "client")
          val authToken = MyApp.userPreferences.fetchAuthToken()
-        Log.e("TOken", "Beate $authToken")
 
         val newRequest: Request = chain.request().newBuilder()
             .addHeader("Authorization", "Bearer $authToken")
             .build()
         chain.proceed(newRequest)
     }.build()
+
 
     val retrofitClient: Retrofit.Builder by lazy {
         Retrofit.Builder()

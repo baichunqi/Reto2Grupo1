@@ -6,15 +6,28 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="48dp"
+        android:layout_height="49dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txtTitle"
+        app:layout_constraintHorizontal_bias="0.586"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.011"
+        app:srcCompat="@android:drawable/ic_menu_revert" />
+
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="64sp"
         android:layout_height="55sp"
+        android:src="@drawable/solo_logo_elorrieta"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/txtTitle"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintStart_toEndOf="@+id/txtTitle"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        android:src="@drawable/solo_logo_elorrieta" />
+        app:layout_constraintVertical_bias="0.011" />
 
     <TextView
         android:id="@+id/txtTitle"

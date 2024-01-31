@@ -70,7 +70,6 @@ class ChatListActivity  : ComponentActivity()  {
                 Resource.Status.SUCCESS -> {
                     if (!it.data.isNullOrEmpty()) {
                         Log.i("PruebaChat", "Ha ocurrido un cambio en la lista")
-                        Log.i("PruebaChat", viewModel.chats.value.toString())
                         chatListAdapter.submitList(it.data)
                         chatListAdapter.submitChatList(it.data)
                         chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
@@ -85,24 +84,24 @@ class ChatListActivity  : ComponentActivity()  {
             }
         })
 
-        lifecycleScope.launch {
-            val chatsResource = chatRepository.getChats()
-            when (chatsResource.status) {
-                Resource.Status.SUCCESS -> {
-                    val chats = chatsResource.data
-                    chatListAdapter.submitList(chats)
-                    chatListAdapter.submitChatList(chats)
-                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
-                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
-                }
-                Resource.Status.ERROR -> {
-                    // Manejar el error, si es necesario
-                }
-                Resource.Status.LOADING -> {
-                    // Manejar el estado de carga, si es necesario
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            val chatsResource = chatRepository.getChats()
+//            when (chatsResource.status) {
+//                Resource.Status.SUCCESS -> {
+//                    val chats = chatsResource.data
+//                    chatListAdapter.submitList(chats)
+//                    chatListAdapter.submitChatList(chats)
+//                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
+//                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
+//                }
+//                Resource.Status.ERROR -> {
+//                    // Manejar el error, si es necesario
+//                }
+//                Resource.Status.LOADING -> {
+//                    // Manejar el estado de carga, si es necesario
+//                }
+//            }
+//        }
 
 
     }
@@ -126,7 +125,6 @@ class ChatListActivity  : ComponentActivity()  {
                     startActivity(intent)
                 }
                 R.id.UnirseGrupo-> {
-                    Toast.makeText(this, "Ayuda", Toast.LENGTH_SHORT).show()
                     intent = Intent(this, JoinChatActivity::class.java)
                     startActivity(intent)
 
