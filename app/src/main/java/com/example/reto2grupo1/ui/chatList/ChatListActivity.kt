@@ -17,6 +17,7 @@ import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
+import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
 
@@ -98,6 +99,9 @@ class ChatListActivity  : ComponentActivity()  {
                 }
                 R.id.UnirseGrupo-> {
                     Toast.makeText(this, "Ayuda", Toast.LENGTH_SHORT).show()
+                    intent = Intent(this, JoinChatActivity::class.java)
+                    startActivity(intent)
+
                 }
             }
             true

@@ -35,6 +35,7 @@
         </activity>
 
         <activity android:name=".ui.login.LoginActivity"></activity>
+        <activity android:name=".ui.joinChat.JoinChatActivity"></activity>
 
         <activity android:name=".ui.chatList.ChatListActivity"></activity>
 

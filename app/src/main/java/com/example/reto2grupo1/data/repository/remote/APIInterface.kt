@@ -17,6 +17,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface APIInterface {
 
@@ -41,6 +42,8 @@ interface APIInterface {
 
     @GET("chats")
     suspend fun getChats(): Response<List<Chat>>
+    @POST("chats/join")
+    suspend fun joinChat(@Query("chatId") chatId: Int) : Response<Boolean>
 
 
     // TODO hay que implementarlo en el servidor
@@ -51,5 +54,6 @@ interface APIInterface {
     @POST("uploadPhoto")
     suspend fun uploadPhoto(@Part photo: MultipartBody.Part): Response<String>
 
-
+    @GET("chats/noPrivate")
+    suspend fun getAllPublicChats(): Response<List<Chat>>
 }
