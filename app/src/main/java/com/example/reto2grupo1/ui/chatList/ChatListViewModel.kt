@@ -36,13 +36,13 @@ class ChatListViewModel(
         getChats()
     }
 
-    fun getChats() {
+    private fun getChats() {
         viewModelScope.launch {
             val repoResponse = getUserChatList()
             _chats.value = repoResponse
         }
     }
-     suspend fun getUserChatList(): Resource<List<Chat>> {
+     private suspend fun getUserChatList(): Resource<List<Chat>> {
          return withContext(Dispatchers.IO) {
              chatListRepository.getChatList()
          }

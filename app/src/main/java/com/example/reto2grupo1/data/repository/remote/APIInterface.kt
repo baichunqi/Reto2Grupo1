@@ -48,6 +48,8 @@ interface APIInterface {
     @POST("chats/join")
     suspend fun joinChat(@Query("chatId") chatId: Int) : Response<Boolean>
 
+    @POST("chats")
+    suspend fun createChat(@Body chat :Chat): Response<Chat>
 
     @POST("chats/assign")
     suspend fun assignUser(@Query("chatId")chatId: Int,@Query("userId") userId: Int): Response<Void>
