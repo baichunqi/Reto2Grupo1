@@ -19,7 +19,10 @@ import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.databinding.ActivityChatBinding
 import com.example.reto2grupo1.ui.AddUser.AddUserActivity
 import com.example.reto2grupo1.utils.Resource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ChatActivity : ComponentActivity() {
     var chatId : String = ""
@@ -57,6 +60,8 @@ class ChatActivity : ComponentActivity() {
         connectToSocket(binding)
         onMessagesChange()
 
+        syncData(chatId.toInt())
+
         viewModel.connected.observe(this,Observer{
          when (it.status){
              Resource.Status.SUCCESS -> {
@@ -77,26 +82,6 @@ class ChatActivity : ComponentActivity() {
          }
         })
 
-        lifecycleScope.launch {
-            val chatId = intent.getIntExtra("chatId", -1)
-            val messagesResource = localMessageRepository.getChatMessages(chatId)
-            when (messagesResource.status) {
-                Resource.Status.SUCCESS -> {
-                    val messages = messagesResource.data
-                    chatAdapter.submitList(messages)
-                    // Mostrar los mensajes en la interfaz de usuario
-                }
-                Resource.Status.ERROR -> {
-                    // Manejar el error
-                }
-                Resource.Status.LOADING -> {
-                    // Mostrar un indicador de carga
-                }
-            }
-        }
-
-
-
 
         binding.imageView8.setOnClickListener() {
             showPopup(it)
@@ -107,29 +92,49 @@ class ChatActivity : ComponentActivity() {
 
 
     private fun onMessagesChange() {
-        viewModel.messages.observe(this, Observer {
-            Log.d(TAG, "messages change")
-            when (it.status) {
-                Resource.Status.SUCCESS -> {
-                    Log.d(TAG, "messages observe success")
-                    if (!it.data.isNullOrEmpty()) {
-                        chatAdapter.submitList(it.data)
-                        chatAdapter.notifyDataSetChanged()
+
+            viewModel.messages.observe(this, Observer {
+                Log.d(TAG, "messages change")
+                when (it.status) {
+                    Resource.Status.SUCCESS -> {
+                        Log.d(TAG, "messages observe success")
+                        if (!it.data.isNullOrEmpty()) {
+                            chatAdapter.submitList(it.data)
+                            chatAdapter.notifyDataSetChanged()
+                        }
+                    }
+                    Resource.Status.ERROR -> {
+                        Log.d(TAG, "messages observe error")
+                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    }
+                    Resource.Status.LOADING -> {
+                        // de momento
+                        Log.d(TAG, "messages observe loading")
+                        val toast = Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG)
+                        toast.setGravity(Gravity.TOP, 0, 0)
+                        toast.show()
                     }
                 }
-                Resource.Status.ERROR -> {
-                    Log.d(TAG, "messages observe error")
-                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                }
-                Resource.Status.LOADING -> {
-                    // de momento
-                    Log.d(TAG, "messages observe loading")
-                    val toast = Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG)
-                    toast.setGravity(Gravity.TOP, 0, 0)
-                    toast.show()
+            })
+
+            lifecycleScope.launch {
+                val messagesResource = localMessageRepository.getChatMessages(chatId.toInt())
+                when (messagesResource.status) {
+                    Resource.Status.SUCCESS -> {
+                        val messages = messagesResource.data
+                        chatAdapter.submitList(messages)
+                        chatAdapter.notifyDataSetChanged()
+                        // Mostrar los mensajes en la interfaz de usuario
+                    }
+                    Resource.Status.ERROR -> {
+                        // Manejar el error
+                    }
+                    Resource.Status.LOADING -> {
+                        // Mostrar un indicador de carga
+                    }
                 }
             }
-        })
+
     }
 
     private fun connectToSocket(binding: ActivityChatBinding) {
@@ -166,6 +171,61 @@ class ChatActivity : ComponentActivity() {
         super.onDestroy()
         Log.i("pruebaDestroy", "Desconectando")
         viewModel.stopSocket()
+    }
+    private fun syncData(num: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                Log.d("sync", localMessageRepository.getChatMessages(chatId.toInt()).toString())
+                // Obtener datos del repositorio remoto
+                val remoteData = messageRepository.getChatMessages(num)
+
+                // Verificar si la obtención de datos remotos fue exitosa
+                if (remoteData.status == Resource.Status.SUCCESS) {
+                    val remoteChatMessage = remoteData.data ?: emptyList()
+
+                    // Obtener chats locales
+                    val localChatMessageResource = localMessageRepository.getChatMessages(num)
+
+                    // Verificar si la obtención de datos locales fue exitosa
+                    if (localChatMessageResource.status == Resource.Status.SUCCESS) {
+                        val localChats = localChatMessageResource.data ?: emptyList()
+
+                        // Identificar chats nuevos y actualizados
+                        val chatsToAddOrUpdate = remoteChatMessage.filter { remoteChat ->
+                            localChats.none { it.id == remoteChat.id }
+                        }
+
+                        // Identificar chats a eliminar
+                        val chatsToDelete = localChats.filter { localChat ->
+                            remoteChatMessage.none { it.id == localChat.id }
+                        }
+
+                        // Agregar o actualizar chats en el repositorio local
+                        chatsToAddOrUpdate.forEach { chat ->
+                            localMessageRepository.createMessage(chat)
+                        }
+                        Log.i("idChat", localMessageRepository.getChatMessages(num).toString())
+
+//                        // Eliminar chats en el repositorio local
+//                        chatsToDelete.forEach { chat ->
+//                            localMessageRepository.deleteChat(chat)
+//                        }
+
+                        // Actualizar la interfaz de usuario según el número proporcionado
+                        withContext(Dispatchers.Main) {
+                            onMessagesChange()
+                        }
+                    } else {
+                        // Manejar el error al obtener datos locales si es necesario
+                    }
+                } else {
+                    // Manejar el error al obtener datos remotos si es necesario
+                }
+            } catch (ex: Exception) {
+                Log.e(TAG, "Error during data synchronization: ${ex.message}", ex)
+                // Manejar el error de sincronización si es necesario
+            }
+        }
     }
 
 }
