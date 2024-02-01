@@ -43,6 +43,14 @@ class ChatViewModel(
     private val _connected = MutableLiveData<Resource<Boolean>>()
     val connected: LiveData<Resource<Boolean>> get() = _connected
 
+    private val _imageBase64 = MutableLiveData<String>()
+    val imageBase64: LiveData<String>
+        get() = _imageBase64
+
+    fun updateImageBase64(base64: String) {
+        _imageBase64.value = base64
+    }
+
     private val SOCKET_HOST = "http://10.0.2.2:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
@@ -192,4 +200,5 @@ class ChatViewModel(
             chatRepository.getChatMessages(id)
         }
     }
+
 }

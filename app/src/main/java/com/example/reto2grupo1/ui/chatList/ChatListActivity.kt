@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.example.reto2grupo1.MyApp.Companion.context
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
@@ -84,24 +85,24 @@ class ChatListActivity  : ComponentActivity()  {
             }
         })
 
-//        lifecycleScope.launch {
-//            val chatsResource = chatRepository.getChats()
-//            when (chatsResource.status) {
-//                Resource.Status.SUCCESS -> {
-//                    val chats = chatsResource.data
-//                    chatListAdapter.submitList(chats)
-//                    chatListAdapter.submitChatList(chats)
-//                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
-//                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
-//                }
-//                Resource.Status.ERROR -> {
-//                    // Manejar el error, si es necesario
-//                }
-//                Resource.Status.LOADING -> {
-//                    // Manejar el estado de carga, si es necesario
-//                }
-//            }
-//        }
+        lifecycleScope.launch {
+            val chatsResource = chatRepository.getChats()
+            when (chatsResource.status) {
+                Resource.Status.SUCCESS -> {
+                    val chats = chatsResource.data
+                    chatListAdapter.submitList(chats)
+                    chatListAdapter.submitChatList(chats)
+                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
+                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
+                }
+                Resource.Status.ERROR -> {
+                    // Manejar el error, si es necesario
+                }
+                Resource.Status.LOADING -> {
+                    // Manejar el estado de carga, si es necesario
+                }
+            }
+        }
 
 
     }
@@ -178,6 +179,10 @@ class ChatListActivity  : ComponentActivity()  {
         }
     }
 
-
+    override fun onResume(){
+        super.onResume()
+        syncData()
+        viewModel.getChats()
+    }
 
 }
