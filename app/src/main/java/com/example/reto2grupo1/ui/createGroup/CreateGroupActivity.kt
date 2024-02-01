@@ -1,11 +1,16 @@
 package com.example.reto2grupo1.ui.createGroup
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
+import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
 import com.example.reto2grupo1.databinding.ActivityCreateChatBinding
+import com.example.reto2grupo1.utils.Resource
+import kotlinx.coroutines.runBlocking
 
 class CreateGroupActivity : ComponentActivity()  {
 
@@ -18,15 +23,45 @@ class CreateGroupActivity : ComponentActivity()  {
         val binding = ActivityCreateChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.imageView6.setOnClickListener(){
+            finish()
+        }
+
         binding.btnCreate.setOnClickListener(){
             val name = binding.editTextName.text.toString()
             var private = false
             if (binding.switchPrivate.isChecked)
                 private = true
-            // TODO falta especificar los datos que hay que pasarle
-            viewModel.createChat(name, private)
-            Toast.makeText(this, "Grupo creado correctamente", Toast.LENGTH_SHORT).show()
-            finish()
+            if(binding.editTextName.text.isNullOrEmpty()){
+                Toast.makeText(this, "El grupo debe tener un nombre", Toast.LENGTH_SHORT).show()
+            }else {
+                val chat = Chat(null, name, "", private)
+                viewModel.createChat(chat)
+            }
         }
+        viewModel.createChatResult.observe(this, Observer {
+            when (it.status){
+
+                Resource.Status.SUCCESS -> {
+                    Toast.makeText(this, "Grupo creado", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                Resource.Status.ERROR -> {
+                    val errorMessage = it.message
+                    if (errorMessage != null) {
+                        if (errorMessage.contains("403")) {
+                            Toast.makeText(this, "Compruebe sus privilegios", Toast.LENGTH_LONG)
+                                .show()
+                        } else if (errorMessage.contains("201")){
+                            Toast.makeText(this, "Grupo creado", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    }
+                }
+                Resource.Status.LOADING -> {
+
+                }
+            }
+        })
     }
 }

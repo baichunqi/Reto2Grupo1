@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class DbChat(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     val name : String,
-    val message : String,
+    val message : String?,
     val privateChat : Boolean,
 )

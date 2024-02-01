@@ -67,6 +67,20 @@ class ChatViewModel(
         }
     }
 
+    fun stopSocket(){
+        viewModelScope.launch {
+            disconnect()
+        }
+    }
+    suspend fun disconnect(){
+        withContext(Dispatchers.IO){
+            mSocket.disconnect()
+        }
+    }
+     suspend fun onDestroy() {
+
+    }
+
     private fun createSocketOptions(): IO.Options {
         val options = IO.Options()
         val authToken : String? = MyApp.userPreferences.fetchAuthToken()

@@ -13,10 +13,7 @@ class RemoteChatListDataSource : BaseDataSource(), ChatListRepository {
     override suspend fun getAllPublicChat(): Resource<List<Chat>>  = getResult {
         RetrofitClient.apiInterface.getAllPublicChats()
     }
-
-    override suspend fun joinChat(chatId: Int): Resource<Boolean> = getResult {
-        Log.d("estoentra6","estoentra6");
-
+    override suspend fun joinChat(chatId: Int?): Resource<Boolean> = getResult {
         RetrofitClient.apiInterface.joinChat(chatId)
     }
 }

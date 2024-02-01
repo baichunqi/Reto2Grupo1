@@ -32,6 +32,7 @@ class ChatListViewModel(
 
     val chats : LiveData<Resource<List<Chat>>> get() = _chats
 
+    
     init{
         getChats()
     }
@@ -47,4 +48,5 @@ class ChatListViewModel(
              chatListRepository.getChatList()
          }
      }
+
  }

@@ -69,6 +69,7 @@ class JoinChatListAdapter(private val context: Context)
             // Llamada a la función selectChat al hacer clic en un elemento
             binding.buttonJoin.setOnClickListener {
                 Log.d("estoentra","estoentra");
+                if(chat.id != null)
                 (context as JoinChatActivity)joinChat(chat.id)
 
             }
