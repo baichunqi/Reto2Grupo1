@@ -79,7 +79,7 @@ class ChatActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             val chatId = intent.getIntExtra("chatId", -1)
-            val messagesResource = messageRepository.getChatMessages(chatId)
+            val messagesResource = localMessageRepository.getChatMessages(chatId)
             when (messagesResource.status) {
                 Resource.Status.SUCCESS -> {
                     val messages = messagesResource.data
@@ -97,9 +97,12 @@ class ChatActivity : ComponentActivity() {
 
 
 
+
         binding.imageView8.setOnClickListener() {
             showPopup(it)
         }
+
+
     }
 
 
@@ -127,7 +130,6 @@ class ChatActivity : ComponentActivity() {
                 }
             }
         })
-
     }
 
     private fun connectToSocket(binding: ActivityChatBinding) {
