@@ -1,5 +1,6 @@
 package com.example.reto2grupo1.ui.chatList
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -158,23 +159,49 @@ class ChatListActivity  : ComponentActivity()  {
     }
     private fun syncData() {
         CoroutineScope(Dispatchers.IO).launch {
-            // Obtener datos del repositorio remoto
-            val remoteData = chatListRepository.getChatList()
+            try {
+                // Obtener datos del repositorio remoto
+                val remoteData = chatListRepository.getChatList()
 
-            // Verificar si hay cambios antes de sincronizar
-            if (remoteData.status == Resource.Status.SUCCESS) {
-                val remoteChats = remoteData.data ?: emptyList()
-                val localChats = chatRepository.getChats().data ?: emptyList()
+                // Verificar si la obtención de datos remotos fue exitosa
+                if (remoteData.status == Resource.Status.SUCCESS) {
+                    val remoteChats = remoteData.data ?: emptyList()
 
-                // Identificar chats que necesitan ser agregados o actualizados
-                val chatsToAddOrUpdate = remoteChats.filter { remoteChat ->
-                    !localChats.any { it.id == remoteChat.id }
+                    // Obtener chats locales
+                    val localChatsResource = chatRepository.getChats()
+
+                    // Verificar si la obtención de datos locales fue exitosa
+                    if (localChatsResource.status == Resource.Status.SUCCESS) {
+                        val localChats = localChatsResource.data ?: emptyList()
+
+                        // Identificar chats nuevos y actualizados
+                        val chatsToAddOrUpdate = remoteChats.filter { remoteChat ->
+                            localChats.none { it.id == remoteChat.id }
+                        }
+
+                        // Identificar chats a eliminar
+                        val chatsToDelete = localChats.filter { localChat ->
+                            remoteChats.none { it.id == localChat.id }
+                        }
+
+                        // Agregar o actualizar chats en el repositorio local
+                        chatsToAddOrUpdate.forEach { chat ->
+                            chatRepository.createChat(chat)
+                        }
+
+                        // Eliminar chats en el repositorio local
+                        chatsToDelete.forEach { chat ->
+                            chatRepository.deleteChat(chat)
+                        }
+                    } else {
+                        // Manejar el error al obtener datos locales si es necesario
+                    }
+                } else {
+                    // Manejar el error al obtener datos remotos si es necesario
                 }
-
-                // Agregar o actualizar chats en el repositorio local
-                chatsToAddOrUpdate.forEach { chat ->
-                    chatRepository.createChat(chat)
-                }
+            } catch (ex: Exception) {
+                Log.e(TAG, "Error during data synchronization: ${ex.message}", ex)
+                // Manejar el error de sincronización si es necesario
             }
         }
     }
@@ -184,5 +211,8 @@ class ChatListActivity  : ComponentActivity()  {
         syncData()
         viewModel.getChats()
     }
+
+
+
 
 }

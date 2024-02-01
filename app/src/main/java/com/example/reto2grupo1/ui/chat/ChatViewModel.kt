@@ -56,6 +56,7 @@ class ChatViewModel(
     private lateinit var mSocket: Socket
     private val SOCKET_ROOM = "1"
 
+
     fun startSocket(){
         Log.d("a","b")
         val socketOptions = createSocketOptions()
@@ -116,7 +117,7 @@ class ChatViewModel(
         return Emitter.Listener {
             // Manejar el mensaje recibido
             Log.e(TAG, "no conectado")
-            Log.d(TAG, "no conectado $it")
+            Log.d(TAG, "no conectado ${it.toString()}")
         }
     }
     private fun onDisconnect(): Emitter.Listener {
@@ -197,6 +198,8 @@ class ChatViewModel(
     }
     private suspend fun getChatMessages(id: Int) : Resource<List<Message>>{
         return withContext(Dispatchers.IO){
+            val messages = chatRepository.getChatMessages(id)
+            Resource.success(messages)
             chatRepository.getChatMessages(id)
         }
     }
