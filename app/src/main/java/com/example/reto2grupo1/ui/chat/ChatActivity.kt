@@ -11,19 +11,21 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.example.reto2grupo1.R
-import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
+import com.example.reto2grupo1.data.Message
+import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
-import com.example.reto2grupo1.databinding.ActivityAddUserBinding
 import com.example.reto2grupo1.databinding.ActivityChatBinding
 import com.example.reto2grupo1.ui.AddUser.AddUserActivity
-import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.utils.Resource
+import kotlinx.coroutines.launch
 
 class ChatActivity : ComponentActivity() {
     var chatId : String = ""
     private val TAG = "ChatActivity"
     private lateinit var chatAdapter: ChatAdapter
+    private val localMessageRepository = RoomMessageDataSource()
     private val messageRepository = RemoteChatDataSource()
     private val viewModel: ChatViewModel by viewModels { ChatViewModelFactory(messageRepository)
     }
@@ -75,6 +77,26 @@ class ChatActivity : ComponentActivity() {
          }
         })
 
+        lifecycleScope.launch {
+            val chatId = intent.getIntExtra("chatId", -1)
+            val messagesResource = messageRepository.getChatMessages(chatId)
+            when (messagesResource.status) {
+                Resource.Status.SUCCESS -> {
+                    val messages = messagesResource.data
+                    chatAdapter.submitList(messages)
+                    // Mostrar los mensajes en la interfaz de usuario
+                }
+                Resource.Status.ERROR -> {
+                    // Manejar el error
+                }
+                Resource.Status.LOADING -> {
+                    // Mostrar un indicador de carga
+                }
+            }
+        }
+
+
+
         binding.imageView8.setOnClickListener() {
             showPopup(it)
         }
@@ -105,6 +127,7 @@ class ChatActivity : ComponentActivity() {
                 }
             }
         })
+
     }
 
     private fun connectToSocket(binding: ActivityChatBinding) {
