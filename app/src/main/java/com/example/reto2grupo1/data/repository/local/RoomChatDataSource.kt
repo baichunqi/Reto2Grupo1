@@ -9,7 +9,7 @@ import com.example.reto2grupo1.data.DbChat
 import com.example.reto2grupo1.data.repository.CommonChatRepository
 import com.example.reto2grupo1.utils.Resource
 
-class RoomChatDataSource : CommonChatRepository {
+abstract class RoomChatDataSource : CommonChatRepository {
     private val chatDao : ChatDao = MyApp.db.chatDao()
     override suspend fun getChats(): Resource<List<Chat>> {
         val response = chatDao.getChats().map { it.toChat() }

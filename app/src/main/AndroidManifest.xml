@@ -47,6 +47,7 @@
 
         <activity android:name=".ui.AddUser.AddUserActivity"></activity>
 
+        <activity android:name=".ui.deleteChat.DeleteChatActivity"></activity>
     </application>
 
 </manifest>

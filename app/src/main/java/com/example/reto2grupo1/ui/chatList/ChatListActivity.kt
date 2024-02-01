@@ -19,6 +19,7 @@ import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
+import com.example.reto2grupo1.ui.deleteChat.DeleteChatActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
@@ -32,13 +33,13 @@ class ChatListActivity  : ComponentActivity()  {
     private lateinit var chatListAdapter: ChatListAdapter
     private val chatListRepository = RemoteChatListDataSource()
     private var esPublico : Boolean = true
-    private var chatRepository = RoomChatDataSource()
+    //private val chatRepository = RoomChatDataSource()
     private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatListRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        syncData()
+        //syncData()
         super.onCreate(savedInstanceState)
         val binding = ActivityChatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -127,7 +128,10 @@ class ChatListActivity  : ComponentActivity()  {
                 R.id.UnirseGrupo-> {
                     intent = Intent(this, JoinChatActivity::class.java)
                     startActivity(intent)
-
+                }
+                R.id.BorrarGrupo-> {
+                    intent = Intent(this, DeleteChatActivity::class.java)
+                    startActivity(intent)
                 }
             }
             true
@@ -155,28 +159,28 @@ class ChatListActivity  : ComponentActivity()  {
         popup.show()
 
     }
-    private fun syncData() {
-        CoroutineScope(Dispatchers.IO).launch {
+//    private fun syncData() {
+//        CoroutineScope(Dispatchers.IO).launch {
             // Obtener datos del repositorio remoto
-            val remoteData = chatListRepository.getChatList()
+//            val remoteData = chatListRepository.getChatList()
 
             // Verificar si hay cambios antes de sincronizar
-            if (remoteData.status == Resource.Status.SUCCESS) {
-                val remoteChats = remoteData.data ?: emptyList()
-                val localChats = chatRepository.getChats().data ?: emptyList()
+//            if (remoteData.status == Resource.Status.SUCCESS) {
+//                val remoteChats = remoteData.data ?: emptyList()
+//                val localChats = chatRepository.getChats().data ?: emptyList()
 
                 // Identificar chats que necesitan ser agregados o actualizados
-                val chatsToAddOrUpdate = remoteChats.filter { remoteChat ->
-                    !localChats.any { it.id == remoteChat.id }
-                }
+//                val chatsToAddOrUpdate = remoteChats.filter { remoteChat ->
+//                    !localChats.any { it.id == remoteChat.id }
+//                }
 
                 // Agregar o actualizar chats en el repositorio local
-                chatsToAddOrUpdate.forEach { chat ->
-                    chatRepository.createChat(chat)
-                }
-            }
-        }
-    }
+//                chatsToAddOrUpdate.forEach { chat ->
+//                    chatRepository.createChat(chat)
+//                }
+//            }
+//        }
+//    }
 
 
 
