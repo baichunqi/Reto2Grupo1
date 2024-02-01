@@ -1,5 +1,6 @@
 package com.example.reto2grupo1.ui.deleteChat
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -19,13 +20,32 @@ class DeleteChatAdapter (private val onDeleteClickListener: (Chat) -> Unit) :Lis
         holder.bind(chat, onDeleteClickListener)
     }
 
+
     inner class DeleteChatViewHolder(private val binding: ItemChatDeleteBinding) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(chat: Chat, onDeleteClickListener: (Chat) -> Unit){
             binding.chatName.text = chat.name
             binding.deleteChat.setOnClickListener{
+                showDeleteConfirmationDialog(chat, onDeleteClickListener)
+            }
+        }
+
+        private fun showDeleteConfirmationDialog(chat: Chat, onDeleteClickListener: (Chat) -> Unit) {
+            val builder = AlertDialog.Builder(binding.root.context)
+            builder.setTitle("Eliminar chat")
+            builder.setMessage("¿Estás seguro de que deseas eliminar este chat?")
+
+            builder.setPositiveButton("Sí") { _, _ ->
+                // Acción de eliminación del chat
                 onDeleteClickListener(chat)
             }
+
+            builder.setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            val alertDialog = builder.create()
+            alertDialog.show()
         }
     }
 }

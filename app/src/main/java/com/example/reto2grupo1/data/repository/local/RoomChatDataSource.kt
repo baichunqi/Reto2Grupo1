@@ -23,12 +23,12 @@ abstract class RoomChatDataSource : CommonChatRepository {
         return Resource.success(response.toInt())
     }
 
-    override suspend fun deleteChat(chat: Chat): Resource<Void> {
-        try {
+    suspend fun deleteChat(chat: Chat): Resource<Void> {
+        return try {
             chatDao.deleteChat(chat.toDbChat()) // Convierte Chat a DbChat antes de llamar al DAO
-            return Resource.success()
+            Resource.success()
         } catch (ex: SQLiteConstraintException) {
-            return Resource.error(ex.message!!)
+            Resource.error(ex.message!!)
         }
     }
 

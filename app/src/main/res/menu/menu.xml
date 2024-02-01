@@ -10,7 +10,7 @@
     <item
         android:id="@+id/BorrarGrupo"
         android:title="Borrar Grupo"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 
 </menu>

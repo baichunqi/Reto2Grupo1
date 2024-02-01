@@ -10,6 +10,7 @@ import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityDeleteChatBinding
 import com.example.reto2grupo1.ui.chatList.ChatListViewModel
 import com.example.reto2grupo1.ui.chatList.ChatListViewModelFactory
+import com.example.reto2grupo1.ui.joinChat.JoinChatListAdapter
 import com.example.reto2grupo1.utils.Resource
 
 class DeleteChatActivity : ComponentActivity() {
@@ -28,7 +29,7 @@ class DeleteChatActivity : ComponentActivity() {
         deleteChatAdapter = DeleteChatAdapter { chat ->
             chat.id?.let{viewModel.onDeleteChat(it)}
         }
-        binding.chatList.adapter = deleteChatAdapter
+      binding.chatList.adapter = deleteChatAdapter
 
         viewModel.chats.observe(this, Observer { resource ->
             when (resource.status) {
@@ -40,6 +41,12 @@ class DeleteChatActivity : ComponentActivity() {
                 }
                 Resource.Status.ERROR -> {
                     Log.d("Status", "error")
+                    val errorMessage = when (resource.code) {
+                        // Agrega más casos según los códigos de error que esperas
+                        404 -> "Chat no encontrado"
+                        500 -> "Error interno del servidor"
+                        else -> resource.message ?: "Error desconocido"
+                    }
                     Toast.makeText(this, resource.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {

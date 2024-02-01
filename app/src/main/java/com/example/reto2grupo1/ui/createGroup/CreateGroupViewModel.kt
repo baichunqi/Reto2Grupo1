@@ -38,6 +38,7 @@ class CreateGroupViewModel (
     suspend fun createChatRepo(chat : Chat) : Resource<Void> {
         return withContext(Dispatchers.IO){
             createGroupRepository.createChat(chat)
+
         }
     }
 }
