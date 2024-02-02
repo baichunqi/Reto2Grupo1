@@ -125,4 +125,8 @@ class LoginActivity : ComponentActivity() {
             }
         })
     }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
+    }
 }

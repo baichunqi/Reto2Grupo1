@@ -1,5 +1,6 @@
 package com.example.reto2grupo1.ui.chatList
 
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
@@ -13,14 +14,17 @@ import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.example.reto2grupo1.MainActivity
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
+import com.example.reto2grupo1.databinding.ActivityLoginBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
+import com.example.reto2grupo1.ui.login.LoginActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.CoroutineScope
@@ -206,7 +210,12 @@ class ChatListActivity  : ComponentActivity()  {
     }
 
 
-
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Aquí, abre el Activity que desees
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+    }
 
 
 
