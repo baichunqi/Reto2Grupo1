@@ -9,6 +9,6 @@ interface ChatRepository {
      suspend fun getChatMessages(id : Int) : Resource<List<Message>>
      suspend fun joinChat( chatId :Int): Resource<Boolean>
      suspend fun assignUser(chatId : Int, userId: Int): Resource<Void>
-    suspend fun createChat(chat: Chat): Resource<Chat>
+    suspend fun createChat(chat: Chat): Resource<Void>
     suspend fun leaveChat(chatId: Int): Resource<Boolean>
 }

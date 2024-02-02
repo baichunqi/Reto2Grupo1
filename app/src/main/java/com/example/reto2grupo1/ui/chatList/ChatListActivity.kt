@@ -33,7 +33,7 @@ class ChatListActivity  : ComponentActivity()  {
     private lateinit var chatListAdapter: ChatListAdapter
     private val chatListRepository = RemoteChatListDataSource()
     private var esPublico : Boolean = true
-    //private var chatRepository = RoomChatDataSource()
+    private var chatRepository = RoomChatDataSource()
     private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatListRepository)
     }
 
