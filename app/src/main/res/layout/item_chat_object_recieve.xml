@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_frame"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="left"
     android:orientation="horizontal">
@@ -35,8 +35,8 @@
 
         <ImageView
             android:id="@+id/ImageViewImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             tools:srcCompat="@tools:sample/avatars" />
 
         <LinearLayout
