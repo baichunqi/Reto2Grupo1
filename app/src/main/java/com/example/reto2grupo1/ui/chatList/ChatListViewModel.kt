@@ -47,7 +47,7 @@ class ChatListViewModel(
         }
 
     }
-     suspend fun getUserChatList(): Resource<List<Chat>> {
+     private suspend fun getUserChatList(): Resource<List<Chat>> {
          return withContext(Dispatchers.IO) {
              chatListRepository.getChatList()
          }

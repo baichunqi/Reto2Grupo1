@@ -47,9 +47,11 @@ class JoinChatActivity : ComponentActivity(){
             }
         })
     }
-    infix fun joinChat(chatId : Int){
+    infix fun joinChat(chatId: Int?){
         Log.d("estoentra2","estoentra2");
-        viewModel.joinToChat(chatId)
+        if (chatId != null) {
+            viewModel.joinToChat(chatId)
+        }
         val intent = Intent(this, ChatListActivity::class.java)
         startActivity(intent)
     }

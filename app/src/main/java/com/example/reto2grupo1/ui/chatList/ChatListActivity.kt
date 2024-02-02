@@ -1,5 +1,6 @@
 package com.example.reto2grupo1.ui.chatList
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -19,7 +20,6 @@ import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
-import com.example.reto2grupo1.ui.deleteChat.DeleteChatActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
@@ -33,13 +33,13 @@ class ChatListActivity  : ComponentActivity()  {
     private lateinit var chatListAdapter: ChatListAdapter
     private val chatListRepository = RemoteChatListDataSource()
     private var esPublico : Boolean = true
-    //private val chatRepository = RoomChatDataSource()
+    //private var chatRepository = RoomChatDataSource()
     private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatListRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-//        syncData()
+        syncData()
         super.onCreate(savedInstanceState)
         val binding = ActivityChatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -128,10 +128,7 @@ class ChatListActivity  : ComponentActivity()  {
                 R.id.UnirseGrupo-> {
                     intent = Intent(this, JoinChatActivity::class.java)
                     startActivity(intent)
-                }
-                R.id.BorrarGrupo-> {
-                    intent = Intent(this, DeleteChatActivity::class.java)
-                    startActivity(intent)
+
                 }
             }
             true
@@ -159,27 +156,57 @@ class ChatListActivity  : ComponentActivity()  {
         popup.show()
 
     }
-//    private fun syncData() {
-//       CoroutineScope(Dispatchers.IO).launch {
-            // Obtener datos del repositorio remoto
-//            val remoteData = chatListRepository.getChatList()
+    private fun syncData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Obtener datos del repositorio remoto
+                val remoteData = chatListRepository.getChatList()
 
-            // Verificar si hay cambios antes de sincronizar
-//            if (remoteData.status == Resource.Status.SUCCESS) {
-//                val remoteChats = remoteData.data ?: emptyList()
-//                val localChats = chatRepository.getChats().data ?: emptyList()
+                // Verificar si la obtención de datos remotos fue exitosa
+                if (remoteData.status == Resource.Status.SUCCESS) {
+                    val remoteChats = remoteData.data ?: emptyList()
 
-                // Identificar chats que necesitan ser agregados o actualizados
-//                val chatsToAddOrUpdate = remoteChats.filter { remoteChat ->
-//                    !localChats.any { it.id == remoteChat.id }              }
+                    // Obtener chats locales
+                    val localChatsResource = chatRepository.getChats()
 
-                // Agregar o actualizar chats en el repositorio local
-//                chatsToAddOrUpdate.forEach { chat ->
-//                    chatRepository.createChat(chat)
-//                }
-//            }
-//        }
-//    }
+                    // Verificar si la obtención de datos locales fue exitosa
+                    if (localChatsResource.status == Resource.Status.SUCCESS) {
+                        val localChats = localChatsResource.data ?: emptyList()
+
+                        // Identificar chats nuevos y actualizados
+                        val chatsToAddOrUpdate = remoteChats.filter { remoteChat ->
+                            localChats.none { it.id == remoteChat.id }
+                        }
+
+                        // Identificar chats a eliminar
+                        val chatsToDelete = localChats.filter { localChat ->
+                            remoteChats.none { it.id == localChat.id }
+                        }
+
+                        // Agregar o actualizar chats en el repositorio local
+                        chatsToAddOrUpdate.forEach { chat ->
+                            chatRepository.createChat(chat)
+                        }
+
+                        // Eliminar chats en el repositorio local
+                        chatsToDelete.forEach { chat ->
+                            chatRepository.deleteChat(chat)
+                        }
+                    } else {
+                        // Manejar el error al obtener datos locales si es necesario
+                    }
+                } else {
+                    // Manejar el error al obtener datos remotos si es necesario
+                }
+            } catch (ex: Exception) {
+                Log.e(TAG, "Error during data synchronization: ${ex.message}", ex)
+                // Manejar el error de sincronización si es necesario
+            }
+        }
+    }
+
+
+
 
 
 

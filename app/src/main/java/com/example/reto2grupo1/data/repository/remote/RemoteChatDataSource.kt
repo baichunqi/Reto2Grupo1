@@ -8,6 +8,7 @@ import com.example.reto2grupo1.utils.Resource
 
 class RemoteChatDataSource : BaseDataSource(), ChatRepository {
     override suspend fun getChat(chat: Chat): Resource<List<Message>> = getResult {
+
         RetrofitClient.apiInterface.getChatContent(chat)
     }
     override suspend fun getChatMessages(id : Int): Resource<List<Message>> = getResult {
@@ -18,5 +19,12 @@ class RemoteChatDataSource : BaseDataSource(), ChatRepository {
     }
     override suspend fun assignUser(chatId: Int, userId: Int): Resource<Void> = getResult {
         RetrofitClient.apiInterface.assignUser(chatId, userId)
+    }
+
+    override suspend fun createChat(chat: Chat): Resource<Chat> = getResult {
+        RetrofitClient.apiInterface.createChat2(chat)
+    }
+    override suspend fun leaveChat(chatId: Int): Resource<Boolean> = getResult {
+        RetrofitClient.apiInterface.leaveChat(chatId )
     }
 }

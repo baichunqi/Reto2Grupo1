@@ -1,7 +1,9 @@
 package com.example.reto2grupo1.ui.register
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.example.reto2grupo1.data.User
@@ -42,12 +45,53 @@ class RegisterActivity : ComponentActivity() {
 
     private var selectedImage: File? = null
 
+    private val cameraPermissionRequest =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                // Permiso de cámara concedido
+                // Aquí puedes realizar otras acciones que deban ocurrir después de obtener el permiso
+            } else {
+                // Permiso de cámara denegado
+                // Puedes mostrar un mensaje o tomar medidas apropiadas
+            }
+        }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val locationPermissionRequest = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                    // Precise location access granted.
+                }
+                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    // Only approximate location access granted.
+                } else -> {
+                // No location access granted.
+            }
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permiso no concedido, solicitarlo
+            cameraPermissionRequest.launch(Manifest.permission.CAMERA)
+        } else {
+            // Permiso ya concedido
+            // Aquí puedes realizar otras acciones que deban ocurrir después de obtener el permiso
+        }
+
+        locationPermissionRequest.launch(arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION))
 
         val data2 = viewModel.takeInfo()
         Log.e("prueba", data2.toString())
