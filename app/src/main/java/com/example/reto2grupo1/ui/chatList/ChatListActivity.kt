@@ -217,6 +217,9 @@ class ChatListActivity  : ComponentActivity()  {
         startActivity(intent)
     }
 
-
+    override fun onResume(){
+        super.onResume()
+        viewModel.getChats()
+    }
 
 }
