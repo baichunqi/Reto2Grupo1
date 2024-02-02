@@ -90,6 +90,25 @@ class ChatListActivity  : ComponentActivity()  {
                 }
             }
         })
+        viewModel.deleted.observe(this, Observer {
+            if (it != null) {
+                when (it.status) {
+                    Resource.Status.SUCCESS -> {
+                        viewModel.getChats()
+                    }
+
+                    Resource.Status.ERROR -> {
+                        Toast.makeText(this, it.message ?: "Error desconocido", Toast.LENGTH_LONG)
+                            .show()
+                        Log.e("ChatListActivity", "Error al cargar datos: ${it.message}")
+                    }
+
+                    Resource.Status.LOADING -> {
+                        // de momento
+                    }
+                }
+            }
+        })
 
 //        lifecycleScope.launch {
 //            val chatsResource = chatRepository.getChats()
@@ -151,14 +170,17 @@ class ChatListActivity  : ComponentActivity()  {
                 R.id.CrearGrupo-> {
                     intent = Intent(this, CreateGroupActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }
                 R.id.UnirseGrupo-> {
                     intent = Intent(this, JoinChatActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }
                 R.id.BorrarGrupo-> {
                     intent = Intent(this, DeleteChatActivity::class.java)
                     startActivity(intent)
+                    finish()
 
                 }
             }

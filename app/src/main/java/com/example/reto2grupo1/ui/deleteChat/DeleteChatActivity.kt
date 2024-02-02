@@ -1,5 +1,6 @@
 package com.example.reto2grupo1.ui.deleteChat
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -9,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
 import com.example.reto2grupo1.databinding.ActivityDeleteChatBinding
+import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.ui.chatList.ChatListViewModel
 import com.example.reto2grupo1.ui.chatList.ChatListViewModelFactory
 import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModel
@@ -66,6 +68,8 @@ class DeleteChatActivity : ComponentActivity() {
                                     .show()
                             } else if (errorMessage.contains("200")){
                                 Toast.makeText(this, "Grupo borrado con exito", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this, ChatListActivity::class.java)
+                                startActivity(intent)
                                 finish()
                             }
                         }
