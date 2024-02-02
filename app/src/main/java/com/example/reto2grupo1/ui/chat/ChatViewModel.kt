@@ -46,11 +46,19 @@ class ChatViewModel(
     private val _leave = MutableLiveData<Resource<Boolean>>()
     val leave: LiveData<Resource<Boolean>> get() = _leave
 
+    private val _imageBase64 = MutableLiveData<String>()
+    val imageBase64: LiveData<String>
+        get() = _imageBase64
+
+    fun updateImageBase64(base64: String) {
+        _imageBase64.value = base64
+    }
 
     private val SOCKET_HOST = "http://10.0.2.2:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
     private val SOCKET_ROOM = "1"
+
 
     fun startSocket(){
         Log.d("a","b")
@@ -112,7 +120,7 @@ class ChatViewModel(
         return Emitter.Listener {
             // Manejar el mensaje recibido
             Log.e(TAG, "no conectado")
-            Log.d(TAG, "no conectado $it")
+            Log.d(TAG, "no conectado ${it.toString()}")
         }
     }
     private fun onDisconnect(): Emitter.Listener {
@@ -193,6 +201,8 @@ class ChatViewModel(
     }
     private suspend fun getChatMessages(id: Int) : Resource<List<Message>>{
         return withContext(Dispatchers.IO){
+            val messages = chatRepository.getChatMessages(id)
+            Resource.success(messages)
             chatRepository.getChatMessages(id)
         }
     }

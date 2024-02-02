@@ -37,7 +37,7 @@ class ChatListViewModel(
         getChats()
     }
 
-    private fun getChats() {
+    fun getChats() {
         viewModelScope.launch {
             val repoResponse = getUserChatList()
             _chats.value = repoResponse
