@@ -16,7 +16,7 @@ class RemoteUserDataSource : BaseDataSource(), UserRepository {
         RetrofitClient.apiInterface.uploadPhoto(photo)
     }
     override suspend fun getChatUsers(id:Int): Resource<List<User>> = getResult {
-        RetrofitClient.apiInterface.getChatUsers(id)
+        RetrofitClient.apiInterface.getUsersChat(id)
     }
 
 

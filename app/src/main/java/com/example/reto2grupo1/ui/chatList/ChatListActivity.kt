@@ -72,25 +72,44 @@ class ChatListActivity  : ComponentActivity()  {
             showPopupFilter(it, binding.editTextSearch.text.toString())
         }
 
-        viewModel.chats.observe(this, Observer { resource ->
-            when (resource.status) {
+        viewModel.chats.observe(this, Observer {
+            when(it.status){
                 Resource.Status.SUCCESS -> {
-                    if (!resource.data.isNullOrEmpty()) {
+                    if (!it.data.isNullOrEmpty()) {
                         Log.i("PruebaChat", "Ha ocurrido un cambio en la lista")
-                        // Only update the UI, no need to fetch data again
-                        chatListAdapter.submitList(resource.data)
-                        chatListAdapter.submitChatList(resource.data)
+                        chatListAdapter.submitList(it.data)
+                        chatListAdapter.submitChatList(it.data)
                         chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
                 Resource.Status.LOADING -> {
                     // No implementado
                 }
             }
         })
+
+//        lifecycleScope.launch {
+//            val chatsResource = chatRepository.getChats()
+//            when (chatsResource.status) {
+//                Resource.Status.SUCCESS -> {
+//                    val chats = chatsResource.data
+//                    chatListAdapter.submitList(chats)
+//                    chatListAdapter.submitChatList(chats)
+//                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
+//                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
+//                }
+//                Resource.Status.ERROR -> {
+//                    // Manejar el error, si es necesario
+//                }
+//                Resource.Status.LOADING -> {
+//                    // Manejar el estado de carga, si es necesario
+//                }
+//            }
+//        }
+
         createChatViewModel.createChatResult.observe(this, Observer {
             Log.e("PruebasDia1", "ha ocurrido add en la lista de favs")
 
@@ -112,27 +131,6 @@ class ChatListActivity  : ComponentActivity()  {
                 }
             }
         })
-
-
-//        lifecycleScope.launch {
-//            val chatsResource = chatRepository.getChats()
-//            when (chatsResource.status) {
-//                Resource.Status.SUCCESS -> {
-//                    val chats = chatsResource.data
-//                    chatListAdapter.submitList(chats)
-//                    chatListAdapter.submitChatList(chats)
-//                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
-//                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
-//                }
-//                Resource.Status.ERROR -> {
-//                    // Manejar el error, si es necesario
-//                }
-//                Resource.Status.LOADING -> {
-//                    // Manejar el estado de carga, si es necesario
-//                }
-//            }
-//        }
-
 
     }
 
@@ -157,7 +155,6 @@ class ChatListActivity  : ComponentActivity()  {
                 R.id.UnirseGrupo-> {
                     intent = Intent(this, JoinChatActivity::class.java)
                     startActivity(intent)
-
                 }
                 R.id.BorrarGrupo-> {
                     intent = Intent(this, DeleteChatActivity::class.java)
@@ -223,7 +220,7 @@ class ChatListActivity  : ComponentActivity()  {
                         }
 
                         // Eliminar chats en el repositorio local
-                       chatsToDelete.forEach { chat ->
+                        chatsToDelete.forEach { chat ->
                             chatRepository.deleteChat(chat)
                         }
                     } else {

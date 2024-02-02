@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/back"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+        tools:context=".MainActivity">
+
+        <Button
+            android:id="@+id/buttonRegistro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#858585"
+            android:text="@string/Registrar"
+            app:cornerRadius="13px"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/buttonCambioDeContraseña"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkBoxFCTDUAL" />
+
+        <Button
+            android:id="@+id/buttonCambioDeContraseña"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#858585"
+            android:text="@string/cambioDeContraseña"
+            app:cornerRadius="13px"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonRegistro" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextLogin"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            android:textSize="35dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewNombre"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.521"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewLogin"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextNombre"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/textViewApellido"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewNombre"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextApellido"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/DNI"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewApellido"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextDNI"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/textViewDireccion"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/DNI"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextTelefono1"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/textViewTelefono2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTelefono1"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextTelefono2"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/textViewContraseña"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTelefono2"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextContraseña"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toTopOf="@+id/textViewRepetirContraseña"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewContraseña"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextRepetirContraseña"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toTopOf="@+id/textViewCicloFormativo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRepetirContraseña"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <Spinner
+            android:id="@+id/spinnerCicloFormativo"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/textViewCurso"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCicloFormativo"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextCurso"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/editTextDepartamento"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCurso"
+            app:layout_constraintVertical_bias="0.10" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextDepartamento"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/checkBoxFCTDUAL"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewDepartamento" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextDirección"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:background="@drawable/stylo_borde_editext"
+            app:layout_constraintBottom_toTopOf="@+id/textViewTelefono1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDireccion"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <Button
+            android:id="@+id/buttonCambiarFoto"
+            android:layout_width="250dp"
+            android:layout_height="120dp"
+            android:backgroundTint="#858585"
+            android:text="@string/cambiarFoto"
+            app:cornerRadius="13px"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@id/textViewLogin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Registrar"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toTopOf="@+id/imageView5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titulo3" />
+
+        <TextView
+            android:id="@+id/titulo3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titulo"
+            android:textSize="70dp"
+            android:textStyle="bold|italic"
+            android:typeface="normal"
+            app:layout_constraintBottom_toTopOf="@+id/textView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/solo_logo_elorrieta"
+            app:layout_constraintBottom_toBottomOf="@+id/titulo3"
+            app:layout_constraintEnd_toStartOf="@+id/titulo3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/titulo3" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="48dp"
+            android:layout_height="49dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:layout_constraintBottom_toTopOf="@+id/imageView5"
+            app:layout_constraintEnd_toStartOf="@+id/textView4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            app:layout_constraintBottom_toTopOf="@+id/buttonCambiarFoto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textViewLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Email"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewNombre"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.088"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonCambiarFoto" />
+
+        <TextView
+            android:id="@+id/textViewNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="@string/nombre"
+            android:textAlignment="viewStart"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewApellido"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.086"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewLogin" />
+
+        <TextView
+            android:id="@+id/textViewApellido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="2dp"
+            android:text="@string/apellido"
+            android:textAlignment="viewStart"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@id/DNI"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.084"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewNombre" />
+
+        <TextView
+            android:id="@+id/DNI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="2dp"
+            android:text="@string/dni"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@id/textViewDireccion"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.08"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewApellido" />
+
+        <TextView
+            android:id="@+id/textViewDireccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="2dp"
+            android:text="@string/Direccion"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@id/textViewTelefono1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.087"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/DNI" />
+
+        <TextView
+            android:id="@+id/textViewTelefono1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="2dp"
+            android:text="@string/telefono1"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@id/textViewTelefono2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.088"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDireccion" />
+
+        <TextView
+            android:id="@+id/textViewTelefono2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="2dp"
+            android:text="@string/telefono2"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@id/textViewContraseña"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.093"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTelefono1" />
+
+        <TextView
+            android:id="@+id/textViewContraseña"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="1dp"
+            android:text="@string/contraseña"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@id/textViewRepetirContraseña"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.095"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTelefono2" />
+
+        <TextView
+            android:id="@+id/textViewRepetirContraseña"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="1dp"
+            android:text="@string/repetirContraseña"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@id/textViewCicloFormativo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.105"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewContraseña" />
+
+        <TextView
+            android:id="@+id/textViewCicloFormativo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="@string/ciclo"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@id/textViewCurso"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRepetirContraseña" />
+
+        <TextView
+            android:id="@+id/textViewCurso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="@string/curso"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewDepartamento"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.088"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCicloFormativo" />
+
+        <TextView
+            android:id="@+id/textViewDepartamento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="@string/departamento"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/editTextDepartamento"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.099"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewCurso" />
+
+        <CheckBox
+            android:id="@+id/checkBoxFCTDUAL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:text="@string/fctdual"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/buttonRegistro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDepartamento" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

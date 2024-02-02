@@ -9,6 +9,5 @@ import java.io.File
 interface UserRepository {
     suspend fun changePass(passChange: PassChange): Resource<Int>
     suspend fun uploadPhoto(photo: MultipartBody.Part)
-
     suspend fun getChatUsers(id : Int): Resource<List<User>>
 }
