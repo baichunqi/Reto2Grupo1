@@ -11,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -25,7 +26,7 @@ interface APIInterface {
     suspend fun getUser(): Response<User>
     @PUT("password")
     suspend fun changePass(@Body passChange: PassChange):Response<Int>
-    @GET("chatList")
+    @GET("chats/userChats")
     suspend fun getChatList(@Body user: User): Response<List<Chat>>
     @GET("chat")
     suspend fun getChatContent(@Body chat: Chat): Response<List<Message>>
@@ -51,6 +52,10 @@ interface APIInterface {
 
     @POST("chats/assign")
     suspend fun assignUser(@Query("chatId")chatId: Int,@Query("userId") userId: Int): Response<Void>
+
+    @DELETE("chats/leave")
+    suspend fun leaveChat(@Query("chatId")chatId: Int):Response<Boolean>
+
     @POST("chats")
     suspend fun createChat(@Body chat : Chat) : Response<Void>
 
@@ -58,6 +63,9 @@ interface APIInterface {
     @POST("uploadPhoto")
     suspend fun uploadPhoto(@Part photo: MultipartBody.Part): Response<String>
 
-    @GET("chats/noPrivate")
+    @GET("chats/public")
     suspend fun getAllPublicChats(): Response<List<Chat>>
+
+    @DELETE("chats/delete")
+    suspend fun deleteChat(@Query("chatId") chatId: Int): Response<Void>
 }

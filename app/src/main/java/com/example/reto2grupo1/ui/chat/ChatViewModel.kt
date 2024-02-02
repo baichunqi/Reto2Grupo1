@@ -43,6 +43,9 @@ class ChatViewModel(
     private val _connected = MutableLiveData<Resource<Boolean>>()
     val connected: LiveData<Resource<Boolean>> get() = _connected
 
+    private val _leave = MutableLiveData<Resource<Boolean>>()
+    val leave: LiveData<Resource<Boolean>> get() = _leave
+
     private val _imageBase64 = MutableLiveData<String>()
     val imageBase64: LiveData<String>
         get() = _imageBase64
@@ -204,4 +207,15 @@ class ChatViewModel(
         }
     }
 
+    fun getOutChat(id: Int){
+        viewModelScope.launch {
+            val response = leaveChat(id)
+            _leave.value = response
+        }
+    }
+    private suspend fun leaveChat(id: Int): Resource<Boolean>{
+        return  withContext(Dispatchers.IO){
+            chatRepository.leaveChat(id)
+        }
+    }
 }

@@ -51,12 +51,14 @@
         <activity android:name=".ui.createGroup.CreateGroupActivity"></activity>
 
         <activity android:name=".ui.AddUser.AddUserActivity"></activity>
+        <activity android:name=".ui.showUsers.ShowUsersActivity"></activity>
 
         <service
             android:name=".data.service.LocationService"
             android:enabled="true"
             android:exported="false" />
 
+        <activity android:name=".ui.deleteChat.DeleteChatActivity"></activity>
     </application>
 
 </manifest>

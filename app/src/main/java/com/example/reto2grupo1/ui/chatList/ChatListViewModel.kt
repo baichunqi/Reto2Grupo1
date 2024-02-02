@@ -32,6 +32,8 @@ class ChatListViewModel(
 
     val chats : LiveData<Resource<List<Chat>>> get() = _chats
 
+    private val _deleted = MutableLiveData<Resource<Void>>()
+    val deleted : MutableLiveData<Resource<Void>> get() = _deleted
     
     init{
         getChats()
@@ -41,12 +43,30 @@ class ChatListViewModel(
         viewModelScope.launch {
             val repoResponse = getUserChatList()
             _chats.value = repoResponse
+            getChats()
         }
+
     }
-     suspend fun getUserChatList(): Resource<List<Chat>> {
+     private suspend fun getUserChatList(): Resource<List<Chat>> {
          return withContext(Dispatchers.IO) {
              chatListRepository.getChatList()
          }
      }
+
+    fun onDeleteChat(chatId: Int){
+        viewModelScope.launch {
+            _deleted.value = deleteChat(chatId)
+            getChats()
+        }
+
+
+    }
+
+    suspend fun deleteChat(chatId: Int): Resource<Void>{
+        return withContext(Dispatchers.IO) {
+            chatListRepository.deleteChat(chatId)
+        }
+    }
+
 
  }

@@ -28,6 +28,8 @@ import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.service.LocationService
 import com.example.reto2grupo1.databinding.ActivityChatBinding
 import com.example.reto2grupo1.ui.AddUser.AddUserActivity
+import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
+import com.example.reto2grupo1.ui.showUsers.ShowUsersActivity
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -153,6 +155,11 @@ class ChatActivity : ComponentActivity() {
             showPopup(it)
         }
 
+        binding.txtAddUser.setOnClickListener(){
+            var intent = Intent(this, ShowUsersActivity::class.java)
+            intent.putExtra("id",chatId)
+            startActivity(intent)
+        }
 
     }
 
@@ -256,10 +263,18 @@ class ChatActivity : ComponentActivity() {
                 R.id.delUser-> {
                     Toast.makeText(this, "Borrar usuario", Toast.LENGTH_SHORT).show()
                 }
+                R.id.abandonar-> {
+                    Toast.makeText(this, "Abandonando grupo", Toast.LENGTH_SHORT).show()
+                    leaveChat()
+                    finish()
+                }
             }
             true
         }
         popup.show()
+    }
+    fun leaveChat(){
+        intent.getStringExtra("id")?.let { viewModel.getOutChat(it.toInt()) }
     }
     override fun onDestroy() {
         super.onDestroy()

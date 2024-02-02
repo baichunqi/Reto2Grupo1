@@ -11,7 +11,7 @@ import com.example.reto2grupo1.data.DbChat
 import com.example.reto2grupo1.data.repository.CommonChatRepository
 import com.example.reto2grupo1.utils.Resource
 
-class RoomChatDataSource : CommonChatRepository {
+abstract class RoomChatDataSource : CommonChatRepository {
     private val chatDao : ChatDao = MyApp.db.chatDao()
     override suspend fun getChats(): Resource<List<Chat>> {
         val response = chatDao.getChats().map { it.toChat() }
@@ -23,12 +23,12 @@ class RoomChatDataSource : CommonChatRepository {
         return Resource.success(response.toInt())
     }
 
-    override suspend fun deleteChat(chat: Chat): Resource<Void> {
-        try {
+    suspend fun deleteChat(chat: Chat): Resource<Void> {
+        return try {
             chatDao.deleteChat(chat.toDbChat()) // Convierte Chat a DbChat antes de llamar al DAO
-            return Resource.success()
+            Resource.success()
         } catch (ex: SQLiteConstraintException) {
-            return Resource.error(ex.message!!)
+            Resource.error(ex.message!!)
         }
     }
 
