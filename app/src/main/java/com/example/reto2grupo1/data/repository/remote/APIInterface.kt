@@ -68,4 +68,7 @@ interface APIInterface {
 
     @DELETE("chats/delete")
     suspend fun deleteChat(@Query("chatId") chatId: Int): Response<Void>
+
+    @GET("users/chat")
+    suspend fun getUsersChat(@Query("chatId") chatId: Int): Response<List<User>>
 }
