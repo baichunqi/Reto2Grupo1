@@ -7,9 +7,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
+import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
 import com.example.reto2grupo1.databinding.ActivityDeleteChatBinding
 import com.example.reto2grupo1.ui.chatList.ChatListViewModel
 import com.example.reto2grupo1.ui.chatList.ChatListViewModelFactory
+import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModel
+import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModelFactory
 import com.example.reto2grupo1.ui.joinChat.JoinChatListAdapter
 import com.example.reto2grupo1.utils.Resource
 
@@ -18,8 +21,7 @@ class DeleteChatActivity : ComponentActivity() {
     private lateinit var deleteChatAdapter: DeleteChatAdapter
     private val chatRepository = RemoteChatListDataSource()
 
-    private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatRepository)}
-
+    private val chatViewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatRepository)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,11 +29,11 @@ class DeleteChatActivity : ComponentActivity() {
         setContentView(binding.root)
 
         deleteChatAdapter = DeleteChatAdapter { chat ->
-            chat.id?.let{viewModel.onDeleteChat(it)}
+            chat.id?.let{chatViewModel.onDeleteChat(it)}
         }
       binding.chatList.adapter = deleteChatAdapter
 
-        viewModel.chats.observe(this, Observer { resource ->
+        chatViewModel.chats.observe(this, Observer { resource ->
             when (resource.status) {
                 Resource.Status.SUCCESS -> {
                     Log.d("Status", "success")
@@ -40,19 +42,38 @@ class DeleteChatActivity : ComponentActivity() {
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Log.d("Status", "error")
-                    val errorMessage = when (resource.code) {
-                        // Agrega más casos según los códigos de error que esperas
-                        404 -> "Chat no encontrado"
-                        500 -> "Error interno del servidor"
-                        else -> resource.message ?: "Error desconocido"
-                    }
                     Toast.makeText(this, resource.message, Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.LOADING -> {
                     // de momento
                     Log.d("Status", "loading")
                     Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+        chatViewModel.deleted.observe(this, Observer { resource ->
+            if (resource != null) {
+                when (resource.status) {
+                    Resource.Status.SUCCESS -> {
+                        chatViewModel.getChats()
+                    }
+
+                    Resource.Status.ERROR -> {
+                        val errorMessage = resource.message
+                        if (errorMessage != null) {
+                            if (errorMessage.contains("403")) {
+                                Toast.makeText(this, "Compruebe sus privilegios", Toast.LENGTH_LONG)
+                                    .show()
+                            } else if (errorMessage.contains("200")){
+                                Toast.makeText(this, "Grupo borrado con exito", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                        }
+                    }
+
+                    Resource.Status.LOADING -> {
+                        Log.d("ChatListActivity", "Cargando datos...")
+                    }
                 }
             }
         })

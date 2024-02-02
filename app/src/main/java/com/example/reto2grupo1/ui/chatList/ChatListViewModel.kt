@@ -43,7 +43,6 @@ class ChatListViewModel(
         viewModelScope.launch {
             val repoResponse = getUserChatList()
             _chats.value = repoResponse
-            getChats()
         }
 
     }
@@ -56,10 +55,7 @@ class ChatListViewModel(
     fun onDeleteChat(chatId: Int){
         viewModelScope.launch {
             _deleted.value = deleteChat(chatId)
-            getChats()
         }
-
-
     }
 
     suspend fun deleteChat(chatId: Int): Resource<Void>{

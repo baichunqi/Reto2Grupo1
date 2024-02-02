@@ -13,7 +13,6 @@ import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.Multipart
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
@@ -23,7 +22,9 @@ import retrofit2.http.Query
 interface APIInterface {
 
     @GET("user")
-    suspend fun getUser(): Response<User>
+    suspend fun getUser(@Query("chatId") id : Int): Response<User>
+    @GET("users/chat")
+    suspend fun getChatUsers(id: Int): Response<List<User>>
     @PUT("password")
     suspend fun changePass(@Body passChange: PassChange):Response<Int>
     @GET("chats/userChats")

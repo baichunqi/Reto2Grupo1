@@ -17,9 +17,13 @@ import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
+import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
+import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModel
+import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModelFactory
+import com.example.reto2grupo1.ui.deleteChat.DeleteChatActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
@@ -33,9 +37,11 @@ class ChatListActivity  : ComponentActivity()  {
     private lateinit var chatListAdapter: ChatListAdapter
     private val chatListRepository = RemoteChatListDataSource()
     private var esPublico : Boolean = true
-    //private var chatRepository = RoomChatDataSource()
+    private var chatRepository = RoomChatDataSource()
+    private val createGroupRepository = RemoteCreateChatDataSource()
     private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatListRepository)
     }
+    private val createChatViewModel: CreateGroupViewModel by viewModels { CreateGroupViewModelFactory(createGroupRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -66,24 +72,47 @@ class ChatListActivity  : ComponentActivity()  {
             showPopupFilter(it, binding.editTextSearch.text.toString())
         }
 
-        viewModel.chats.observe(this, Observer {
-            when(it.status){
+        viewModel.chats.observe(this, Observer { resource ->
+            when (resource.status) {
                 Resource.Status.SUCCESS -> {
-                    if (!it.data.isNullOrEmpty()) {
+                    if (!resource.data.isNullOrEmpty()) {
                         Log.i("PruebaChat", "Ha ocurrido un cambio en la lista")
-                        chatListAdapter.submitList(it.data)
-                        chatListAdapter.submitChatList(it.data)
+                        // Only update the UI, no need to fetch data again
+                        chatListAdapter.submitList(resource.data)
+                        chatListAdapter.submitChatList(resource.data)
                         chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()
                 }
                 Resource.Status.LOADING -> {
                     // No implementado
                 }
             }
         })
+        createChatViewModel.createChatResult.observe(this, Observer {
+            Log.e("PruebasDia1", "ha ocurrido add en la lista de favs")
+
+            if (it != null) {
+                when (it.status) {
+                    Resource.Status.SUCCESS -> {
+                        viewModel.getChats()
+                    }
+
+                    Resource.Status.ERROR -> {
+                        Toast.makeText(this, it.message ?: "Error desconocido", Toast.LENGTH_LONG)
+                            .show()
+                        Log.e("ListSongsActivity", "Error al cargar datos: ${it.message}")
+                    }
+
+                    Resource.Status.LOADING -> {
+                        Log.d("ListSongsActivity", "Cargando datos...")
+                    }
+                }
+            }
+        })
+
 
 //        lifecycleScope.launch {
 //            val chatsResource = chatRepository.getChats()
@@ -127,6 +156,11 @@ class ChatListActivity  : ComponentActivity()  {
                 }
                 R.id.UnirseGrupo-> {
                     intent = Intent(this, JoinChatActivity::class.java)
+                    startActivity(intent)
+
+                }
+                R.id.BorrarGrupo-> {
+                    intent = Intent(this, DeleteChatActivity::class.java)
                     startActivity(intent)
 
                 }
@@ -189,7 +223,7 @@ class ChatListActivity  : ComponentActivity()  {
                         }
 
                         // Eliminar chats en el repositorio local
-                        chatsToDelete.forEach { chat ->
+                       chatsToDelete.forEach { chat ->
                             chatRepository.deleteChat(chat)
                         }
                     } else {
