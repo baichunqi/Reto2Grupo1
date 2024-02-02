@@ -43,6 +43,10 @@ class ChatViewModel(
     private val _connected = MutableLiveData<Resource<Boolean>>()
     val connected: LiveData<Resource<Boolean>> get() = _connected
 
+    private val _leave = MutableLiveData<Resource<Boolean>>()
+    val leave: LiveData<Resource<Boolean>> get() = _leave
+
+
     private val SOCKET_HOST = "http://10.0.2.2:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
@@ -190,6 +194,18 @@ class ChatViewModel(
     private suspend fun getChatMessages(id: Int) : Resource<List<Message>>{
         return withContext(Dispatchers.IO){
             chatRepository.getChatMessages(id)
+        }
+    }
+
+    fun getOutChat(id: Int){
+        viewModelScope.launch {
+            val response = leaveChat(id)
+            _leave.value = response
+        }
+    }
+    private suspend fun leaveChat(id: Int): Resource<Boolean>{
+        return  withContext(Dispatchers.IO){
+            chatRepository.leaveChat(id)
         }
     }
 }

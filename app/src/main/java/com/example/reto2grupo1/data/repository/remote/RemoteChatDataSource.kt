@@ -22,6 +22,9 @@ class RemoteChatDataSource : BaseDataSource(), ChatRepository {
     }
 
     override suspend fun createChat(chat: Chat): Resource<Chat> = getResult {
-        RetrofitClient.apiInterface.createChat(chat)
+        RetrofitClient.apiInterface.createChat2(chat)
+    }
+    override suspend fun leaveChat(chatId: Int): Resource<Boolean> = getResult {
+        RetrofitClient.apiInterface.leaveChat(chatId )
     }
 }

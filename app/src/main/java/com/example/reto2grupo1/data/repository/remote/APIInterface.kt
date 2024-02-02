@@ -11,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -49,10 +50,13 @@ interface APIInterface {
     suspend fun joinChat(@Query("chatId") chatId: Int?) : Response<Boolean>
 
     @POST("chats")
-    suspend fun createChat(@Body chat :Chat): Response<Chat>
+    suspend fun createChat2(@Body chat :Chat): Response<Chat>
 
     @POST("chats/assign")
     suspend fun assignUser(@Query("chatId")chatId: Int,@Query("userId") userId: Int): Response<Void>
+
+    @DELETE("chats/leave")
+    suspend fun leaveChat(@Query("chatId")chatId: Int):Response<Boolean>
     @POST("chats")
     suspend fun createChat(@Body chat : Chat) : Response<Void>
 
@@ -62,4 +66,8 @@ interface APIInterface {
 
     @GET("chats/noPrivate")
     suspend fun getAllPublicChats(): Response<List<Chat>>
+
+
+    @GET("users/chat")
+    suspend fun getChatUsers(@Query("chatId") id: Int): Response<List<User>>
 }

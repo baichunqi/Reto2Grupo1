@@ -11,4 +11,6 @@ interface ChatRepository {
      suspend fun assignUser(chatId : Int, userId: Int): Resource<Void>
 
      suspend fun createChat(chat: Chat): Resource<Chat>
+     suspend fun leaveChat(chatId: Int): Resource<Boolean>
+
 }
