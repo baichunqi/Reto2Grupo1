@@ -12,16 +12,16 @@ import com.example.reto2grupo1.utils.Resource
 
 class RoomMessageDataSource : CommonMessageRepository{
     private val messageDao: MessageDao = MyApp.db.messageDao()
-
+    private val userDao : UserDao = MyApp.db.userDao()
     override suspend fun getChatMessages(id : Int) : Resource<List<Message>>{
-        val response = messageDao.getMessages(id).map { it.toMessage() }
+        val response = messageDao.getMessages(id, userDao.getLoggedEmail()).map { it.toMessage() }
         return Resource.success(response)
 
     }
 
     override suspend fun createMessage(message: Message): Resource<Void> {
         try {
-            messageDao.addMessage(message.toDbMessage())
+            messageDao.addMessage(message.toDbMessage(userDao.getLoggedEmail()))
             return Resource.success()
         } catch (ex:SQLiteConstraintException){
             return Resource.error(ex.message!!)
@@ -31,13 +31,13 @@ class RoomMessageDataSource : CommonMessageRepository{
 
 }
 
-fun Message.toDbMessage() = DbMessage(id, text, userId, chatId)
+fun Message.toDbMessage(userEmail: String) = DbMessage(id, text, userId, chatId, userEmail)
 fun DbMessage.toMessage() = Message(id, text, userId, chatId)
 
 @Dao
 interface MessageDao{
-    @Query("Select * from messages WHERE chatId=:id order by id asc")
-    suspend fun getMessages(id: Int): List<DbMessage>
+    @Query("Select * from messages WHERE chatId=:id and userEmail = :userEmail order by id asc")
+    suspend fun getMessages(id: Int, userEmail:String): List<DbMessage>
 
     @Insert
     suspend fun addMessage(message: DbMessage) :Long

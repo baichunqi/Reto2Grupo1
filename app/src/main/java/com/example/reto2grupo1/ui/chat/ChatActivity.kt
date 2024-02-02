@@ -23,6 +23,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
+import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.service.LocationService
@@ -308,21 +309,21 @@ class ChatActivity : ComponentActivity() {
                             localChats.none { it.id == remoteChat.id }
                         }
 
-                        // Identificar chats a eliminar
-                        val chatsToDelete = localChats.filter { localChat ->
-                            remoteChatMessage.none { it.id == localChat.id }
-                        }
-
+                        // Esto es para eliminar, pero no deberia de poder eliminar un mensaje, se deja aqui por si acaso(no hay funcion para eliminar, hay que crearlo en caso necesiario)
+//                        val chatsToDelete = localChats.filter { localChat ->
+//                            remoteChatMessage.none { it.id == localChat.id }
+//                        }
+//                        // Eliminar chats en el repositorio local
+//                        chatsToDelete.forEach { chat ->
+//                            localMessageRepository.deleteChat(chat)
+//                        }
                         // Agregar o actualizar chats en el repositorio local
                         chatsToAddOrUpdate.forEach { chat ->
                             localMessageRepository.createMessage(chat)
                         }
                         Log.i("idChat", localMessageRepository.getChatMessages(num).toString())
 
-//                        // Eliminar chats en el repositorio local
-//                        chatsToDelete.forEach { chat ->
-//                            localMessageRepository.deleteChat(chat)
-//                        }
+
 
                         // Actualizar la interfaz de usuario según el número proporcionado
                         withContext(Dispatchers.Main) {
@@ -330,9 +331,13 @@ class ChatActivity : ComponentActivity() {
                         }
                     } else {
                         // Manejar el error al obtener datos locales si es necesario
+                        Log.i("SyncChat", "Erro con obtener mensajes local")
+
                     }
                 } else {
                     // Manejar el error al obtener datos remotos si es necesario
+                    Log.i("SyncChat", "Erro con obtener mensajes remoto")
+
                 }
             } catch (ex: Exception) {
                 Log.e(TAG, "Error during data synchronization: ${ex.message}", ex)

@@ -13,17 +13,15 @@ import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.example.reto2grupo1.MyApp.Companion.context
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
+import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
-import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
-import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModel
-import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModelFactory
-import com.example.reto2grupo1.ui.deleteChat.DeleteChatActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
@@ -38,10 +36,9 @@ class ChatListActivity  : ComponentActivity()  {
     private val chatListRepository = RemoteChatListDataSource()
     private var esPublico : Boolean = true
     private var chatRepository = RoomChatDataSource()
-    private val createGroupRepository = RemoteCreateChatDataSource()
+    private var userRepository = RoomUserDataSource()
     private val viewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatListRepository)
     }
-    private val createChatViewModel: CreateGroupViewModel by viewModels { CreateGroupViewModelFactory(createGroupRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -90,66 +87,27 @@ class ChatListActivity  : ComponentActivity()  {
                 }
             }
         })
-        viewModel.deleted.observe(this, Observer {
-            if (it != null) {
-                when (it.status) {
-                    Resource.Status.SUCCESS -> {
-                        viewModel.getChats()
-                    }
 
-                    Resource.Status.ERROR -> {
-                        Toast.makeText(this, it.message ?: "Error desconocido", Toast.LENGTH_LONG)
-                            .show()
-                        Log.e("ChatListActivity", "Error al cargar datos: ${it.message}")
-                    }
+        lifecycleScope.launch {
 
-                    Resource.Status.LOADING -> {
-                        // de momento
-                    }
+            val chatsResource = chatRepository.getChats()
+            when (chatsResource.status) {
+                Resource.Status.SUCCESS -> {
+                    val chats = chatsResource.data
+                    chatListAdapter.submitList(chats)
+                    chatListAdapter.submitChatList(chats)
+                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
+                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
+                }
+                Resource.Status.ERROR -> {
+                    // Manejar el error, si es necesario
+                }
+                Resource.Status.LOADING -> {
+                    // Manejar el estado de carga, si es necesario
                 }
             }
-        })
+        }
 
-//        lifecycleScope.launch {
-//            val chatsResource = chatRepository.getChats()
-//            when (chatsResource.status) {
-//                Resource.Status.SUCCESS -> {
-//                    val chats = chatsResource.data
-//                    chatListAdapter.submitList(chats)
-//                    chatListAdapter.submitChatList(chats)
-//                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
-//                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
-//                }
-//                Resource.Status.ERROR -> {
-//                    // Manejar el error, si es necesario
-//                }
-//                Resource.Status.LOADING -> {
-//                    // Manejar el estado de carga, si es necesario
-//                }
-//            }
-//        }
-
-        createChatViewModel.createChatResult.observe(this, Observer {
-            Log.e("PruebasDia1", "ha ocurrido add en la lista de favs")
-
-            if (it != null) {
-                when (it.status) {
-                    Resource.Status.SUCCESS -> {
-                        viewModel.getChats()
-                    }
-
-                    Resource.Status.ERROR -> {
-                        Toast.makeText(this, it.message ?: "Error desconocido", Toast.LENGTH_LONG)
-                            .show()
-                        Log.e("ListSongsActivity", "Error al cargar datos: ${it.message}")
-                    }
-
-                    Resource.Status.LOADING -> {
-                        Log.d("ListSongsActivity", "Cargando datos...")
-                    }
-                }
-            }
-        })
 
     }
 
@@ -170,17 +128,10 @@ class ChatListActivity  : ComponentActivity()  {
                 R.id.CrearGrupo-> {
                     intent = Intent(this, CreateGroupActivity::class.java)
                     startActivity(intent)
-                    finish()
                 }
                 R.id.UnirseGrupo-> {
                     intent = Intent(this, JoinChatActivity::class.java)
                     startActivity(intent)
-                    finish()
-                }
-                R.id.BorrarGrupo-> {
-                    intent = Intent(this, DeleteChatActivity::class.java)
-                    startActivity(intent)
-                    finish()
 
                 }
             }
@@ -258,12 +209,13 @@ class ChatListActivity  : ComponentActivity()  {
         }
     }
 
-
-
-
     override fun onResume(){
         super.onResume()
+        syncData()
         viewModel.getChats()
     }
+
+
+
 
 }
