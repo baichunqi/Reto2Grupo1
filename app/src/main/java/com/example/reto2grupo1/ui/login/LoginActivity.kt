@@ -227,4 +227,8 @@ class LoginActivity : ComponentActivity() {
         return result
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
+    }
 }

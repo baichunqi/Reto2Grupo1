@@ -331,12 +331,12 @@ class ChatActivity : ComponentActivity() {
                         }
                     } else {
                         // Manejar el error al obtener datos locales si es necesario
-                        Log.i("SyncChat", "Erro con obtener mensajes local")
+                        Log.i("SyncChat", "Error con obtener mensajes local")
 
                     }
                 } else {
                     // Manejar el error al obtener datos remotos si es necesario
-                    Log.i("SyncChat", "Erro con obtener mensajes remoto")
+                    Log.i("SyncChat", "Error con obtener mensajes remoto")
 
                 }
             } catch (ex: Exception) {
@@ -344,5 +344,10 @@ class ChatActivity : ComponentActivity() {
                 // Manejar el error de sincronización si es necesario
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

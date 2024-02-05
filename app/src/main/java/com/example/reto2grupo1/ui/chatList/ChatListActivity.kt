@@ -24,6 +24,7 @@ import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModel
 import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModelFactory
 import com.example.reto2grupo1.ui.deleteChat.DeleteChatActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
+import com.example.reto2grupo1.ui.login.LoginActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.CoroutineScope
@@ -253,13 +254,16 @@ class ChatListActivity  : ComponentActivity()  {
             }
         }
     }
-
-
-
-
     override fun onResume(){
         super.onResume()
         viewModel.getChats()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, LoginActivity::class.java)
+        finish()
+        startActivity(intent)
     }
 
 }
