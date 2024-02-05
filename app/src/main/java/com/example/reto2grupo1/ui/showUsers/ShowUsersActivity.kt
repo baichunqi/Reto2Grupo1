@@ -6,13 +6,8 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
-import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
 import com.example.reto2grupo1.databinding.ActivityShowChatUsersBinding
-import com.example.reto2grupo1.ui.chat.ChatAdapter
-import com.example.reto2grupo1.ui.chatList.ChatListViewModel
-import com.example.reto2grupo1.ui.chatList.ChatListViewModelFactory
 import com.example.reto2grupo1.utils.Resource
 
 class ShowUsersActivity : ComponentActivity() {

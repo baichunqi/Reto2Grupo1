@@ -23,13 +23,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
-import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.service.LocationService
 import com.example.reto2grupo1.databinding.ActivityChatBinding
 import com.example.reto2grupo1.ui.AddUser.AddUserActivity
-import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.ui.showUsers.ShowUsersActivity
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.CoroutineScope
@@ -282,6 +280,8 @@ class ChatActivity : ComponentActivity() {
         Log.i("pruebaDestroy", "Desconectando")
         viewModel.stopSocket()
         unregisterReceiver(locationReceiver)
+        val intent = Intent(MyApp.context, LocationService::class.java)
+        MyApp.context.stopService(intent)
     }
     private fun obtenerUltimaUbicacion(): Location? {
         return lastReceivedLocation

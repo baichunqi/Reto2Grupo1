@@ -7,12 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.data.User
-import com.example.reto2grupo1.data.repository.ChatRepository
-import com.example.reto2grupo1.data.repository.UserRepository
 import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
-import com.example.reto2grupo1.ui.chat.ChatViewModel
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

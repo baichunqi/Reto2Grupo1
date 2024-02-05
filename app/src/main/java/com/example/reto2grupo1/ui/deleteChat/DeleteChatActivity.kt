@@ -8,14 +8,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
-import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
 import com.example.reto2grupo1.databinding.ActivityDeleteChatBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.ui.chatList.ChatListViewModel
 import com.example.reto2grupo1.ui.chatList.ChatListViewModelFactory
-import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModel
-import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModelFactory
-import com.example.reto2grupo1.ui.joinChat.JoinChatListAdapter
 import com.example.reto2grupo1.utils.Resource
 
 class DeleteChatActivity : ComponentActivity() {

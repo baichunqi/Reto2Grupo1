@@ -4,15 +4,12 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.databinding.ItemChatListBinding
-import com.example.reto2grupo1.ui.chatList.ChatListActivity
-import com.example.reto2grupo1.ui.chatList.ChatListAdapter
 import java.util.Locale
 
 class JoinChatListAdapter(private val context: Context)

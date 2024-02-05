@@ -3,16 +3,11 @@ package com.example.reto2grupo1.ui.showUsers
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.User
-import com.example.reto2grupo1.databinding.ItemChatListBinding
 import com.example.reto2grupo1.databinding.ItemUserBinding
-import com.example.reto2grupo1.ui.chatList.ChatListActivity
-import com.example.reto2grupo1.ui.chatList.ChatListAdapter
 
 class ShowUserAdapter(private val context: Context)
     : ListAdapter<User, ShowUserAdapter.ShowUserViewHolder>(ShowUserDiffCallback()){

@@ -101,7 +101,7 @@ fun isBase64(cadena: String): Boolean {
 //        val uri = Uri.parse("geo:${coordenadasConComas}?q=")
 //        val intent = Intent(Intent.ACTION_VIEW, uri)
 //        intent.setPackage("com.google.android.apps.maps")
-        val intent = Intent(Intent.ACTION_VIEW,Uri.parse("http://maps.google.com/maps?saddr=42.4219983,-122.084&daddr=${coordenadasConComas}"))
+        val intent = Intent(Intent.ACTION_VIEW,Uri.parse("http://maps.google.com/maps?saddr=${coordenadasConComas}&daddr=42.4219983,-122.084"))
         context.startActivity(intent)
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)

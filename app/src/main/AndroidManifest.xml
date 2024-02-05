@@ -58,6 +58,11 @@
             android:enabled="true"
             android:exported="false" />
 
+        <service
+            android:name=".data.service.SocketService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity android:name=".ui.deleteChat.DeleteChatActivity"></activity>
     </application>
 

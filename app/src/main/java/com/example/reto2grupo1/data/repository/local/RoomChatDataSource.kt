@@ -11,7 +11,6 @@ import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.DbChat
 import com.example.reto2grupo1.data.repository.CommonChatRepository
 import com.example.reto2grupo1.utils.Resource
-import kotlin.math.log
 
 class RoomChatDataSource : CommonChatRepository {
     private val chatDao : ChatDao = MyApp.db.chatDao()

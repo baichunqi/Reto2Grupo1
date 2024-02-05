@@ -21,17 +21,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import com.example.reto2grupo1.data.User
-import com.example.reto2grupo1.data.UserUpdate
 import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
 import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
 import com.example.reto2grupo1.databinding.ActivityRegisterBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.utils.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
@@ -128,6 +123,7 @@ class RegisterActivity : ComponentActivity() {
         var defaultPass : Boolean = false
         if (savedInstanceState == null) {
             val extras = intent.extras
+            Log.i("IntentExtra", intent.extras.toString())
             if (extras == null) {
                 defaultPass = false
 
