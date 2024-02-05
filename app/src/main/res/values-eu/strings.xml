@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Reto2Grupo1</string>
+    <string name="Email">Posta elektronikoa</string>
+    <string name="Login">SAIOA HASTEA</string>
+    <string name="Registrar">Erregistratu</string>
+    <string name="nombreDeUsuario">Erabiltzaile izena</string>
+    <string name="contraseña">Pasahitza</string>
+    <string name="guardarUsuarioYContraseña">Erabiltzaile izena eta pasahitza gorde</string>
+    <string name="titulo">ElorTxat</string>
+    <string name="cambiarFoto">Argazkia aldatu</string>
+    <string name="nombre">Izena</string>
+    <string name="apellido">Abizena</string>
+    <string name="dni">NAN</string>
+    <string name="Direccion">Helbidea</string>
+    <string name="telefono1">Telefonoa1</string>
+    <string name="telefono2">Telefonoa2</string>
+    <string name="repetirContraseña">Pasahitza errepikatu</string>
+    <string name="ciclo">Zikloa</string>
+    <string name="curso">Kurtsa</string>
+    <string name="fctdual">FCT/DUAL</string>
+    <string name="cambioDeContraseña">Pasahitza aldatu</string>
+    <string name="mail">Posta</string>
+    <string name="departamento">Departamentua</string>
+    <string name="email">Posta elektronikoa</string>
+</resources>
