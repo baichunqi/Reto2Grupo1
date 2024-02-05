@@ -89,9 +89,6 @@ class ChatViewModel(
             mSocket.disconnect()
         }
     }
-     suspend fun onDestroy() {
-
-    }
 
     private fun createSocketOptions(): IO.Options {
         val options = IO.Options()
