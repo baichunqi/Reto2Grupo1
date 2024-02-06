@@ -120,7 +120,7 @@ class ChatActivity : ComponentActivity() {
             viewModel.getChatContent(chatId.toInt())
         }
         connectToSocket(binding)
-        onMessagesChange()
+        onMessagesChange(binding)
 
         viewModel.imageBase64.observe(this, Observer { newImageBase64 ->
             Log.d(TAG, "ImageBase64 actualizado: $newImageBase64")
@@ -162,8 +162,7 @@ class ChatActivity : ComponentActivity() {
 
     }
 
-
-    private fun onMessagesChange() {
+    private fun onMessagesChange(binding: ActivityChatBinding) {
 
             viewModel.messages.observe(this, Observer {
                 Log.d(TAG, "messages change")
@@ -173,6 +172,7 @@ class ChatActivity : ComponentActivity() {
                         if (!it.data.isNullOrEmpty()) {
                             chatAdapter.submitList(it.data)
                             chatAdapter.notifyDataSetChanged()
+                            binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
                         }
                     }
                     Resource.Status.ERROR -> {
@@ -327,7 +327,8 @@ class ChatActivity : ComponentActivity() {
 
                         // Actualizar la interfaz de usuario según el número proporcionado
                         withContext(Dispatchers.Main) {
-                            onMessagesChange()
+                            val binding = ActivityChatBinding.inflate(layoutInflater)
+                            onMessagesChange(binding)
                         }
                     } else {
                         // Manejar el error al obtener datos locales si es necesario
