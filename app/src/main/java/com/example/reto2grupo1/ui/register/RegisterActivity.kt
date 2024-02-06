@@ -1,6 +1,7 @@
 package com.example.reto2grupo1.ui.register
 
 import android.Manifest
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,6 +10,9 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.MenuInflater
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
@@ -21,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
 import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
@@ -29,6 +34,7 @@ import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.utils.Resource
 import java.io.File
 import java.io.FileOutputStream
+import java.util.Locale
 
 
 class RegisterActivity : ComponentActivity() {
@@ -188,6 +194,9 @@ class RegisterActivity : ComponentActivity() {
             dispatchTakePictureIntent()
         }
 
+        binding.imageView14?.setOnClickListener(){
+            showPopup(it)
+        }
 
         binding.buttonCambioDeContraseA.setOnClickListener {
             if (binding.editTextContraseA.text.toString() == binding.editTextRepetirContraseA.text.toString()) {
@@ -227,8 +236,43 @@ class RegisterActivity : ComponentActivity() {
         return file
     }
 
+    fun showPopup(v : View){
+        val popup = PopupMenu(this, v)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.menu_languages, popup.menu)
+        popup.setOnMenuItemClickListener() { menuItem ->
+            when(menuItem.itemId){
+                R.id.es-> {
+                    setLocale(this, "es")
+                }
+                R.id.eng-> {
+                    setLocale(this, "en")
+                }
+                R.id.eus-> {
+                    setLocale(this, "eu")
+                }
+            }
+            true
+        }
+        popup.show()
+    }
 
+    private fun setLocale(activity: Activity, languageCode: String?) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+        val resources = activity.resources
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            activity.recreate()
+        } else {
+            val intent = activity.intent
+            activity.finish()
+            activity.startActivity(intent)
+        }
 
+    }
 
 }

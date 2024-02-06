@@ -22,4 +22,7 @@
     <string name="mail">Email</string>
     <string name="departamento">Departamento</string>
     <string name="email">Email</string>
+    <string name="castellano">Castellano</string>
+    <string name="ingles">Ingles</string>
+    <string name="euskera">Euskera</string>
 </resources>

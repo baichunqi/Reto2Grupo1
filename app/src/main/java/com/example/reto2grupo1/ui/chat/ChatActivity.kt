@@ -1,11 +1,13 @@
 package com.example.reto2grupo1.ui.chat
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Base64
@@ -35,11 +37,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 class ChatActivity : ComponentActivity() {
     var chatId : String = ""
     private val TAG = "ChatActivity"
     private var lastReceivedLocation: Location? = null
+    private val FILE_PICK_REQUEST_CODE = 1
+    private var selectedFileUri: Uri? = null
     private var imageByteArray: ByteArray? = null
     private var imageBase64: String? = null
     val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -58,7 +63,7 @@ class ChatActivity : ComponentActivity() {
                 lastReceivedLocation = location
                 Log.d("ChatActivityLocation", "Ubicación recibida: Latitud=${location.latitude}, Longitud=${location.longitude}")
             } else{
-                Log.d("ChatActivityLocation", "Loation null",)
+                Log.d("ChatActivityLocation", "Location null",)
             }
         }
     }
@@ -87,6 +92,39 @@ class ChatActivity : ComponentActivity() {
 
     private fun convertByteArrayToBase64(byteArray: ByteArray) : String {
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
+    }
+    private fun selectFile() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "application/pdf"  // Limita la selección a archivos PDF, puedes cambiarlo según tus necesidades
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        startActivityForResult(intent, FILE_PICK_REQUEST_CODE)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == FILE_PICK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // El usuario ha seleccionado un archivo
+            data?.data?.let { uri ->
+                // Obtener el InputStream del archivo a partir de la URI utilizando contentResolver
+                val inputStream = contentResolver.openInputStream(uri)
+                if (inputStream != null) {
+                    try {
+                        // Convertir el InputStream en un String
+                        val text = inputStream.bufferedReader().use { it.readText() }
+                        Log.i("File", text)
+                        viewModel.onSendMessage(text,intent.getStringExtra("id").toString())
+                        // Ahora 'text' contiene el contenido del archivo en forma de String
+                        // Puedes almacenar 'text' en tu base de datos o hacer cualquier otra operación con él
+                    } catch (e: IOException) {
+                        // Manejar la excepción en caso de error al leer el contenido del archivo
+                    } finally {
+                        // Cerrar el InputStream después de su uso para liberar los recursos
+                        inputStream.close()
+                    }
+                } else {
+                    // Manejar el caso en el que no se pudo obtener el InputStream
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -242,6 +280,9 @@ class ChatActivity : ComponentActivity() {
                     } else {
                         Log.d("ChatActivity", "No hay ubicación disponible.")
                     }
+                }
+                R.id.file -> {
+                    selectFile()
                 }
             }
             true

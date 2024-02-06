@@ -23,4 +23,7 @@
     <string name="mail">Posta</string>
     <string name="departamento">Departamentua</string>
     <string name="email">Posta elektronikoa</string>
+    <string name="castellano">Gaztelera</string>
+    <string name="ingles">Ingelesa</string>
+    <string name="euskera">Euskara</string>
 </resources>
