@@ -151,7 +151,7 @@ class ChatActivity : ComponentActivity() {
         val filter = IntentFilter("locationUpdate")
         registerReceiver(locationReceiver, filter)
 
-        viewModel.startSocket()
+        //viewModel.startSocket()
 
         val intent = intent
 
@@ -235,7 +235,6 @@ class ChatActivity : ComponentActivity() {
     }
 
     private fun onMessagesChange(binding: ActivityChatBinding) {
-
             viewModel.messages.observe(this, Observer {
                 Log.d(TAG, "messages change")
                 when (it.status) {
@@ -288,7 +287,7 @@ class ChatActivity : ComponentActivity() {
             Log.i("EnviMessage", message)
             Log.i("EnviMessage", intent.getStringExtra("id").toString())
             binding.editTextUsername2.setText("")
-            viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+            //viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
             socketService.onSendMessage(message,intent.getStringExtra("id").toString())
         }
         binding.imageView10.setOnClickListener(){

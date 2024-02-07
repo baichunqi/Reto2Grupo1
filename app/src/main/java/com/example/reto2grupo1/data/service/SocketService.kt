@@ -45,15 +45,12 @@ class SocketService : Service() {
 
     private lateinit var serviceScope: CoroutineScope
 
-    private val TAG = "ChatViewModel"
+    private val TAG = "sOCKETSERVICE"
 
     private val _messages = MutableLiveData<Resource<List<Message>>>()
     val messages: LiveData<Resource<List<Message>>> get() = _messages
 
-    private val _connected = MutableLiveData<Resource<Boolean>>()
-    val connected: LiveData<Resource<Boolean>> get() = _connected
-
-    private val SOCKET_HOST = "http://10.0.2.2:8085/"
+    private val SOCKET_HOST = "http://10.5.7.13:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
 
@@ -165,7 +162,6 @@ class SocketService : Service() {
             // no vale poner value por que da error al estar en otro hilo
             // IllegalStateException: Cannot invoke setValue on a background thread
             // en funcion asincrona obligado post
-            _connected.postValue(Resource.success(true))
         }
     }
     private fun onConnectError(): Emitter.Listener {
@@ -179,7 +175,6 @@ class SocketService : Service() {
         return Emitter.Listener {
             // Manejar el mensaje recibido
             Log.d(TAG, "desconectado")
-            _connected.postValue(Resource.success(false))
         }
     }
 
@@ -215,6 +210,7 @@ class SocketService : Service() {
             Log.d(TAG, message.authorName)
             Log.d(TAG, message.messageType.toString())
 
+            // TODO GUARDAR EN ROOM Y NOTIFICAR CON EVENBUS
             updateMessageListWithNewMessage(message)
         } catch (ex: Exception) {
             Log.e(TAG, ex.message!!)

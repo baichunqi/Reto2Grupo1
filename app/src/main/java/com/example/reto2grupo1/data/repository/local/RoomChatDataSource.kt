@@ -16,7 +16,6 @@ class RoomChatDataSource : CommonChatRepository {
     private val chatDao : ChatDao = MyApp.db.chatDao()
     private val userDao : UserDao = MyApp.db.userDao()
     override suspend fun getChats(): Resource<List<Chat>> {
-        Log.d("chatstest",userDao.getLoggedEmail())
         val response = chatDao.getChats(userDao.getLoggedEmail()).map { it.toChat() }
         return Resource.success(response)
     }
