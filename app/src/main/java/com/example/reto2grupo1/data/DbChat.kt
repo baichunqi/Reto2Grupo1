@@ -9,4 +9,5 @@ data class DbChat(
     val name : String,
     val message : String?,
     val privateChat : Boolean,
+    val userEmail : String,
 )

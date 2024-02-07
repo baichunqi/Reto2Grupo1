@@ -2,7 +2,6 @@ package com.example.reto2grupo1.ui.createGroup
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -12,7 +11,6 @@ import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
 import com.example.reto2grupo1.databinding.ActivityCreateChatBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.utils.Resource
-import kotlinx.coroutines.runBlocking
 
 class CreateGroupActivity : ComponentActivity()  {
 

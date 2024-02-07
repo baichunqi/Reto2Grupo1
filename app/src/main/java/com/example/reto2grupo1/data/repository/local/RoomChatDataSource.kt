@@ -1,6 +1,7 @@
 package com.example.reto2grupo1.data.repository.local
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -13,34 +14,43 @@ import com.example.reto2grupo1.utils.Resource
 
 class RoomChatDataSource : CommonChatRepository {
     private val chatDao : ChatDao = MyApp.db.chatDao()
+    private val userDao : UserDao = MyApp.db.userDao()
     override suspend fun getChats(): Resource<List<Chat>> {
-        val response = chatDao.getChats().map { it.toChat() }
+        val response = chatDao.getChats(userDao.getLoggedEmail()).map { it.toChat() }
+        return Resource.success(response)
+    }
+
+    override suspend fun getAllChats(): Resource<List<Chat>> {
+        var response = chatDao.getAllChats().map { it.toChat() }
         return Resource.success(response)
     }
 
     override suspend fun createChat(chat: Chat): Resource<Int> {
-        val response = chatDao.addChat(chat.toDbChat())
+        val response = chatDao.addChat(chat.toDbChat(userDao.getLoggedEmail()))
         return Resource.success(response.toInt())
     }
 
-    suspend fun deleteChat(chat: Chat): Resource<Void> {
-        return try {
-            chatDao.deleteChat(chat.toDbChat()) // Convierte Chat a DbChat antes de llamar al DAO
-            Resource.success()
+    override suspend fun deleteChat(chat: Chat): Resource<Void> {
+        try {
+            chatDao.deleteChat(chat.toDbChat(userDao.getLoggedEmail())) // Convierte Chat a DbChat antes de llamar al DAO
+            return Resource.success()
         } catch (ex: SQLiteConstraintException) {
-            Resource.error(ex.message!!)
+            return Resource.error(ex.message!!)
         }
     }
 
 
 }
-fun Chat.toDbChat() = DbChat(id, name, message , private)
+fun Chat.toDbChat(userEmail:String) = DbChat(id, name, message , private, userEmail)
 fun DbChat.toChat() = Chat(id, name, "", privateChat)
 
 @Dao
 interface ChatDao {
+    @Query("SELECT * FROM chats where userEmail = :email order by id asc")
+    suspend fun getChats(email: String): List<DbChat>
+
     @Query("SELECT * FROM chats order by id asc")
-    suspend fun getChats(): List<DbChat>
+    suspend fun getAllChats(): List<DbChat>
 
     @Insert
     suspend fun addChat(chat:DbChat):Long

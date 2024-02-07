@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,7 +13,9 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -40,27 +43,44 @@ class LocationService : Service() {
                 }
             }
         }
-
+        createNotificationChannel()
+    }
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Nombre del canal",
-                NotificationManager.IMPORTANCE_DEFAULT
+                "Descargas Channel",
+                NotificationManager.IMPORTANCE_LOW
             )
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }
-        val notification = Notification.Builder(this, CHANNEL_ID)
-            .setContentTitle("Localización")
-            .setContentText("Obteniendo la ubicación")
-            .build()
-        startForeground(NOTIFICATION_ID, notification)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("LocationService", "onStartCommand called.")
         requestLocationUpdates()
+        val contentText = "Obteniendo localización"
+        startForeground(NOTIFICATION_ID, createNotification(contentText))
         return START_STICKY
+    }
+
+    private fun createNotification(contentText: String): Notification {
+        val context = this
+        val intent = Intent(context, ChatActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        return NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle("Localización")
+            .setContentText(contentText)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
     }
 
     private fun requestLocationUpdates() {

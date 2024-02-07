@@ -12,4 +12,6 @@ data class DbUser (
     val phone:Int,
     val dni:String,
     val address:String,
+    val logged:Boolean,
+//    val roles: List<UserRole>
 )

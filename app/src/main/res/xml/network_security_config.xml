@@ -12,7 +12,6 @@
 
         <domain includeSubdomains="false">10.5.7.22</domain>
         <domain includeSubdomains="true">10.5.7.13</domain>
-        <domain includeSubdomains="true">10.0.2.16</domain>
-        <domain includeSubdomains="true">192.168.56.1</domain>
+        <domain includeSubdomains="true">10.5.7.43</domain>
     </domain-config>
 </network-security-config>

@@ -13,11 +13,13 @@ import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
+import com.example.reto2grupo1.data.service.SocketService
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.changePassword.ChangePasswordActivity
 import com.example.reto2grupo1.ui.chat.ChatActivity
@@ -26,6 +28,7 @@ import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModel
 import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModelFactory
 import com.example.reto2grupo1.ui.deleteChat.DeleteChatActivity
 import com.example.reto2grupo1.ui.joinChat.JoinChatActivity
+import com.example.reto2grupo1.ui.login.LoginActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.CoroutineScope
@@ -50,6 +53,8 @@ class ChatListActivity  : ComponentActivity()  {
         super.onCreate(savedInstanceState)
         val binding = ActivityChatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val socketIntent = Intent(MyApp.context, SocketService::class.java)
+        MyApp.context.startForegroundService(socketIntent)
 
         chatListAdapter = ChatListAdapter(this)
         binding.recyclerView.adapter = chatListAdapter
@@ -110,24 +115,24 @@ class ChatListActivity  : ComponentActivity()  {
             }
         })
 
-//        lifecycleScope.launch {
-//            val chatsResource = chatRepository.getChats()
-//            when (chatsResource.status) {
-//                Resource.Status.SUCCESS -> {
-//                    val chats = chatsResource.data
-//                    chatListAdapter.submitList(chats)
-//                    chatListAdapter.submitChatList(chats)
-//                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
-//                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
-//                }
-//                Resource.Status.ERROR -> {
-//                    // Manejar el error, si es necesario
-//                }
-//                Resource.Status.LOADING -> {
-//                    // Manejar el estado de carga, si es necesario
-//                }
-//            }
-//        }
+        lifecycleScope.launch {
+            val chatsResource = chatRepository.getChats()
+            when (chatsResource.status) {
+                Resource.Status.SUCCESS -> {
+                    val chats = chatsResource.data
+                    chatListAdapter.submitList(chats)
+                    chatListAdapter.submitChatList(chats)
+                    chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
+                    // Hacer algo con la lista de chats, como mostrarla en un RecyclerView
+                }
+                Resource.Status.ERROR -> {
+                    // Manejar el error, si es necesario
+                }
+                Resource.Status.LOADING -> {
+                    // Manejar el estado de carga, si es necesario
+                }
+            }
+        }
 
         createChatViewModel.createChatResult.observe(this, Observer {
             Log.e("PruebasDia1", "ha ocurrido add en la lista de favs")
@@ -170,17 +175,14 @@ class ChatListActivity  : ComponentActivity()  {
                 R.id.CrearGrupo-> {
                     intent = Intent(this, CreateGroupActivity::class.java)
                     startActivity(intent)
-                    finish()
                 }
                 R.id.UnirseGrupo-> {
                     intent = Intent(this, JoinChatActivity::class.java)
                     startActivity(intent)
-                    finish()
                 }
                 R.id.BorrarGrupo-> {
                     intent = Intent(this, DeleteChatActivity::class.java)
                     startActivity(intent)
-                    finish()
 
                 }
             }
@@ -257,13 +259,16 @@ class ChatListActivity  : ComponentActivity()  {
             }
         }
     }
-
-
-
-
     override fun onResume(){
         super.onResume()
         viewModel.getChats()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, LoginActivity::class.java)
+        finish()
+        startActivity(intent)
     }
 
 }

@@ -5,8 +5,10 @@ import com.example.reto2grupo1.data.AuthenticationResponse
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.data.PassChange
+import com.example.reto2grupo1.data.Rol
 import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.data.UserUpdate
+import com.example.reto2grupo1.data.UserWithRol
 import retrofit2.http.Body
 import retrofit2.http.GET
 import okhttp3.MultipartBody
@@ -37,6 +39,8 @@ interface APIInterface {
     @POST("auth/login")
     suspend fun login(@Body authenticationRequest : AuthenticationRequest): Response<AuthenticationResponse>
     @GET("auth/myInfo")
+    suspend fun myInfoUserWhitRol(): Response<UserWithRol>
+    @GET("auth/myInfo")
     suspend fun myInfo(): Response<User>
 
     @GET("send-email")
@@ -47,7 +51,7 @@ interface APIInterface {
     ): Response<Void>
 
     @PUT("auth/users")
-    suspend fun update(@Body user: UserUpdate): Response<User>
+    suspend fun update(@Body user: UserWithRol): Response<UserWithRol>
 
     @GET("auth/users")
     suspend fun getAllUsers() : Response<List<User>>
@@ -79,4 +83,10 @@ interface APIInterface {
 
     @GET("users/chat")
     suspend fun getUsersChat(@Query("chatId") chatId: Int): Response<List<User>>
+
+    @GET("user/rol")
+    suspend fun getUserRol(): Response<Rol>
+
+    @DELETE("chats/disassign")
+    suspend fun dissasingUser(@Query("chatId") chatId: Int,@Query("userId")userId: Int) : Response<Void>
 }

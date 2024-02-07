@@ -12,16 +12,16 @@ import com.example.reto2grupo1.utils.Resource
 
 class RoomMessageDataSource : CommonMessageRepository{
     private val messageDao: MessageDao = MyApp.db.messageDao()
-
+    private val userDao : UserDao = MyApp.db.userDao()
     override suspend fun getChatMessages(id : Int) : Resource<List<Message>>{
-        val response = messageDao.getMessages(id).map { it.toMessage() }
+        val response = messageDao.getMessages(id, userDao.getLoggedEmail()).map { it.toMessage() }
         return Resource.success(response)
 
     }
 
     override suspend fun createMessage(message: Message): Resource<Void> {
         try {
-            messageDao.addMessage(message.toDbMessage())
+            messageDao.addMessage(message.toDbMessage(userDao.getLoggedEmail(), false))
             return Resource.success()
         } catch (ex:SQLiteConstraintException){
             return Resource.error(ex.message!!)
@@ -29,17 +29,31 @@ class RoomMessageDataSource : CommonMessageRepository{
 
     }
 
+    override suspend fun changeToSent(message: Message){
+        message.id?.let { messageDao.changeToSent(it) }
+    }
+
+    override suspend fun clearAllMessages() {
+        messageDao.clearMessages()
+    }
+
 }
 
-fun Message.toDbMessage() = DbMessage(id, text, userId, chatId)
-fun DbMessage.toMessage() = Message(id, text, userId, chatId)
+fun Message.toDbMessage(userEmail: String, sendToServer: Boolean) = DbMessage(id, text, userId, chatId, userEmail, sendToServer, created_at.toString())
+fun DbMessage.toMessage() = Message(id, text, userId, chatId, time)
 
 @Dao
 interface MessageDao{
-    @Query("Select * from messages WHERE chatId=:id order by id asc")
-    suspend fun getMessages(id: Int): List<DbMessage>
+    @Query("Select * from messages WHERE chatId=:id and userEmail = :userEmail order by id asc")
+    suspend fun getMessages(id: Int, userEmail:String): List<DbMessage>
 
     @Insert
     suspend fun addMessage(message: DbMessage) :Long
+
+    @Query("DELETE FROM messages")
+    suspend fun clearMessages()
+
+    @Query("UPDATE messages SET sendToServer = 1 WHERE id = :id")
+    suspend fun changeToSent(id: Int)
 
 }

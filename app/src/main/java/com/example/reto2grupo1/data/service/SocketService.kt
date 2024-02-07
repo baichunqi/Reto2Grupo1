@@ -1,64 +1,116 @@
-package com.example.reto2grupo1.ui.chat
+package com.example.reto2grupo1.data.service
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Intent
+import android.os.Binder
+import android.os.Build
+import android.os.IBinder
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.data.Message
-import com.example.reto2grupo1.data.repository.ChatRepository
+import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.socket.SocketEvents
 import com.example.reto2grupo1.data.socket.SocketMessageReq
 import com.example.reto2grupo1.data.socket.SocketMessageRes
+import com.example.reto2grupo1.ui.chat.ChatActivity
+import com.example.reto2grupo1.ui.chat.ChatViewModel
+import com.example.reto2grupo1.ui.chat.ChatViewModelFactory
 import com.example.reto2grupo1.utils.Resource
 import com.google.gson.Gson
 import io.socket.client.IO
+import io.socket.client.Socket
 import io.socket.emitter.Emitter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import io.socket.client.Socket
+
+class SocketService : Service() {
 
 
-class ChatViewModelFactory(
-    private val chatRepository: ChatRepository,
-) : ViewModelProvider.Factory{
-    override fun <T : ViewModel> create(modelClass: Class<T>, extras : CreationExtras):T{
-        return ChatViewModel(chatRepository) as T
-    }
-}
-class ChatViewModel(
-    private val chatRepository: ChatRepository
-) : ViewModel() {
+    private val NOTIFICATION_ID = 321
+    private val CHANNEL_ID = "my_channel"
 
-    private val TAG = "ChatViewModel"
+
+    private lateinit var serviceScope: CoroutineScope
+
+    private val TAG = "sOCKETSERVICE"
 
     private val _messages = MutableLiveData<Resource<List<Message>>>()
     val messages: LiveData<Resource<List<Message>>> get() = _messages
 
-    private val _connected = MutableLiveData<Resource<Boolean>>()
-    val connected: LiveData<Resource<Boolean>> get() = _connected
-
-    private val _leave = MutableLiveData<Resource<Boolean>>()
-    val leave: LiveData<Resource<Boolean>> get() = _leave
-
-    private val _imageBase64 = MutableLiveData<String>()
-    val imageBase64: LiveData<String>
-        get() = _imageBase64
-
-    fun updateImageBase64(base64: String) {
-        _imageBase64.value = base64
-    }
-
     private val SOCKET_HOST = "http://10.5.7.13:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
-    private val SOCKET_ROOM = "1"
 
+
+    private val mBinder: IBinder = LocalService()
+
+    override fun onBind(intent: Intent): IBinder {
+        return mBinder
+    }
+
+    inner class LocalService : Binder() {
+        val service: SocketService
+            get() = this@SocketService
+    }
+
+
+    override fun onCreate() {
+        super.onCreate()
+
+        serviceScope = CoroutineScope(Dispatchers.Default)
+        createNotificationChannel()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.i("services", "onStartCommand")
+        val contentText = "Descargando contenido"
+        startForeground(NOTIFICATION_ID, createNotification(contentText))
+        startSocket()
+        return START_STICKY
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "conectando con el servidor",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun createNotification(contentText: String): Notification {
+        val context = this
+        val intent = Intent(context, ChatActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        return NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle("obteniendo mensajes")
+            .setContentText(contentText)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+    }
 
     fun startSocket(){
         Log.d("a","b")
@@ -68,10 +120,10 @@ class ChatViewModel(
         mSocket.on("connect_error", onConnectError())
         mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
-        viewModelScope.launch {
+        serviceScope.launch {
             connect()
         }
-    }
+}
 
     private suspend fun connect(){
         withContext(Dispatchers.IO) {
@@ -80,7 +132,7 @@ class ChatViewModel(
     }
 
     fun stopSocket(){
-        viewModelScope.launch {
+        serviceScope.launch {
             disconnect()
         }
     }
@@ -110,7 +162,6 @@ class ChatViewModel(
             // no vale poner value por que da error al estar en otro hilo
             // IllegalStateException: Cannot invoke setValue on a background thread
             // en funcion asincrona obligado post
-            _connected.postValue(Resource.success(true))
         }
     }
     private fun onConnectError(): Emitter.Listener {
@@ -124,7 +175,6 @@ class ChatViewModel(
         return Emitter.Listener {
             // Manejar el mensaje recibido
             Log.d(TAG, "desconectado")
-            _connected.postValue(Resource.success(false))
         }
     }
 
@@ -160,6 +210,7 @@ class ChatViewModel(
             Log.d(TAG, message.authorName)
             Log.d(TAG, message.messageType.toString())
 
+            // TODO GUARDAR EN ROOM Y NOTIFICAR CON EVENBUS
             updateMessageListWithNewMessage(message)
         } catch (ex: Exception) {
             Log.e(TAG, ex.message!!)
@@ -190,29 +241,10 @@ class ChatViewModel(
         mSocket.emit(SocketEvents.ON_SEND_MESSAGE.value, jsonObject)
     }
 
-    fun getChatContent(id: Int){
-        viewModelScope.launch {
-            val repoResponse  = getChatMessages(id)
-            _messages.value = repoResponse
-        }
-    }
-    private suspend fun getChatMessages(id: Int) : Resource<List<Message>>{
-        return withContext(Dispatchers.IO){
-            val messages = chatRepository.getChatMessages(id)
-            Resource.success(messages)
-            chatRepository.getChatMessages(id)
-        }
-    }
-
-    fun getOutChat(id: Int){
-        viewModelScope.launch {
-            val response = leaveChat(id)
-            _leave.value = response
-        }
-    }
-    private suspend fun leaveChat(id: Int): Resource<Boolean>{
-        return  withContext(Dispatchers.IO){
-            chatRepository.leaveChat(id)
-        }
+    override fun onDestroy() {
+        Log.i("services", "onDestroy")
+        stopSocket()
+        serviceScope.cancel()
+        super.onDestroy()
     }
 }

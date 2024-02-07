@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Reto2Grupo1</string>
+    <string name="Email">Email</string>
+    <string name="Login">LOGIN</string>
+    <string name="Registrar">Register</string>
+    <string name="nombreDeUsuario">User name</string>
+    <string name="contraseña">Password</string>
+    <string name="guardarUsuarioYContraseña">Save Username and Password</string>
+    <string name="titulo">ElorChat</string>
+    <string name="cambiarFoto">Change photo</string>
+    <string name="nombre">Name</string>
+    <string name="apellido">Surname</string>
+    <string name="dni">DNI</string>
+    <string name="Direccion">Address</string>
+    <string name="telefono1">Phone1</string>
+    <string name="telefono2">Phone2</string>
+    <string name="repetirContraseña">Repeat Password</string>
+    <string name="ciclo">Cycle</string>
+    <string name="curso">Course</string>
+    <string name="fctdual">FCT/DUAL</string>
+    <string name="cambioDeContraseña">Change Password</string>
+    <string name="mail">Email</string>
+    <string name="departamento">Department</string>
+    <string name="email">Email</string>
+
+    <string name="borrar">B</string>
+
+
+    <string name="castellano">Spanish</string>
+    <string name="ingles">English</string>
+    <string name="euskera">Basque</string>
+
+</resources>

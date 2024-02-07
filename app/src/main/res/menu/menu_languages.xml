@@ -2,15 +2,15 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">>
     <item
-        android:id="@+id/location"
-        android:title="Ubicación"
+        android:id="@+id/es"
+        android:title="@string/castellano"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/image"
-        android:title="Foto"
+        android:id="@+id/eng"
+        android:title="@string/ingles"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/file"
-        android:title="Archivo"
+        android:id="@+id/eus"
+        android:title="@string/euskera"
         app:showAsAction="ifRoom" />
 </menu>

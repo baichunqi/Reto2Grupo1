@@ -1,12 +1,17 @@
 package com.example.reto2grupo1.ui.chat
 
+import android.app.Activity
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -23,12 +28,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
+import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
+import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.service.LocationService
+import com.example.reto2grupo1.data.service.SocketService
 import com.example.reto2grupo1.databinding.ActivityChatBinding
 import com.example.reto2grupo1.ui.AddUser.AddUserActivity
-import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.ui.showUsers.ShowUsersActivity
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.CoroutineScope
@@ -36,12 +43,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 class ChatActivity : ComponentActivity() {
     var chatId : String = ""
     private val TAG = "ChatActivity"
     private var lastReceivedLocation: Location? = null
+    private val FILE_PICK_REQUEST_CODE = 1
+    private var selectedFileUri: Uri? = null
     private var imageByteArray: ByteArray? = null
+    private lateinit var socketService: SocketService
+    private var isBind = false
     private var imageBase64: String? = null
     val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     private lateinit var chatAdapter: ChatAdapter
@@ -59,7 +71,7 @@ class ChatActivity : ComponentActivity() {
                 lastReceivedLocation = location
                 Log.d("ChatActivityLocation", "Ubicación recibida: Latitud=${location.latitude}, Longitud=${location.longitude}")
             } else{
-                Log.d("ChatActivityLocation", "Loation null",)
+                Log.d("ChatActivityLocation", "Location null",)
             }
         }
     }
@@ -89,6 +101,40 @@ class ChatActivity : ComponentActivity() {
     private fun convertByteArrayToBase64(byteArray: ByteArray) : String {
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
+    private fun selectFile() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "application/pdf"  // Limita la selección a archivos PDF, puedes cambiarlo según tus necesidades
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        startActivityForResult(intent, FILE_PICK_REQUEST_CODE)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == FILE_PICK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // El usuario ha seleccionado un archivo
+            data?.data?.let { uri ->
+                // Obtener el InputStream del archivo a partir de la URI utilizando contentResolver
+                val inputStream = contentResolver.openInputStream(uri)
+                if (inputStream != null) {
+                    try {
+                        // Convertir el InputStream en un String
+                        val text = inputStream.bufferedReader().use { it.readText() }
+                        Log.i("File", text)
+                        //viewModel.onSendMessage(text,intent.getStringExtra("id").toString())
+                        socketService.onSendMessage(text,intent.getStringExtra("id").toString())
+                        // Ahora 'text' contiene el contenido del archivo en forma de String
+                        // Puedes almacenar 'text' en tu base de datos o hacer cualquier otra operación con él
+                    } catch (e: IOException) {
+                        // Manejar la excepción en caso de error al leer el contenido del archivo
+                    } finally {
+                        // Cerrar el InputStream después de su uso para liberar los recursos
+                        inputStream.close()
+                    }
+                } else {
+                    // Manejar el caso en el que no se pudo obtener el InputStream
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +151,7 @@ class ChatActivity : ComponentActivity() {
         val filter = IntentFilter("locationUpdate")
         registerReceiver(locationReceiver, filter)
 
-        viewModel.startSocket()
+        //viewModel.startSocket()
 
         val intent = intent
 
@@ -121,11 +167,12 @@ class ChatActivity : ComponentActivity() {
             viewModel.getChatContent(chatId.toInt())
         }
         connectToSocket(binding)
-        onMessagesChange()
+        onMessagesChange(binding)
 
         viewModel.imageBase64.observe(this, Observer { newImageBase64 ->
             Log.d(TAG, "ImageBase64 actualizado: $newImageBase64")
-            viewModel.onSendMessage(newImageBase64, intent.getStringExtra("id").toString())
+            //viewModel.onSendMessage(newImageBase64, intent.getStringExtra("id").toString())
+            socketService.onSendMessage(newImageBase64,intent.getStringExtra("id").toString())
         })
 
         syncData(chatId.toInt())
@@ -163,32 +210,34 @@ class ChatActivity : ComponentActivity() {
 
     }
 
+    private fun onMessagesChange(binding: ActivityChatBinding) {
 
-    private fun onMessagesChange() {
-
-            viewModel.messages.observe(this, Observer {
-                Log.d(TAG, "messages change")
-                when (it.status) {
-                    Resource.Status.SUCCESS -> {
-                        Log.d(TAG, "messages observe success")
-                        if (!it.data.isNullOrEmpty()) {
-                            chatAdapter.submitList(it.data)
-                            chatAdapter.notifyDataSetChanged()
-                        }
-                    }
-                    Resource.Status.ERROR -> {
-                        Log.d(TAG, "messages observe error")
-                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                    }
-                    Resource.Status.LOADING -> {
-                        // de momento
-                        Log.d(TAG, "messages observe loading")
-                        val toast = Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG)
-                        toast.setGravity(Gravity.TOP, 0, 0)
-                        toast.show()
-                    }
-                }
-            })
+//            viewModel.messages.observe(this, Observer {
+//                Log.d(TAG, "messages change")
+//                when (it.status) {
+//                    Resource.Status.SUCCESS -> {
+//                        Log.d(TAG, "messages observe success")
+//                        if (!it.data.isNullOrEmpty()) {
+//
+//                            Log.i("chatTestFecha",  it.data.toString())
+//                            chatAdapter.submitList(it.data)
+//                            chatAdapter.notifyDataSetChanged()
+//                            binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
+//                        }
+//                    }
+//                    Resource.Status.ERROR -> {
+//                        Log.d(TAG, "messages observe error")
+//                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+//                    }
+//                    Resource.Status.LOADING -> {
+//                        // de momento
+//                        Log.d(TAG, "messages observe loading")
+//                        val toast = Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG)
+//                        toast.setGravity(Gravity.TOP, 0, 0)
+//                        toast.show()
+//                    }
+//                }
+//            })
 
             lifecycleScope.launch {
                 val messagesResource = localMessageRepository.getChatMessages(chatId.toInt())
@@ -197,6 +246,7 @@ class ChatActivity : ComponentActivity() {
                         val messages = messagesResource.data
                         chatAdapter.submitList(messages)
                         chatAdapter.notifyDataSetChanged()
+
                         // Mostrar los mensajes en la interfaz de usuario
                     }
                     Resource.Status.ERROR -> {
@@ -217,7 +267,9 @@ class ChatActivity : ComponentActivity() {
             Log.i("EnviMessage", message)
             Log.i("EnviMessage", intent.getStringExtra("id").toString())
             binding.editTextUsername2.setText("")
-            viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+            //viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+            socketService.onSendMessage(message,intent.getStringExtra("id").toString())
+            syncData(chatId.toInt())
         }
         binding.imageView10.setOnClickListener(){
             showPopupUtils(it)
@@ -239,10 +291,14 @@ class ChatActivity : ComponentActivity() {
                         // Hacer algo con la última ubicación en respuesta al clic
                         Log.d("ChatActivity", "Última ubicación al hacer clic: Latitud=${lastLocation.latitude}, Longitud=${lastLocation.longitude}")
                         val message = lastLocation.latitude.toString() + " " + lastLocation.longitude.toString()
-                        viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+                        //viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+                        socketService.onSendMessage(message,intent.getStringExtra("id").toString())
                     } else {
                         Log.d("ChatActivity", "No hay ubicación disponible.")
                     }
+                }
+                R.id.file -> {
+                    selectFile()
                 }
             }
             true
@@ -281,6 +337,8 @@ class ChatActivity : ComponentActivity() {
         Log.i("pruebaDestroy", "Desconectando")
         viewModel.stopSocket()
         unregisterReceiver(locationReceiver)
+        val intent = Intent(MyApp.context, LocationService::class.java)
+        MyApp.context.stopService(intent)
     }
     private fun obtenerUltimaUbicacion(): Location? {
         return lastReceivedLocation
@@ -301,43 +359,53 @@ class ChatActivity : ComponentActivity() {
 
                     // Verificar si la obtención de datos locales fue exitosa
                     if (localChatMessageResource.status == Resource.Status.SUCCESS) {
-                        val localChats = localChatMessageResource.data ?: emptyList()
+                        val localMessages = localChatMessageResource.data ?: emptyList()
 
                         // Identificar chats nuevos y actualizados
                         val chatsToAddOrUpdate = remoteChatMessage.filter { remoteChat ->
-                            localChats.none { it.id == remoteChat.id }
+                            localMessages.none { it.id == remoteChat.id }
                         }
-
-                        // Identificar chats a eliminar
-                        val chatsToDelete = localChats.filter { localChat ->
-                            remoteChatMessage.none { it.id == localChat.id }
+                        val messageToAdd = localMessages.filter { localMessage ->
+                            remoteChatMessage.none { it.id == localMessage.id }
                         }
-
+                        Log.i("SyncChat", messageToAdd.toString())
+                        Log.i("SyncChat", chatsToAddOrUpdate.toString())
+                        // Añadir chats al repositorio remoto
+                        messageToAdd.forEach { message ->
+//                            viewModel.onSendMessage(message.text, intent.getStringExtra("id").toString())
+                        }
                         // Agregar o actualizar chats en el repositorio local
-                        chatsToAddOrUpdate.forEach { chat ->
-                            localMessageRepository.createMessage(chat)
+                        chatsToAddOrUpdate.forEach { message ->
+                            localMessageRepository.createMessage(message)
                         }
                         Log.i("idChat", localMessageRepository.getChatMessages(num).toString())
 
-//                        // Eliminar chats en el repositorio local
-//                        chatsToDelete.forEach { chat ->
-//                            localMessageRepository.deleteChat(chat)
-//                        }
+
 
                         // Actualizar la interfaz de usuario según el número proporcionado
                         withContext(Dispatchers.Main) {
-                            onMessagesChange()
+                            val binding = ActivityChatBinding.inflate(layoutInflater)
+                            onMessagesChange(binding)
                         }
                     } else {
                         // Manejar el error al obtener datos locales si es necesario
+                        Log.i("SyncChat", "Error con obtener mensajes local")
+
                     }
                 } else {
                     // Manejar el error al obtener datos remotos si es necesario
+                    Log.i("SyncChat", "Error con obtener mensajes remoto")
+
                 }
             } catch (ex: Exception) {
                 Log.e(TAG, "Error during data synchronization: ${ex.message}", ex)
                 // Manejar el error de sincronización si es necesario
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }
