@@ -41,6 +41,7 @@ class ChatAdapter(chatId: String?) : ListAdapter<Message, ChatAdapter.ChatViewHo
     }
     inner class ChatViewHolder(private val binding: ItemChatObjectRecieveBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(message: Message){
+            val date = message.created_at.substring(0, 18).replace("T", " ")
             if(isBase64(message.text)){
                 var imagen = base64ToBitmap(message.text)
                 binding.ImageViewImage.setImageBitmap(imagen)
@@ -48,6 +49,7 @@ class ChatAdapter(chatId: String?) : ListAdapter<Message, ChatAdapter.ChatViewHo
                 binding.TextViewMensaje.visibility = View.GONE
                 Log.i("UserId", message.userId)
                 binding.textViewTiempo.text = message.userId
+                binding.textViewCreatedAt.text = date
             }
             else if(isCoordenate(message.text)){
                 binding.TextViewMensaje.visibility = View.VISIBLE
@@ -66,11 +68,13 @@ class ChatAdapter(chatId: String?) : ListAdapter<Message, ChatAdapter.ChatViewHo
 
                 binding.TextViewMensaje.text = spannableString
                 binding.textViewTiempo.text = message.userId
+                binding.textViewCreatedAt.text = date
             } else{
                 binding.TextViewMensaje.visibility = View.VISIBLE
                 binding.ImageViewImage.visibility = View.GONE
                 binding.TextViewMensaje.text = message.text
                 binding.textViewTiempo.text = message.userId
+                binding.textViewCreatedAt.text = date
             }
         }
     }

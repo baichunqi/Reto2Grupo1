@@ -2,7 +2,6 @@ package com.example.reto2grupo1.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.sql.Time
 import java.util.Date
 
 @Entity(tableName ="messages")
@@ -13,5 +12,5 @@ data class DbMessage(
     val chatId: String,
     val userEmail: String,
     val sendToServer : Boolean,
-//    val time: Date,
+    val time: String,
 )
