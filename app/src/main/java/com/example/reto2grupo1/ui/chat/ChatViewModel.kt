@@ -54,7 +54,7 @@ class ChatViewModel(
         _imageBase64.value = base64
     }
 
-    private val SOCKET_HOST = "http://10.0.2.2:8085/"
+    private val SOCKET_HOST = "http://10.5.7.13:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
     private val SOCKET_ROOM = "1"
@@ -88,9 +88,6 @@ class ChatViewModel(
         withContext(Dispatchers.IO){
             mSocket.disconnect()
         }
-    }
-     suspend fun onDestroy() {
-
     }
 
     private fun createSocketOptions(): IO.Options {
