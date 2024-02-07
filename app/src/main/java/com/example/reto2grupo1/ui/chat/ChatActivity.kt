@@ -107,6 +107,17 @@ class ChatActivity : ComponentActivity() {
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         startActivityForResult(intent, FILE_PICK_REQUEST_CODE)
     }
+    private var serviceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val localService = service as SocketService.LocalService
+            socketService = localService.service
+            isBind = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            isBind = false
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == FILE_PICK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -133,6 +144,19 @@ class ChatActivity : ComponentActivity() {
                     // Manejar el caso en el que no se pudo obtener el InputStream
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intent = Intent(this, SocketService::class.java)
+        bindService(intent, serviceConnection, BIND_AUTO_CREATE)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isBind) {
+            unbindService(serviceConnection)
         }
     }
 
@@ -211,6 +235,7 @@ class ChatActivity : ComponentActivity() {
     }
 
     private fun onMessagesChange(binding: ActivityChatBinding) {
+//        intent.getStringExtra("id")?.let { syncData(it.toInt()) }
 
 //            viewModel.messages.observe(this, Observer {
 //                Log.d(TAG, "messages change")
@@ -269,7 +294,6 @@ class ChatActivity : ComponentActivity() {
             binding.editTextUsername2.setText("")
             //viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
             socketService.onSendMessage(message,intent.getStringExtra("id").toString())
-            syncData(chatId.toInt())
         }
         binding.imageView10.setOnClickListener(){
             showPopupUtils(it)
@@ -293,6 +317,7 @@ class ChatActivity : ComponentActivity() {
                         val message = lastLocation.latitude.toString() + " " + lastLocation.longitude.toString()
                         //viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
                         socketService.onSendMessage(message,intent.getStringExtra("id").toString())
+                        intent.getStringExtra("id")?.let { syncData(it.toInt()) }
                     } else {
                         Log.d("ChatActivity", "No hay ubicación disponible.")
                     }
