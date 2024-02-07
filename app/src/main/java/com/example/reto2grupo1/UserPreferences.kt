@@ -14,7 +14,7 @@ class UserPreferences() {
         const val USER_TOKEN = "user_token"
         const val USER_EMAIL="email"
         const val USER_CONTRASENYA="contrasenya"
-
+        const val USER_ROL="rol"
     }
 
     /**
@@ -27,6 +27,7 @@ class UserPreferences() {
 
         editor.putString(USER_EMAIL, email)
         editor.putString(USER_TOKEN, token)
+
         editor.apply()
     }
     fun restartPreference (){

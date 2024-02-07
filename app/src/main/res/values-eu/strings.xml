@@ -23,4 +23,6 @@
     <string name="mail">Posta</string>
     <string name="departamento">Departamentua</string>
     <string name="email">Posta elektronikoa</string>
+    <string name="borrar">B</string>
+
 </resources>

@@ -24,13 +24,17 @@ class ShowUsersActivity : ComponentActivity() {
         chatId = intent.getStringExtra("id").toString()
         showUserAdapter=ShowUserAdapter(this)
         binding.RecyclerViewUsers.adapter = showUserAdapter
+        if (chatId != null) {
+            Log.d("mikel1", chatId)
+            viewModel.getList(chatId.toInt())
+        }
+
+
         binding.imageViewBack2.setOnClickListener(){
             finish()
         }
 
-        if (chatId != null) {
-            viewModel.getList(chatId.toInt())
-        }
+
         viewModel.users.observe(this, Observer {
             when(it.status){
                 Resource.Status.SUCCESS -> {
@@ -48,6 +52,15 @@ class ShowUsersActivity : ComponentActivity() {
                 }
             }
         })
+
+
+
+    }
+    infix fun dessAssignUser(userid:Int){
+        Log.d("estoentra2","estoentra2");
+        if (chatId != null) {
+            viewModel.dissassing(chatId.toInt(),userid)
+        }
     }
 
 }

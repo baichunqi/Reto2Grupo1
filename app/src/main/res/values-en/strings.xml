@@ -23,4 +23,6 @@
     <string name="mail">Email</string>
     <string name="departamento">Department</string>
     <string name="email">Email</string>
+    <string name="borrar">B</string>
+
 </resources>

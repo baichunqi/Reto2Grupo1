@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto2grupo1.data.Chat
+import com.example.reto2grupo1.data.Rol
 import com.example.reto2grupo1.data.repository.ChatListRepository
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -65,5 +66,6 @@ class JoinChatViewModel(
             chatListRepository.joinChat(chatId)
         }
     }
+
 
 }

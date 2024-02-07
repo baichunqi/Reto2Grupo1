@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import com.example.reto2grupo1.data.Rol
 import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
 import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
@@ -42,7 +43,7 @@ class RegisterActivity : ComponentActivity() {
             userRepository,authenticationRepository
         )
     }
-
+    lateinit var roles :List<Rol>
     private var selectedImage: File? = null
 
     private val cameraPermissionRequest =
@@ -107,7 +108,7 @@ class RegisterActivity : ComponentActivity() {
                         binding.editTextDNI.setText(data.dni)
                         binding.editTextDirecciN.setText(data.address)
                         binding.editTextTelefono1.setText(data.phone.toString())
-
+                        roles = data.roles
                     }
                 }
                 Resource.Status.ERROR -> {
@@ -199,7 +200,8 @@ class RegisterActivity : ComponentActivity() {
                         binding.editTextContraseA.text.toString(),
                         binding.editTextTelefono1.text.toString().toInt(),
                         binding.editTextDNI.text.toString(),
-                        binding.editTextDirecciN.text.toString()
+                        binding.editTextDirecciN.text.toString(),
+                        roles
 
                     )
                 } else {
