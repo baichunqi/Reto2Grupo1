@@ -10,6 +10,6 @@ interface AuthenticationRepository {
     suspend fun login(authenticationRequest: AuthenticationRequest) : Resource<AuthenticationResponse>
     suspend fun myInfo() : Resource<User>
     suspend fun updateUser(user: UserUpdate) : Resource<User>
-
     suspend fun getAllUsers() : Resource<List<User>>
+//    suspend fun changePassword(authenticationRequest: AuthenticationRequest): Resource<AuthenticationRequest>
 }

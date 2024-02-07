@@ -10,7 +10,7 @@ import kotlin.math.log
 
 object RetrofitClient {
 
-    const val API_URI = "http://10.0.2.2:8081/api/"
+    const val API_URI = "http://192.168.56.1:8081/api/"
     //const val API_URI = "http://10.5.7.13:8081/api/"
     //const val API_URI = "http://10.5.7.202:80/api/"
 

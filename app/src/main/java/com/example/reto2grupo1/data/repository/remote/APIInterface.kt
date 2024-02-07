@@ -39,6 +39,13 @@ interface APIInterface {
     @GET("auth/myInfo")
     suspend fun myInfo(): Response<User>
 
+    @GET("send-email")
+    suspend fun changePassword(
+        @Query("toEmail") toEmail : String,
+        @Query("subject") subject : String,
+        @Query("message") message : String
+    ): Response<Void>
+
     @PUT("auth/users")
     suspend fun update(@Body user: UserUpdate): Response<User>
 

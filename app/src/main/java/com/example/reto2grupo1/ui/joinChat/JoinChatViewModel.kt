@@ -40,7 +40,7 @@ class JoinChatViewModel(
 
     fun getChats() {
         viewModelScope.launch {
-            val  response = showPublicChasts()
+            val response = showPublicChasts()
             _chats.value = response
         }
     }

@@ -53,6 +53,8 @@
         <activity android:name=".ui.AddUser.AddUserActivity"></activity>
         <activity android:name=".ui.showUsers.ShowUsersActivity"></activity>
 
+        <activity android:name=".ui.changePassword.ChangePasswordActivity"></activity>
+
         <service
             android:name=".data.service.LocationService"
             android:enabled="true"

@@ -99,7 +99,7 @@
         android:backgroundTint="#858585"
         android:text="@string/Login"
         app:cornerRadius="13px"
-        app:layout_constraintBottom_toTopOf="@+id/textViewRegister"
+        app:layout_constraintBottom_toTopOf="@+id/textViewPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
@@ -116,10 +116,10 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
     <TextView
-        android:id="@+id/textViewRegister"
+        android:id="@+id/textViewPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Registrar"
+        android:text="¿Olvidaste tu contraseña?"
         android:textColor="#004EE8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
