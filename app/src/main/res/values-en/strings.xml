@@ -23,7 +23,12 @@
     <string name="mail">Email</string>
     <string name="departamento">Department</string>
     <string name="email">Email</string>
+
+    <string name="borrar">B</string>
+
+
     <string name="castellano">Spanish</string>
     <string name="ingles">English</string>
     <string name="euskera">Basque</string>
+
 </resources>

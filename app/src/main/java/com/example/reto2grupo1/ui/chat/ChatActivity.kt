@@ -28,7 +28,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
+import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
+import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.service.LocationService
 import com.example.reto2grupo1.data.service.SocketService
@@ -377,24 +379,24 @@ class ChatActivity : ComponentActivity() {
 
                     // Verificar si la obtención de datos locales fue exitosa
                     if (localChatMessageResource.status == Resource.Status.SUCCESS) {
-                        val localChats = localChatMessageResource.data ?: emptyList()
+                        val localMessages = localChatMessageResource.data ?: emptyList()
 
                         // Identificar chats nuevos y actualizados
                         val chatsToAddOrUpdate = remoteChatMessage.filter { remoteChat ->
-                            localChats.none { it.id == remoteChat.id }
+                            localMessages.none { it.id == remoteChat.id }
                         }
-
-                        // Esto es para eliminar, pero no deberia de poder eliminar un mensaje, se deja aqui por si acaso(no hay funcion para eliminar, hay que crearlo en caso necesiario)
-//                        val chatsToDelete = localChats.filter { localChat ->
-//                            remoteChatMessage.none { it.id == localChat.id }
-//                        }
-//                        // Eliminar chats en el repositorio local
-//                        chatsToDelete.forEach { chat ->
-//                            localMessageRepository.deleteChat(chat)
-//                        }
+                        val messageToAdd = localMessages.filter { localMessage ->
+                            remoteChatMessage.none { it.id == localMessage.id }
+                        }
+                        Log.i("SyncChat", messageToAdd.toString())
+                        Log.i("SyncChat", chatsToAddOrUpdate.toString())
+                        // Añadir chats al repositorio remoto
+                        messageToAdd.forEach { message ->
+//                            viewModel.onSendMessage(message.text, intent.getStringExtra("id").toString())
+                        }
                         // Agregar o actualizar chats en el repositorio local
-                        chatsToAddOrUpdate.forEach { chat ->
-                            localMessageRepository.createMessage(chat)
+                        chatsToAddOrUpdate.forEach { message ->
+                            localMessageRepository.createMessage(message)
                         }
                         Log.i("idChat", localMessageRepository.getChatMessages(num).toString())
 

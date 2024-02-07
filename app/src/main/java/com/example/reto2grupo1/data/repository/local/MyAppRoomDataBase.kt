@@ -10,7 +10,7 @@ import com.example.reto2grupo1.data.DbUser
 
 @Database(
     entities = [DbChat::class, DbMessage::class, DbUser::class, DbLogin::class],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 

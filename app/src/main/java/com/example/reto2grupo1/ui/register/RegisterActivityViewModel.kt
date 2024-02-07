@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto2grupo1.data.PassChange
+import com.example.reto2grupo1.data.Rol
 import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.data.UserUpdate
+import com.example.reto2grupo1.data.UserWithRol
 import com.example.reto2grupo1.data.repository.AuthenticationRepository
 import com.example.reto2grupo1.data.repository.UserRepository
 import com.example.reto2grupo1.data.repository.remote.RetrofitClient
@@ -38,21 +40,21 @@ class RegisterViewModel(
     private val authenticationRepository: AuthenticationRepository
 
 ) : ViewModel(){
-    private val _user = MutableLiveData<Resource<User>>()
-    val user : LiveData<Resource<User>> get() = _user
+    private val _user = MutableLiveData<Resource<UserWithRol>>()
+    val user : LiveData<Resource<UserWithRol>> get() = _user
 
 
     private val _userUpdate = MutableLiveData<Resource<UserUpdate>>()
     val userUpdate : LiveData<Resource<UserUpdate>> get() = _userUpdate
 
 
-    fun update(email:String,name:String,surname:String,password:String,phone:Int,dni:String,address: String){
-        val userUpdate = UserUpdate(email,name,surname,password,phone,dni,address)
+    fun update(email:String,name:String,surname:String,password:String,phone:Int,dni:String,address:String,roles:List<Rol>){
+        val userUpdate = UserWithRol(email,name,surname,password,phone,dni,address,roles)
         viewModelScope.launch {
             updateUser(userUpdate)
         }
     }
-    suspend fun updateUser(userUpdate: UserUpdate){
+    suspend fun updateUser(userUpdate: UserWithRol){
         return withContext(Dispatchers.IO){
             authenticationRepository.updateUser(userUpdate)
         }
@@ -77,9 +79,9 @@ class RegisterViewModel(
             _user.value = showInfo()
         }
     }
-    suspend fun showInfo() : Resource<User> {
+    suspend fun showInfo() : Resource<UserWithRol> {
        return withContext(Dispatchers.IO){
-           authenticationRepository.myInfo()
+           authenticationRepository.myInfoUserWhitRol()
        }
     }
 

@@ -43,4 +43,11 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/eliminarButton"
+        android:layout_width="3dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="@string/borrar" />
+
 </LinearLayout>

@@ -11,5 +11,5 @@ interface CommonUserRepository {
     suspend fun showInfo() : Resource<User>
     suspend fun getLoggedEmail():String
     suspend fun addUser(user:User):Long
-
+    suspend fun getLoggedId():String
 }

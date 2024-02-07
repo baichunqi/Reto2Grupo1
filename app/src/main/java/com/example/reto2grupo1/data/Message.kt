@@ -10,5 +10,6 @@ data class Message(
     val text: String,
     val userId: String,
     val chatId: String,
+//    val time: Date,
 
     ): Parcelable

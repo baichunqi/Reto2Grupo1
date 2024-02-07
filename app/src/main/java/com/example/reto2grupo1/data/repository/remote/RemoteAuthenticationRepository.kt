@@ -4,6 +4,7 @@ import com.example.reto2grupo1.data.AuthenticationRequest
 import com.example.reto2grupo1.data.AuthenticationResponse
 import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.data.UserUpdate
+import com.example.reto2grupo1.data.UserWithRol
 import com.example.reto2grupo1.data.repository.AuthenticationRepository
 import com.example.reto2grupo1.utils.Resource
 
@@ -15,8 +16,10 @@ class RemoteAuthenticationRepository : BaseDataSource(), AuthenticationRepositor
     override suspend fun myInfo(): Resource<User> = getResult {
         RetrofitClient.apiInterface.myInfo()
     }
-
-    override suspend fun updateUser(user : UserUpdate): Resource<User> = getResult {
+    override suspend fun myInfoUserWhitRol(): Resource<UserWithRol> = getResult {
+        RetrofitClient.apiInterface.myInfoUserWhitRol()
+    }
+    override suspend fun updateUser(user : UserWithRol): Resource<UserWithRol> = getResult {
         RetrofitClient.apiInterface.update(user)
     }
 

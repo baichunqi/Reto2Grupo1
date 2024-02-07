@@ -12,6 +12,7 @@ data class User (
     val phone:Int,
     val dni:String,
     val address:String,
+
 ) : Parcelable
 
 
@@ -23,4 +24,17 @@ data class UserUpdate(
     val password:String,
     val phone:Int,
     val dni:String,
-    val address:String):Parcelable
+    val address:String,
+
+):Parcelable
+@Parcelize
+data class UserWithRol(
+    var email:String,
+    val name: String,
+    val surname:String,
+    val password:String,
+    val phone:Int,
+    val dni:String,
+    val address:String,
+    val roles:List<Rol>
+):Parcelable
