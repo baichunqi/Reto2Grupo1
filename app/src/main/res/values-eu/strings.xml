@@ -23,12 +23,12 @@
     <string name="mail">Posta</string>
     <string name="departamento">Departamentua</string>
     <string name="email">Posta elektronikoa</string>
-<<<<<<< HEAD
+
     <string name="borrar">B</string>
 
-=======
+
     <string name="castellano">Gaztelera</string>
     <string name="ingles">Ingelesa</string>
     <string name="euskera">Euskara</string>
->>>>>>> ae7882efe80314e5143bd883b4567cd6207d11dd
+
 </resources>

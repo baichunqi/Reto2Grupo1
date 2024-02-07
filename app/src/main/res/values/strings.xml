@@ -22,11 +22,11 @@
     <string name="mail">Email</string>
     <string name="departamento">Departamento</string>
     <string name="email">Email</string>
-<<<<<<< HEAD
+
     <string name="borrar">B</string>
-=======
+
     <string name="castellano">Castellano</string>
     <string name="ingles">Ingles</string>
     <string name="euskera">Euskera</string>
->>>>>>> ae7882efe80314e5143bd883b4567cd6207d11dd
+
 </resources>

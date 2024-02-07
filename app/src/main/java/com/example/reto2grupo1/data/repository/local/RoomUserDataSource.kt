@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.reto2grupo1.MyApp
-import com.example.reto2grupo1.data.DbChat
 import com.example.reto2grupo1.data.DbUser
 import com.example.reto2grupo1.data.User
 import com.example.reto2grupo1.data.repository.CommonUserRepository
@@ -51,6 +50,10 @@ class RoomUserDataSource : CommonUserRepository{
         return Resource.success(response)
     }
 
+    override suspend fun getLoggedId(): String {
+        return userDao.getLoggedId().toString()
+    }
+
     fun User.toDbUser() = id?.let { DbUser(it, email, name, surname, phone, dni, address, false) }
     fun DbUser.toUser() = id?.let { User(it, email, name, surname, phone, dni, address) }
 }
@@ -68,6 +71,9 @@ interface UserDao {
 
     @Query("SELECT email FROM users WHERE logged = 1")
     suspend fun getLoggedEmail(): String
+
+    @Query("SELECT id FROM users WHERE logged = 1")
+    suspend fun getLoggedId(): Int
 
 
 

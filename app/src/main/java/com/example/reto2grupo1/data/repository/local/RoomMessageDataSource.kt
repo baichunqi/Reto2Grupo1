@@ -21,7 +21,7 @@ class RoomMessageDataSource : CommonMessageRepository{
 
     override suspend fun createMessage(message: Message): Resource<Void> {
         try {
-            messageDao.addMessage(message.toDbMessage(userDao.getLoggedEmail()))
+            messageDao.addMessage(message.toDbMessage(userDao.getLoggedEmail(), false))
             return Resource.success()
         } catch (ex:SQLiteConstraintException){
             return Resource.error(ex.message!!)
@@ -29,9 +29,17 @@ class RoomMessageDataSource : CommonMessageRepository{
 
     }
 
+    override suspend fun changeToSent(message: Message){
+        message.id?.let { messageDao.changeToSent(it) }
+    }
+
+    override suspend fun clearAllMessages() {
+        messageDao.clearMessages()
+    }
+
 }
 
-fun Message.toDbMessage(userEmail: String) = DbMessage(id, text, userId, chatId, userEmail)
+fun Message.toDbMessage(userEmail: String, sendToServer: Boolean) = DbMessage(id, text, userId, chatId, userEmail, sendToServer)
 fun DbMessage.toMessage() = Message(id, text, userId, chatId)
 
 @Dao
@@ -41,5 +49,11 @@ interface MessageDao{
 
     @Insert
     suspend fun addMessage(message: DbMessage) :Long
+
+    @Query("DELETE FROM messages")
+    suspend fun clearMessages()
+
+    @Query("UPDATE messages SET sendToServer = 1 WHERE id = :id")
+    suspend fun changeToSent(id: Int)
 
 }
