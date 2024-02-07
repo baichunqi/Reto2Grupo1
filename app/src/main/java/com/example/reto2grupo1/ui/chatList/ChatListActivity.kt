@@ -12,11 +12,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
+import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
+import com.example.reto2grupo1.data.service.SocketService
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
@@ -49,6 +51,8 @@ class ChatListActivity  : ComponentActivity()  {
         super.onCreate(savedInstanceState)
         val binding = ActivityChatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val socketIntent = Intent(MyApp.context, SocketService::class.java)
+        MyApp.context.startForegroundService(socketIntent)
 
         chatListAdapter = ChatListAdapter(this)
         binding.recyclerView.adapter = chatListAdapter

@@ -2,13 +2,16 @@ package com.example.reto2grupo1.ui.chat
 
 import android.app.Activity
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -28,6 +31,7 @@ import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.service.LocationService
+import com.example.reto2grupo1.data.service.SocketService
 import com.example.reto2grupo1.databinding.ActivityChatBinding
 import com.example.reto2grupo1.ui.AddUser.AddUserActivity
 import com.example.reto2grupo1.ui.showUsers.ShowUsersActivity
@@ -46,6 +50,8 @@ class ChatActivity : ComponentActivity() {
     private val FILE_PICK_REQUEST_CODE = 1
     private var selectedFileUri: Uri? = null
     private var imageByteArray: ByteArray? = null
+    private lateinit var socketService: SocketService
+    private var isBind = false
     private var imageBase64: String? = null
     val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     private lateinit var chatAdapter: ChatAdapter
@@ -111,7 +117,8 @@ class ChatActivity : ComponentActivity() {
                         // Convertir el InputStream en un String
                         val text = inputStream.bufferedReader().use { it.readText() }
                         Log.i("File", text)
-                        viewModel.onSendMessage(text,intent.getStringExtra("id").toString())
+                        //viewModel.onSendMessage(text,intent.getStringExtra("id").toString())
+                        socketService.onSendMessage(text,intent.getStringExtra("id").toString())
                         // Ahora 'text' contiene el contenido del archivo en forma de String
                         // Puedes almacenar 'text' en tu base de datos o hacer cualquier otra operación con él
                     } catch (e: IOException) {
@@ -162,7 +169,8 @@ class ChatActivity : ComponentActivity() {
 
         viewModel.imageBase64.observe(this, Observer { newImageBase64 ->
             Log.d(TAG, "ImageBase64 actualizado: $newImageBase64")
-            viewModel.onSendMessage(newImageBase64, intent.getStringExtra("id").toString())
+            //viewModel.onSendMessage(newImageBase64, intent.getStringExtra("id").toString())
+            socketService.onSendMessage(newImageBase64,intent.getStringExtra("id").toString())
         })
 
         syncData(chatId.toInt())
@@ -198,6 +206,30 @@ class ChatActivity : ComponentActivity() {
             startActivity(intent)
         }
 
+    }
+
+    private var serviceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val localService = service as SocketService.LocalService
+            socketService = localService.service
+            isBind = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            isBind = false
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intent = Intent(this, SocketService::class.java)
+        bindService(intent, serviceConnection, BIND_AUTO_CREATE)
+    }
+    override fun onStop() {
+        super.onStop()
+        if (isBind) {
+            unbindService(serviceConnection)
+        }
     }
 
     private fun onMessagesChange(binding: ActivityChatBinding) {
@@ -255,6 +287,7 @@ class ChatActivity : ComponentActivity() {
             Log.i("EnviMessage", intent.getStringExtra("id").toString())
             binding.editTextUsername2.setText("")
             viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+            socketService.onSendMessage(message,intent.getStringExtra("id").toString())
         }
         binding.imageView10.setOnClickListener(){
             showPopupUtils(it)
@@ -276,7 +309,8 @@ class ChatActivity : ComponentActivity() {
                         // Hacer algo con la última ubicación en respuesta al clic
                         Log.d("ChatActivity", "Última ubicación al hacer clic: Latitud=${lastLocation.latitude}, Longitud=${lastLocation.longitude}")
                         val message = lastLocation.latitude.toString() + " " + lastLocation.longitude.toString()
-                        viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+                        //viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+                        socketService.onSendMessage(message,intent.getStringExtra("id").toString())
                     } else {
                         Log.d("ChatActivity", "No hay ubicación disponible.")
                     }

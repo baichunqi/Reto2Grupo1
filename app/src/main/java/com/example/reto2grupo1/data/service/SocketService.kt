@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -28,7 +29,9 @@ import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -39,8 +42,38 @@ class SocketService : Service() {
     private val NOTIFICATION_ID = 321
     private val CHANNEL_ID = "my_channel"
 
+
+    private lateinit var serviceScope: CoroutineScope
+
+    private val TAG = "ChatViewModel"
+
+    private val _messages = MutableLiveData<Resource<List<Message>>>()
+    val messages: LiveData<Resource<List<Message>>> get() = _messages
+
+    private val _connected = MutableLiveData<Resource<Boolean>>()
+    val connected: LiveData<Resource<Boolean>> get() = _connected
+
+    private val SOCKET_HOST = "http://10.0.2.2:8085/"
+    private val AUTHORIZATION_HEADER = "Authorization"
+    private lateinit var mSocket: Socket
+
+
+    private val mBinder: IBinder = LocalService()
+
+    override fun onBind(intent: Intent): IBinder {
+        return mBinder
+    }
+
+    inner class LocalService : Binder() {
+        val service: SocketService
+            get() = this@SocketService
+    }
+
+
     override fun onCreate() {
         super.onCreate()
+
+        serviceScope = CoroutineScope(Dispatchers.Default)
         createNotificationChannel()
     }
 
@@ -51,8 +84,6 @@ class SocketService : Service() {
         startSocket()
         return START_STICKY
     }
-
-    override fun onBind(intent: Intent?): IBinder? = null
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -84,19 +115,6 @@ class SocketService : Service() {
             .build()
     }
 
-    private val TAG = "ChatViewModel"
-
-    private val _messages = MutableLiveData<Resource<List<Message>>>()
-    val messages: LiveData<Resource<List<Message>>> get() = _messages
-
-    private val _connected = MutableLiveData<Resource<Boolean>>()
-    val connected: LiveData<Resource<Boolean>> get() = _connected
-
-    private val SOCKET_HOST = "http://10.0.2.2:8085/"
-    private val AUTHORIZATION_HEADER = "Authorization"
-    private lateinit var mSocket: Socket
-
-
     fun startSocket(){
         Log.d("a","b")
         val socketOptions = createSocketOptions()
@@ -105,10 +123,10 @@ class SocketService : Service() {
         mSocket.on("connect_error", onConnectError())
         mSocket.on(SocketEvents.ON_DISCONNECT.value, onDisconnect())
         mSocket.on(SocketEvents.ON_MESSAGE_RECEIVED.value, onNewMessage())
-//        viewModelScope.launch {
-//            connect()
-//        }
-    }
+        serviceScope.launch {
+            connect()
+        }
+}
 
     private suspend fun connect(){
         withContext(Dispatchers.IO) {
@@ -117,9 +135,9 @@ class SocketService : Service() {
     }
 
     fun stopSocket(){
-//        viewModelScope.launch {
-//            disconnect()
-//        }
+        serviceScope.launch {
+            disconnect()
+        }
     }
     suspend fun disconnect(){
         withContext(Dispatchers.IO){
@@ -230,6 +248,7 @@ class SocketService : Service() {
     override fun onDestroy() {
         Log.i("services", "onDestroy")
         stopSocket()
+        serviceScope.cancel()
         super.onDestroy()
     }
 }
