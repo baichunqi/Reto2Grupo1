@@ -204,30 +204,32 @@ class ChatActivity : ComponentActivity() {
 
     private fun onMessagesChange(binding: ActivityChatBinding) {
 
-            viewModel.messages.observe(this, Observer {
-                Log.d(TAG, "messages change")
-                when (it.status) {
-                    Resource.Status.SUCCESS -> {
-                        Log.d(TAG, "messages observe success")
-                        if (!it.data.isNullOrEmpty()) {
-                            chatAdapter.submitList(it.data)
-                            chatAdapter.notifyDataSetChanged()
-                            binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
-                        }
-                    }
-                    Resource.Status.ERROR -> {
-                        Log.d(TAG, "messages observe error")
-                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                    }
-                    Resource.Status.LOADING -> {
-                        // de momento
-                        Log.d(TAG, "messages observe loading")
-                        val toast = Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG)
-                        toast.setGravity(Gravity.TOP, 0, 0)
-                        toast.show()
-                    }
-                }
-            })
+//            viewModel.messages.observe(this, Observer {
+//                Log.d(TAG, "messages change")
+//                when (it.status) {
+//                    Resource.Status.SUCCESS -> {
+//                        Log.d(TAG, "messages observe success")
+//                        if (!it.data.isNullOrEmpty()) {
+//
+//                            Log.i("chatTestFecha",  it.data.toString())
+//                            chatAdapter.submitList(it.data)
+//                            chatAdapter.notifyDataSetChanged()
+//                            binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
+//                        }
+//                    }
+//                    Resource.Status.ERROR -> {
+//                        Log.d(TAG, "messages observe error")
+//                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+//                    }
+//                    Resource.Status.LOADING -> {
+//                        // de momento
+//                        Log.d(TAG, "messages observe loading")
+//                        val toast = Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG)
+//                        toast.setGravity(Gravity.TOP, 0, 0)
+//                        toast.show()
+//                    }
+//                }
+//            })
 
             lifecycleScope.launch {
                 val messagesResource = localMessageRepository.getChatMessages(chatId.toInt())
@@ -236,6 +238,7 @@ class ChatActivity : ComponentActivity() {
                         val messages = messagesResource.data
                         chatAdapter.submitList(messages)
                         chatAdapter.notifyDataSetChanged()
+
                         // Mostrar los mensajes en la interfaz de usuario
                     }
                     Resource.Status.ERROR -> {
@@ -257,6 +260,7 @@ class ChatActivity : ComponentActivity() {
             Log.i("EnviMessage", intent.getStringExtra("id").toString())
             binding.editTextUsername2.setText("")
             viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
+            syncData(chatId.toInt())
         }
         binding.imageView10.setOnClickListener(){
             showPopupUtils(it)

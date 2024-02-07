@@ -168,7 +168,7 @@ class ChatViewModel(
 
     private fun updateMessageListWithNewMessage(message: SocketMessageRes) {
         try {
-            val incomingMessage = Message(message.authorId,message.message, message.authorName, message.room)
+            val incomingMessage = Message(message.authorId,message.message, message.authorName, message.room, message.date.toString())
             val msgsList = _messages.value?.data?.toMutableList()
             if (msgsList != null) {
                 msgsList.add(incomingMessage)
