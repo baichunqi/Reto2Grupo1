@@ -186,7 +186,7 @@ class ChatActivity : ComponentActivity() {
         }
 
         binding.txtAddUser.setOnClickListener(){
-            var intent = Intent(this, ShowUsersActivity::class.java)
+            val intent = Intent(this, ShowUsersActivity::class.java)
             intent.putExtra("id",chatId)
             startActivity(intent)
         }
