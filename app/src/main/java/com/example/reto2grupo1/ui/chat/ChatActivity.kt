@@ -160,7 +160,7 @@ class ChatActivity : ComponentActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
         chatId = intent.getStringExtra("id").toString()
-        chatAdapter = ChatAdapter(chatId)
+        chatAdapter = ChatAdapter()
         binding.chatView.adapter = chatAdapter
 
         val filter = IntentFilter("locationUpdate")

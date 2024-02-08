@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.databinding.ItemChatObjectRecieveBinding
 
-class ChatAdapter(chatId: String?) : ListAdapter<Message, ChatAdapter.ChatViewHolder>(ChatDiffCallback()) {
+class ChatAdapter() : ListAdapter<Message, ChatAdapter.ChatViewHolder>(ChatDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder{
          val binding = ItemChatObjectRecieveBinding.inflate(LayoutInflater.from(parent.context),parent, false)
 
