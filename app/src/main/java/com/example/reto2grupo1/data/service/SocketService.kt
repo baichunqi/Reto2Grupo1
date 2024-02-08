@@ -17,6 +17,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.data.Message
+import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.socket.SocketEvents
 import com.example.reto2grupo1.data.socket.SocketMessageReq
@@ -32,15 +33,19 @@ import io.socket.emitter.Emitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
+import java.util.Date
 
 class SocketService : Service() {
 
 
     private val NOTIFICATION_ID = 321
     private val CHANNEL_ID = "my_channel"
+    private val localMessageRepository = RoomMessageDataSource()
 
 
     private lateinit var serviceScope: CoroutineScope
@@ -203,13 +208,22 @@ class SocketService : Service() {
         try {
             val jsonObject = data as JSONObject
             val jsonObjectString = jsonObject.toString()
-            val message = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
-
-            Log.d("newMessage", message.authorName)
-            Log.d("newMessage", message.messageType.toString())
-
+            val messageSocket = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
+            Log.d("fff", "1")
+            Log.d("fff", messageSocket.toString())
+            val message = Message(null, messageSocket.message, messageSocket.authorId.toString(), messageSocket.room, "2024-02-07T19:49:47.000+00:00");
             // TODO GUARDAR EN ROOM Y NOTIFICAR CON EVENTBUS
-            //updateMessageListWithNewMessage(message)
+            Log.d("fff", "2")
+
+            serviceScope.launch {
+                withContext(Dispatchers.IO){
+                   localMessageRepository.createMessage(message)
+                }
+            }
+
+
+
+            EventBus.getDefault().post(message)
         } catch (ex: Exception) {
             Log.e(TAG, ex.message!!)
         }

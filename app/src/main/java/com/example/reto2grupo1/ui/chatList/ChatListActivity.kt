@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.R
 import com.example.reto2grupo1.data.Chat
+import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
@@ -34,6 +35,9 @@ import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class ChatListActivity  : ComponentActivity()  {
@@ -271,4 +275,18 @@ class ChatListActivity  : ComponentActivity()  {
         startActivity(intent)
     }
 
+    override fun onStart(){
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onNotificaionMessage(message : Message){
+
+    }
 }

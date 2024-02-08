@@ -1,6 +1,7 @@
 package com.example.reto2grupo1.data.repository.local
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -24,6 +25,7 @@ class RoomMessageDataSource : CommonMessageRepository{
             messageDao.addMessage(message.toDbMessage(userDao.getLoggedEmail(), false))
             return Resource.success()
         } catch (ex:SQLiteConstraintException){
+            ex.message?.let { Log.e("FFF", it) }
             return Resource.error(ex.message!!)
         }
 

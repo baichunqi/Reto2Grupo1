@@ -42,6 +42,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -53,13 +56,16 @@ class ChatActivity : ComponentActivity() {
     private var selectedFileUri: Uri? = null
     private var imageByteArray: ByteArray? = null
     private lateinit var socketService: SocketService
+
+    private lateinit var binding: ActivityChatBinding
     private var isBind = false
     private var imageBase64: String? = null
     val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     private lateinit var chatAdapter: ChatAdapter
     private val localMessageRepository = RoomMessageDataSource()
     private val messageRepository = RemoteChatDataSource()
-    private val viewModel: ChatViewModel by viewModels { ChatViewModelFactory(messageRepository)
+    private val viewModel: ChatViewModel by viewModels {
+        ChatViewModelFactory(messageRepository)
     }
 
     private val locationReceiver = object : BroadcastReceiver() {
@@ -151,6 +157,8 @@ class ChatActivity : ComponentActivity() {
         super.onStart()
         val intent = Intent(this, SocketService::class.java)
         bindService(intent, serviceConnection, BIND_AUTO_CREATE)
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onStop() {
@@ -158,6 +166,8 @@ class ChatActivity : ComponentActivity() {
         if (isBind) {
             unbindService(serviceConnection)
         }
+
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,8 +175,8 @@ class ChatActivity : ComponentActivity() {
 
         val intentLocation = Intent(MyApp.context, LocationService::class.java)
         MyApp.context.startForegroundService(intentLocation)
-
-        val binding = ActivityChatBinding.inflate(layoutInflater)
+        binding = ActivityChatBinding.inflate(layoutInflater)
+        // val binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
         chatId = intent.getStringExtra("id").toString()
         chatAdapter = ChatAdapter(chatId)
@@ -238,10 +248,12 @@ class ChatActivity : ComponentActivity() {
 
 
             lifecycleScope.launch {
+                Log.i("FFF", "onMessagesChange")
                 val messagesResource = localMessageRepository.getChatMessages(chatId.toInt())
                 when (messagesResource.status) {
                     Resource.Status.SUCCESS -> {
                         val messages = messagesResource.data
+                        Log.i("FFF", "Success")
                         chatAdapter.submitList(messages)
                         chatAdapter.notifyDataSetChanged()
                         binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
@@ -250,9 +262,11 @@ class ChatActivity : ComponentActivity() {
                     }
                     Resource.Status.ERROR -> {
                         // Manejar el error
+                        Log.i("FFF", "Error")
                     }
                     Resource.Status.LOADING -> {
                         // Mostrar un indicador de carga
+                        Log.i("FFF", "Loading")
                     }
                 }
             }
@@ -341,6 +355,7 @@ class ChatActivity : ComponentActivity() {
         return lastReceivedLocation
     }
     private fun syncData(num: Int) {
+        if (true) return;
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 Log.d("sync", localMessageRepository.getChatMessages(chatId.toInt()).toString())
@@ -373,6 +388,7 @@ class ChatActivity : ComponentActivity() {
                         }
                         // Agregar o actualizar chats en el repositorio local
                         chatsToAddOrUpdate.forEach { message ->
+                            Log.i("FFF", message.toString())
                             localMessageRepository.createMessage(message)
                         }
                         Log.i("idChat", localMessageRepository.getChatMessages(num).toString())
@@ -404,5 +420,11 @@ class ChatActivity : ComponentActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onNotificaionMessage(message : Message){
+        Log.d("FFFFFF", "AA")
+        Log.d("FFF", message.text)
+        onMessagesChange(binding)
     }
 }

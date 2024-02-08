@@ -111,4 +111,6 @@ dependencies {
     //location
     implementation ("com.google.android.gms:play-services-location:17.1.0")
 
+    //eventBus
+    implementation("org.greenrobot:eventbus:3.2.0")
 }
