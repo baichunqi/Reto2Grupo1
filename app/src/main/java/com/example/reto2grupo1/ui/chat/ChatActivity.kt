@@ -294,6 +294,8 @@ class ChatActivity : ComponentActivity() {
             binding.editTextUsername2.setText("")
             //viewModel.onSendMessage(message, intent.getStringExtra("id").toString())
             socketService.onSendMessage(message,intent.getStringExtra("id").toString())
+            syncData(chatId.toInt())
+            onMessagesChange(binding)
         }
         binding.imageView10.setOnClickListener(){
             showPopupUtils(it)
