@@ -14,13 +14,15 @@ class RemoteUserDataSource : BaseDataSource(), UserRepository {
     override suspend fun changePass(passChange: PassChange): Resource<Int> = getResult {
         RetrofitClient.apiInterface.changePass(passChange)
     }
-
     override suspend fun uploadPhoto(photo: MultipartBody.Part) {
         RetrofitClient.apiInterface.uploadPhoto(photo)
     }
     override suspend fun getChatUsers(id:Int): Resource<List<User>> = getResult {
         RetrofitClient.apiInterface.getUsersChat(id)
     }
+//    override suspend fun changePassword(authenticationRequest: AuthenticationRequest): Resource<AuthenticationRequest> = getResult {
+//        RetrofitClient.apiInterface.changePassword(authenticationRequest)
+//    }
 
     override suspend fun getUserRol(): Resource<Rol> = getResult {
         RetrofitClient.apiInterface.getUserRol()

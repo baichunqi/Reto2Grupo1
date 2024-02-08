@@ -21,6 +21,7 @@ import com.example.reto2grupo1.data.repository.remote.RemoteChatListDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteCreateChatDataSource
 import com.example.reto2grupo1.data.service.SocketService
 import com.example.reto2grupo1.databinding.ActivityChatListBinding
+import com.example.reto2grupo1.ui.changePassword.ChangePasswordActivity
 import com.example.reto2grupo1.ui.chat.ChatActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupActivity
 import com.example.reto2grupo1.ui.createGroup.CreateGroupViewModel
@@ -60,9 +61,8 @@ class ChatListActivity  : ComponentActivity()  {
 
         binding.imageView7.setOnClickListener() {
             val intent = Intent(this, RegisterActivity::class.java)
-            finish()
             startActivity(intent)
-
+            finish()
         }
 
         binding.editTextSearch.addTextChangedListener(){
@@ -70,7 +70,7 @@ class ChatListActivity  : ComponentActivity()  {
         }
 
         binding.imageView8.setOnClickListener() {
-            showPopup(it)
+            showChatPopup(it)
         }
 
         binding.imageView9.setOnClickListener(){
@@ -166,7 +166,7 @@ class ChatListActivity  : ComponentActivity()  {
         startActivity(intent)
     }
 
-    fun showPopup(v : View){
+    fun showChatPopup(v : View){
         val popup = PopupMenu(this, v)
         val inflater: MenuInflater = popup.menuInflater
         inflater.inflate(R.menu.menu, popup.menu)

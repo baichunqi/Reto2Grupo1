@@ -19,6 +19,7 @@ import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
 import com.example.reto2grupo1.databinding.ActivityLoginBinding
+import com.example.reto2grupo1.ui.changePassword.ChangePasswordActivity
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
@@ -82,6 +83,12 @@ class LoginActivity : ComponentActivity() {
             }
         }
 
+        binding.textViewPassword.setOnClickListener() {
+            val intent = Intent(this, ChangePasswordActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
 
 
         viewModel.login.observe(this, Observer {
@@ -90,14 +97,14 @@ class LoginActivity : ComponentActivity() {
                     it.data?.let { data ->
                         Log.e("Antes de guardar", "antes de guardar")
                         MyApp.userPreferences.restartPreference()
-    Log.e("Token", data.accessToken)
+                        Log.e("Token", data.accessToken)
                         if (binding.checkBox2.isChecked) {
                             MyApp.userPreferences.saveAuthTokenWithPs(
                                 binding.editTextPassword.text.toString(),
                                 data.email,
                                 data.accessToken,
 
-                            )
+                                )
                             syncData(binding.editTextPassword.text.toString(), data.email)
                         } else if (!binding.checkBox2.isChecked) {
                             MyApp.userPreferences.restartPreference()
@@ -107,14 +114,14 @@ class LoginActivity : ComponentActivity() {
                             )
                         }
                         Log.e("Despues de guardar", "Despues de guardar")
-                            val pass = binding.editTextPassword.text.toString()
+                        val pass = binding.editTextPassword.text.toString()
                         if (pass == "Elorrieta00"){
-                        val intent = Intent(this, RegisterActivity::class.java).apply {
+                            val intent = Intent(this, RegisterActivity::class.java).apply {
 
-                            Log.e("PruebaInicia", "Cargando los chats")
-                        }
-                        startActivity(intent)
-                        finish()
+                                Log.e("PruebaInicia", "Cargando los chats")
+                            }
+                            startActivity(intent)
+                            finish()
                         } else{
                             val intentChat = Intent(this, ChatListActivity::class.java).apply {
 

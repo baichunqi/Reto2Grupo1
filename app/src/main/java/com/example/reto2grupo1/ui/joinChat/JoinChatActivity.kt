@@ -39,7 +39,18 @@ class JoinChatActivity : ComponentActivity(){
                     }
                 }
                 Resource.Status.ERROR -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                    val errorMessage = it.message
+                    if (errorMessage != null) {
+                        if (errorMessage.contains("409")) {
+                            Toast.makeText(this, "Ya esta unido a ese grupo", Toast.LENGTH_LONG)
+                                .show()
+                        } else if (errorMessage.contains("200")){
+                            Toast.makeText(this, "Te has unido", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, ChatListActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
                 }
                 Resource.Status.LOADING -> {
                     // No implementado
@@ -54,5 +65,6 @@ class JoinChatActivity : ComponentActivity(){
         }
         val intent = Intent(this, ChatListActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }
