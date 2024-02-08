@@ -21,7 +21,7 @@ class RemoteAuthenticationRepository : BaseDataSource(), AuthenticationRepositor
     }
     override suspend fun updateUser(user : UserWithRol): Resource<UserWithRol> = getResult {
         RetrofitClient.apiInterface.update(user)
-    }
+        }
 
     override suspend fun getAllUsers(): Resource<List<User>> = getResult{
         RetrofitClient.apiInterface.getAllUsers()

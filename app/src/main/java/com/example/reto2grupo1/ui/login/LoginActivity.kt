@@ -19,6 +19,7 @@ import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.data.repository.local.RoomUserDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteAuthenticationRepository
 import com.example.reto2grupo1.databinding.ActivityLoginBinding
+import com.example.reto2grupo1.ui.changePassword.ChangePasswordActivity
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.ui.register.RegisterActivity
 import com.example.reto2grupo1.utils.Resource
@@ -80,6 +81,12 @@ class LoginActivity : ComponentActivity() {
                     binding.editTextPassword.text.toString()
                 )
             }
+        }
+
+        binding.textViewPassword.setOnClickListener() {
+            val intent = Intent(this, ChangePasswordActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
 
