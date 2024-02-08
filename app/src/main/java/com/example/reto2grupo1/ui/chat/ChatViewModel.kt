@@ -54,11 +54,6 @@ class ChatViewModel(
         _imageBase64.value = base64
     }
 
-    private val SOCKET_HOST = "http://10.5.7.13:8085/"
-    private val AUTHORIZATION_HEADER = "Authorization"
-    private lateinit var mSocket: Socket
-
-
     fun getChatContent(id: Int){
         viewModelScope.launch {
             val repoResponse  = getChatMessages(id)

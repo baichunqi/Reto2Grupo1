@@ -274,19 +274,4 @@ class ChatListActivity  : ComponentActivity()  {
         finish()
         startActivity(intent)
     }
-
-    override fun onStart(){
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onNotificaionMessage(message : Message){
-
-    }
 }

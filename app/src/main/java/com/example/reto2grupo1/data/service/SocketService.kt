@@ -220,9 +220,6 @@ class SocketService : Service() {
                    localMessageRepository.createMessage(message)
                 }
             }
-
-
-
             EventBus.getDefault().post(message)
         } catch (ex: Exception) {
             Log.e(TAG, ex.message!!)

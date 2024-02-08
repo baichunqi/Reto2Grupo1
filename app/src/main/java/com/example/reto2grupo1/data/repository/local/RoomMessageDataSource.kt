@@ -28,7 +28,6 @@ class RoomMessageDataSource : CommonMessageRepository{
             ex.message?.let { Log.e("FFF", it) }
             return Resource.error(ex.message!!)
         }
-
     }
 
     override suspend fun changeToSent(message: Message){
