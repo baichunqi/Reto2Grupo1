@@ -41,7 +41,7 @@ class ChatAdapter(chatId: String?) : ListAdapter<Message, ChatAdapter.ChatViewHo
     }
     inner class ChatViewHolder(private val binding: ItemChatObjectRecieveBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(message: Message){
-            val date = message.created_at.substring(0, 18).replace("T", " ")
+            val date = message.created_at.substring(0, 16).replace("T", " ")
             if(isBase64(message.text)){
                 var imagen = base64ToBitmap(message.text)
                 binding.ImageViewImage.setImageBitmap(imagen)

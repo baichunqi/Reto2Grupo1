@@ -235,34 +235,7 @@ class ChatActivity : ComponentActivity() {
     }
 
     private fun onMessagesChange(binding: ActivityChatBinding) {
-//        intent.getStringExtra("id")?.let { syncData(it.toInt()) }
 
-//            viewModel.messages.observe(this, Observer {
-//                Log.d(TAG, "messages change")
-//                when (it.status) {
-//                    Resource.Status.SUCCESS -> {
-//                        Log.d(TAG, "messages observe success")
-//                        if (!it.data.isNullOrEmpty()) {
-//
-//                            Log.i("chatTestFecha",  it.data.toString())
-//                            chatAdapter.submitList(it.data)
-//                            chatAdapter.notifyDataSetChanged()
-//                            binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
-//                        }
-//                    }
-//                    Resource.Status.ERROR -> {
-//                        Log.d(TAG, "messages observe error")
-//                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-//                    }
-//                    Resource.Status.LOADING -> {
-//                        // de momento
-//                        Log.d(TAG, "messages observe loading")
-//                        val toast = Toast.makeText(this, "Cargando..", Toast.LENGTH_LONG)
-//                        toast.setGravity(Gravity.TOP, 0, 0)
-//                        toast.show()
-//                    }
-//                }
-//            })
 
             lifecycleScope.launch {
                 val messagesResource = localMessageRepository.getChatMessages(chatId.toInt())
@@ -271,6 +244,7 @@ class ChatActivity : ComponentActivity() {
                         val messages = messagesResource.data
                         chatAdapter.submitList(messages)
                         chatAdapter.notifyDataSetChanged()
+                        binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
 
                         // Mostrar los mensajes en la interfaz de usuario
                     }
@@ -359,7 +333,6 @@ class ChatActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.i("pruebaDestroy", "Desconectando")
-        viewModel.stopSocket()
         unregisterReceiver(locationReceiver)
         val intent = Intent(MyApp.context, LocationService::class.java)
         MyApp.context.stopService(intent)

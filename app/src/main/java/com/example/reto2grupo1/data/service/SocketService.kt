@@ -47,8 +47,6 @@ class SocketService : Service() {
 
     private val TAG = "sOCKETSERVICE"
 
-    private val _messages = MutableLiveData<Resource<List<Message>>>()
-    val messages: LiveData<Resource<List<Message>>> get() = _messages
 
     private val SOCKET_HOST = "http://10.5.7.13:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
@@ -207,30 +205,16 @@ class SocketService : Service() {
             val jsonObjectString = jsonObject.toString()
             val message = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
 
-            Log.d(TAG, message.authorName)
-            Log.d(TAG, message.messageType.toString())
+            Log.d("newMessage", message.authorName)
+            Log.d("newMessage", message.messageType.toString())
 
-            // TODO GUARDAR EN ROOM Y NOTIFICAR CON EVENBUS
-            updateMessageListWithNewMessage(message)
+            // TODO GUARDAR EN ROOM Y NOTIFICAR CON EVENTBUS
+            //updateMessageListWithNewMessage(message)
         } catch (ex: Exception) {
             Log.e(TAG, ex.message!!)
         }
     }
 
-    private fun updateMessageListWithNewMessage(message: SocketMessageRes) {
-        try {
-            val incomingMessage = Message(message.authorId,message.message, message.authorName, message.room, message.date.toString())
-            val msgsList = _messages.value?.data?.toMutableList()
-            if (msgsList != null) {
-                msgsList.add(incomingMessage)
-                _messages.postValue(Resource.success(msgsList))
-            } else {
-                _messages.postValue(Resource.success(listOf(incomingMessage)))
-            }
-        } catch (ex: Exception) {
-            Log.e(TAG, ex.message!!)
-        }
-    }
 
     fun onSendMessage(message: String, id : String) {
         Log.d(TAG, "onSendMessage $message")

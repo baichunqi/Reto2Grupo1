@@ -47,6 +47,13 @@ class RegisterViewModel(
     private val _userUpdate = MutableLiveData<Resource<UserUpdate>>()
     val userUpdate : LiveData<Resource<UserUpdate>> get() = _userUpdate
 
+    private val _imageBase64 = MutableLiveData<String>()
+    val imageBase64: LiveData<String>
+        get() = _imageBase64
+
+    fun updateImageBase64(base64: String) {
+        _imageBase64.value = base64
+    }
 
     fun update(email:String,name:String,surname:String,password:String,phone:Int,dni:String,address:String,roles:List<Rol>){
         val userUpdate = UserWithRol(email,name,surname,password,phone,dni,address,roles)

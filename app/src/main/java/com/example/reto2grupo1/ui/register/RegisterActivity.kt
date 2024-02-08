@@ -3,12 +3,14 @@ package com.example.reto2grupo1.ui.register
 import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.MenuInflater
 import android.view.View
@@ -36,6 +38,7 @@ import com.example.reto2grupo1.data.repository.remote.RemoteUserDataSource
 import com.example.reto2grupo1.databinding.ActivityRegisterBinding
 import com.example.reto2grupo1.ui.chatList.ChatListActivity
 import com.example.reto2grupo1.utils.Resource
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
@@ -45,6 +48,10 @@ class RegisterActivity : ComponentActivity() {
     private val authenticationRepository = RemoteAuthenticationRepository();
     private val userRepository = RemoteUserDataSource();
     private val localUserRepository = RoomUserDataSource();
+    private var imageByteArray: ByteArray? = null
+    private var imageBase64: String? = null
+    private var imageBitmap: Bitmap? = null
+    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
 
     private val viewModel: RegisterViewModel by viewModels {
@@ -158,6 +165,7 @@ class RegisterActivity : ComponentActivity() {
                 finish()
             }
         } else {
+            binding.imageView4.isVisible = true
             binding.buttonCambioDeContraseA.isVisible = false
 
             binding.imageView4.setOnClickListener() {
@@ -165,37 +173,9 @@ class RegisterActivity : ComponentActivity() {
             }
         }
 
-        var startActivityIntent: ActivityResultLauncher<Intent> = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult(),
-            ActivityResultCallback<ActivityResult> {
-                if (it.resultCode == AppCompatActivity.RESULT_OK) {
-                    val imageBitmap = it.data?.extras?.getParcelable("data", Bitmap::class.java)
-                    imageBitmap?.let {
-                        binding.imageView5.setImageBitmap(imageBitmap)
-                        selectedImage = saveBitmapToFile(it)
-                    } ?: run {
-                        Toast.makeText(this, "@string/noSePudoObtenerImagen", Toast.LENGTH_LONG).show()
-                    }
-                }
-            })
-
-
-
-        fun dispatchTakePictureIntent() {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            try {
-                startActivityIntent.launch(takePictureIntent)
-                Log.i("pruebas", "wdentr?")
-                selectedImage?.let { it1 -> viewModel.uploadPhotoToServer(it1)}
-                Log.i("pruebas", "wdentrr?")
-            } catch (e: ActivityNotFoundException) {
-                Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT)
-            }
-        }
-
         binding.buttonCambiarFoto.setOnClickListener {
             Log.i("pruebas", "entr?")
-            dispatchTakePictureIntent()
+            takePictureLauncher.launch(takePictureIntent)
         }
 
         binding.imageView14?.setOnClickListener(){
@@ -230,6 +210,37 @@ class RegisterActivity : ComponentActivity() {
             }
 
         }
+        viewModel.imageBase64.observe(this, Observer { newImageBase64 ->
+            Log.d(TAG, "ImageBase64 actualizado: $newImageBase64")
+            //viewModel.onSendMessage(newImageBase64, intent.getStringExtra("id").toString())
+            binding.imageView5.setImageBitmap(imageBitmap)
+        })
+    }
+
+    private val takePictureLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                imageBitmap = result.data?.extras?.get("data") as Bitmap?
+                imageBitmap?.let {
+                    imageByteArray = convertBitmapToByteArray(it)
+                    imageBase64 = convertByteArrayToBase64(imageByteArray!!)
+                    Log.d(TAG, "Contenido de imageBase64: $imageBase64")
+
+                    // Actualiza la variable imageBase64 en el ViewModel
+                    viewModel.updateImageBase64(imageBase64!!)
+                }
+            } else {
+                Log.d(TAG, "Error al capturar la foto.")
+            }
+        }
+    private fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        return stream.toByteArray()
+    }
+
+    private fun convertByteArrayToBase64(byteArray: ByteArray) : String {
+        return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
     private fun saveBitmapToFile(bitmap: Bitmap): File {
         val file = File.createTempFile("image", ".jpg", cacheDir)
