@@ -341,9 +341,6 @@ class ChatActivity : ComponentActivity() {
                     intent.putExtra("id",chatId)
                     startActivity(intent)
                 }
-                R.id.delUser-> {
-                    Toast.makeText(this, "Borrar usuario", Toast.LENGTH_SHORT).show()
-                }
                 R.id.abandonar-> {
                     Toast.makeText(this, "Abandonando grupo", Toast.LENGTH_SHORT).show()
                     leaveChat()
