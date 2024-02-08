@@ -17,6 +17,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.data.Message
+import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
 import com.example.reto2grupo1.data.repository.remote.RemoteChatDataSource
 import com.example.reto2grupo1.data.socket.SocketEvents
 import com.example.reto2grupo1.data.socket.SocketMessageReq
@@ -42,7 +43,6 @@ class SocketService : Service() {
     private val NOTIFICATION_ID = 321
     private val CHANNEL_ID = "my_channel"
 
-
     private lateinit var serviceScope: CoroutineScope
 
     private val TAG = "sOCKETSERVICE"
@@ -51,7 +51,7 @@ class SocketService : Service() {
     private val SOCKET_HOST = "http://10.5.7.13:8085/"
     private val AUTHORIZATION_HEADER = "Authorization"
     private lateinit var mSocket: Socket
-
+    private val localMessageRepository = RoomMessageDataSource()
 
     private val mBinder: IBinder = LocalService()
 
@@ -121,7 +121,7 @@ class SocketService : Service() {
         serviceScope.launch {
             connect()
         }
-}
+    }
 
     private suspend fun connect(){
         withContext(Dispatchers.IO) {
@@ -204,12 +204,12 @@ class SocketService : Service() {
             val jsonObject = data as JSONObject
             val jsonObjectString = jsonObject.toString()
             val message = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
-
+            var messageToRoom = Message(null, message.message, message.authorId.toString(), message.room, message.date.toString())
             Log.d("newMessage", message.authorName)
             Log.d("newMessage", message.messageType.toString())
-
             // TODO GUARDAR EN ROOM Y NOTIFICAR CON EVENTBUS
             //updateMessageListWithNewMessage(message)
+            serviceScope.launch { localMessageRepository.createMessage(messageToRoom) }
         } catch (ex: Exception) {
             Log.e(TAG, ex.message!!)
         }
