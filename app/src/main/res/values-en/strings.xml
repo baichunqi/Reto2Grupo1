@@ -31,4 +31,9 @@
     <string name="ingles">English</string>
     <string name="euskera">Basque</string>
 
+<!--    parte de recuperar contraseña-->
+    <string name="escribe_el_correo_electronico_donde_se_desee_mandar_la_solicitud">Enter the email where you want to send the request</string>
+    <string name="enviar_correo">Send email</string>
+    <string name="cambiar_contrase_a">Change password</string>
+
 </resources>

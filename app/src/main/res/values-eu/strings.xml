@@ -31,4 +31,9 @@
     <string name="ingles">Ingelesa</string>
     <string name="euskera">Euskara</string>
 
+    <!--    parte de recuperar contraseña-->
+    <string name="escribe_el_correo_electronico_donde_se_desee_mandar_la_solicitud">Idatzi posta elektronikoan eskatzea bidaltzeko nahi duzun helbidea</string>
+    <string name="enviar_correo">Bidali posta</string>
+    <string name="cambiar_contrase_a">Aldatu pasahitza</string>
+
 </resources>
