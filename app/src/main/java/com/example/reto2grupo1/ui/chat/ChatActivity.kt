@@ -70,13 +70,12 @@ class ChatActivity : ComponentActivity() {
     private val locationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             // Manejar la ubicación recibida desde el servicio
-            Log.d("ChatActivityLocation", "Receiver: Location received.")
             val location = intent?.getParcelableExtra<Location>("location") ?: intent?.getParcelableExtra("location")
             if (location != null) {
                 lastReceivedLocation = location
                 Log.d("ChatActivityLocation", "Ubicación recibida: Latitud=${location.latitude}, Longitud=${location.longitude}")
             } else{
-                Log.d("ChatActivityLocation", "Location null",)
+                Log.e("ChatActivityLocation", "Location null",)
             }
         }
     }
@@ -88,13 +87,12 @@ class ChatActivity : ComponentActivity() {
                 imageBitmap?.let {
                     imageByteArray = convertBitmapToByteArray(it)
                     imageBase64 = convertByteArrayToBase64(imageByteArray!!)
-                    Log.d(TAG, "Contenido de imageBase64: $imageBase64")
 
                     // Actualiza la variable imageBase64 en el ViewModel
                     viewModel.updateImageBase64(imageBase64!!)
                 }
             } else {
-                Log.d(TAG, "Error al capturar la foto.")
+                Log.e(TAG, "Error al capturar la foto.")
             }
         }
     private fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
@@ -135,12 +133,9 @@ class ChatActivity : ComponentActivity() {
                         // Convertir el InputStream en un String
                         val text = inputStream.bufferedReader().use { it.readText() }
                         Log.i("File", text)
-                        //viewModel.onSendMessage(text,intent.getStringExtra("id").toString())
                         socketService.onSendMessage(text,intent.getStringExtra("id").toString())
-                        // Ahora 'text' contiene el contenido del archivo en forma de String
-                        // Puedes almacenar 'text' en tu base de datos o hacer cualquier otra operación con él
                     } catch (e: IOException) {
-                        // Manejar la excepción en caso de error al leer el contenido del archivo
+                        Toast.makeText(this, "Se ha producido un error al subir la foto", Toast.LENGTH_SHORT).show()
                     } finally {
                         // Cerrar el InputStream después de su uso para liberar los recursos
                         inputStream.close()
@@ -170,7 +165,7 @@ class ChatActivity : ComponentActivity() {
 
         val chatName = intent.getStringExtra("name")
         binding.txtAddUser.text = chatName
-        Log.i("idChat", chatId.toString())
+        Log.i("idChat", chatId)
 
         binding.imageViewBack.setOnClickListener(){
             finish()
@@ -183,7 +178,6 @@ class ChatActivity : ComponentActivity() {
         onMessagesChange(binding)
 
         viewModel.imageBase64.observe(this, Observer { newImageBase64 ->
-            Log.d(TAG, "ImageBase64 actualizado: $newImageBase64")
             socketService.onSendMessage(newImageBase64,intent.getStringExtra("id").toString())
         })
 
@@ -200,13 +194,11 @@ class ChatActivity : ComponentActivity() {
 
     private fun onMessagesChange(binding: ActivityChatBinding) {
             lifecycleScope.launch {
-                Log.i("FFF", "onMessagesChange")
                 val messagesResource = localMessageRepository.getChatMessages(chatId.toInt())
                 when (messagesResource.status) {
                     Resource.Status.SUCCESS -> {
                         val messagesfromRepo = localMessageRepository.getChatMessages(chatId.toInt())
                         val messages = messagesfromRepo.data
-                        Log.i("FFF", "Success")
                         chatAdapter.submitList(messages)
                         chatAdapter.notifyDataSetChanged()
                         binding.chatView.smoothScrollToPosition(chatAdapter.itemCount)
@@ -214,11 +206,9 @@ class ChatActivity : ComponentActivity() {
                     }
                     Resource.Status.ERROR -> {
                         // Manejar el error
-                        Log.i("FFF", "Error")
                     }
                     Resource.Status.LOADING -> {
                         // Mostrar un indicador de carga
-                        Log.i("FFF", "Loading")
                     }
                 }
             }
@@ -229,7 +219,6 @@ class ChatActivity : ComponentActivity() {
             Log.e("pulsado", "enviar pulsado")
             val message = binding.editTextUsername2.text.toString();
             Log.i("EnviMessage", message)
-            Log.i("EnviMessage", intent.getStringExtra("id").toString())
             binding.editTextUsername2.setText("")
             socketService.onSendMessage(message,intent.getStringExtra("id").toString())
             onMessagesChange(binding)
@@ -322,8 +311,6 @@ class ChatActivity : ComponentActivity() {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onNotificaionMessage(message : Message){
-        Log.d("FFFFFF", "AA")
-        Log.d("FFF", message.text)
         onMessagesChange(binding)
     }
 }

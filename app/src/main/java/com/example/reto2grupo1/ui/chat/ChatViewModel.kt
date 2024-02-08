@@ -40,9 +40,6 @@ class ChatViewModel(
     private val _messages = MutableLiveData<Resource<List<Message>>>()
     val messages: LiveData<Resource<List<Message>>> get() = _messages
 
-    private val _connected = MutableLiveData<Resource<Boolean>>()
-    val connected: LiveData<Resource<Boolean>> get() = _connected
-
     private val _leave = MutableLiveData<Resource<Boolean>>()
     val leave: LiveData<Resource<Boolean>> get() = _leave
 

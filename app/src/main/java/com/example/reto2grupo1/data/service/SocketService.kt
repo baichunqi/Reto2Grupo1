@@ -211,16 +211,10 @@ class SocketService : Service() {
             val jsonObject = data as JSONObject
             val jsonObjectString = jsonObject.toString()
             val messageSocket = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
-            Log.d("fff", "1")
-            Log.d("fff", messageSocket.toString())
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
             val current = LocalDateTime.now().format(formatter)
             val date = current.replace(" ", "T")
-            Log.i("fff", date)
             val message = Message(null, messageSocket.message, messageSocket.authorId.toString(), messageSocket.room, date);
-            // TODO GUARDAR EN ROOM Y NOTIFICAR CON EVENTBUS
-            Log.d("fff", "2")
-
             serviceScope.launch {
                 withContext(Dispatchers.IO){
                    localMessageRepository.createMessage(message)
