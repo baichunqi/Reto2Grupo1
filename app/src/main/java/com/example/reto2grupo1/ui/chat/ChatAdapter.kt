@@ -40,8 +40,10 @@ class ChatAdapter() : ListAdapter<Message, ChatAdapter.ChatViewHolder>(ChatDiffC
         }
     }
     inner class ChatViewHolder(private val binding: ItemChatObjectRecieveBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(message: Message){
-            val date = message.created_at.substring(0, 16).replace("T", " ")
+        fun bind(message: Message) {
+
+            val date = checkDate(message.created_at)
+
             if(isBase64(message.text)){
                 var imagen = base64ToBitmap(message.text)
                 binding.ImageViewImage.setImageBitmap(imagen)
@@ -76,6 +78,14 @@ class ChatAdapter() : ListAdapter<Message, ChatAdapter.ChatViewHolder>(ChatDiffC
                 binding.textViewTiempo.text = message.userId
                 binding.textViewCreatedAt.text = date
             }
+        }
+    }
+
+    fun checkDate(date : String) : String{
+        try {
+            return date.substring(0, 16).replace("T", " ")
+        } catch (e: Exception){
+            return ""
         }
     }
 fun isBase64(cadena: String): Boolean {
