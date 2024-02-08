@@ -29,4 +29,9 @@
     <string name="ingles">Ingles</string>
     <string name="euskera">Euskera</string>
 
+    <!--    parte de recuperar contraseña-->
+    <string name="escribe_el_correo_electronico_donde_se_desee_mandar_la_solicitud">Escribe el correo electronico donde se desee mandar la solicitud</string>
+    <string name="enviar_correo">Enviar correo</string>
+    <string name="cambiar_contrase_a">Cambiar contraseña</string>
+
 </resources>
