@@ -87,6 +87,8 @@ interface APIInterface {
     @GET("user/rol")
     suspend fun getUserRol(): Response<Rol>
 
+    
+
     @DELETE("chats/disassign")
     suspend fun dissasingUser(@Query("chatId") chatId: Int,@Query("userId")userId: Int) : Response<Void>
 }

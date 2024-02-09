@@ -85,7 +85,8 @@ class ChatAdapter() : ListAdapter<Message, ChatAdapter.ChatViewHolder>(ChatDiffC
         try {
             return date.substring(0, 16).replace("T", " ")
         } catch (e: Exception){
-            return ""
+                return ""
+            }
         }
     }
 fun isBase64(cadena: String): Boolean {
@@ -139,4 +140,3 @@ fun isBase64(cadena: String): Boolean {
             return oldItem == newItem
         }
     }
-}
