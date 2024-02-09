@@ -1,5 +1,6 @@
 package com.example.reto2grupo1.ui.deleteChat
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +21,7 @@ class DeleteChatActivity : ComponentActivity() {
     private val chatRepository = RemoteChatListDataSource()
 
     private val chatViewModel: ChatListViewModel by viewModels { ChatListViewModelFactory(chatRepository)}
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -77,5 +79,8 @@ class DeleteChatActivity : ComponentActivity() {
                 }
             }
         })
+    binding.imageView11.setOnClickListener(){
+        finish()
+    }
     }
 }

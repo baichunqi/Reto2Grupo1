@@ -120,6 +120,7 @@ class LoginActivity : ComponentActivity() {
 
                                 Log.e("PruebaInicia", "Cargando los chats")
                             }
+                            intent.putExtra("password", pass);
                             startActivity(intent)
                             finish()
                         } else{

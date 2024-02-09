@@ -73,7 +73,6 @@ class RegisterActivity : ComponentActivity() {
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityRegisterBinding.inflate(layoutInflater)
@@ -137,20 +136,28 @@ class RegisterActivity : ComponentActivity() {
             }})
 
 
-        var defaultPass : Boolean = false
-        if (savedInstanceState == null) {
-            val extras = intent.extras
-            Log.i("IntentExtra", intent.extras.toString())
-            if (extras == null) {
-                defaultPass = false
+        val extras = intent.extras
+        var defaultPass = extras?.getString("password")
 
-            } else {
-                defaultPass = extras.getBoolean("defaultPass")
-                Log.i("pass", defaultPass.toString())
+        if (defaultPass == "Elorrieta00") {
+            binding.imageView4.isVisible = true
+            binding.editTextNombre.isEnabled = true
+            binding.editTextApellido.isEnabled = true
+            binding.editTextDNI.isEnabled = true
+            binding.spinnerCicloFormativo.isEnabled = true
+            binding.editTextCurso.isEnabled = true
+            binding.checkBoxFCTDUAL.isEnabled = true
+            binding.buttonRegistro.isVisible = true
+            binding.buttonCambioDeContraseA.isVisible = false
+
+            binding.imageView4.setOnClickListener() {
+                val intent = Intent(this, ChatListActivity::class.java)
+                startActivity(intent)
+                finish()
             }
-        }
-
-        if (!defaultPass) {
+        } else {
+            binding.imageView4.isVisible = true
+            binding.buttonCambioDeContraseA.isVisible = true
             binding.editTextNombre.isEnabled = false
             binding.editTextApellido.isEnabled = false
             binding.editTextDNI.isEnabled = false
@@ -163,13 +170,6 @@ class RegisterActivity : ComponentActivity() {
                 val intent = Intent(this, ChatListActivity::class.java)
                 startActivity(intent)
                 finish()
-            }
-        } else {
-            binding.imageView4.isVisible = true
-            binding.buttonCambioDeContraseA.isVisible = false
-
-            binding.imageView4.setOnClickListener() {
-                Toast.makeText(this, "@string/revisarCampos", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -210,9 +210,37 @@ class RegisterActivity : ComponentActivity() {
             }
 
         }
+        binding.buttonRegistro.setOnClickListener {
+            if (binding.editTextContraseA.text.toString() == binding.editTextRepetirContraseA.text.toString()) {
+                if (binding.editTextContraseA.text.toString() != "Elorrieta00") {
+                    viewModel.update(
+                        binding.editTextLogin.text.toString(),
+                        binding.editTextNombre.text.toString(),
+                        binding.editTextApellido.text.toString(),
+                        binding.editTextContraseA.text.toString(),
+                        binding.editTextTelefono1.text.toString().toInt(),
+                        binding.editTextDNI.text.toString(),
+                        binding.editTextDirecciN.text.toString(),
+                        roles
+
+                    )
+                } else {
+                    Toast.makeText(this, "La contraseña no puede ser igual a la de por defecto", Toast.LENGTH_SHORT).show()
+                }
+                Toast.makeText(this, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
+                intent = Intent(this, ChatListActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(this, "Las contraseñas no son iguales", Toast.LENGTH_SHORT).show()
+                binding.editTextContraseA.setText(" ")
+                binding.editTextRepetirContraseA.setText(" ")
+            }
+
+        }
+
         viewModel.imageBase64.observe(this, Observer { newImageBase64 ->
             Log.d(TAG, "ImageBase64 actualizado: $newImageBase64")
-            //viewModel.onSendMessage(newImageBase64, intent.getStringExtra("id").toString())
             binding.imageView5.setImageBitmap(imageBitmap)
         })
     }

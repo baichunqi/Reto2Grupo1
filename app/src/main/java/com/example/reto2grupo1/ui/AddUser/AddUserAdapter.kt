@@ -3,6 +3,7 @@ package com.example.reto2grupo1.ui.AddUser
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,7 @@ class AddUserAdapter(private val context: Context)
         fun bind(user : User){
             binding.txtAddUser.text = user.name + " " + user.surname
             binding.textView5.text = user.email
+            binding.eliminarButton.isVisible = false
             binding.root.setOnClickListener{
                 (context as AddUserActivity)selectUser(user)
             }

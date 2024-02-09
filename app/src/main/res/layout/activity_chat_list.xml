@@ -23,7 +23,7 @@
         android:id="@+id/titulo3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/titulo"
+        android:text="Grupos Chat"
         android:textSize="48sp"
         android:textStyle="bold|italic"
         android:typeface="normal"
