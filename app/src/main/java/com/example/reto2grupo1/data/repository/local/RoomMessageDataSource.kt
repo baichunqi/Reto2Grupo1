@@ -54,6 +54,14 @@ class RoomMessageDataSource : CommonMessageRepository{
         return Resource.success(response)
     }
 
+    override fun isSent(id: Int?): Boolean {
+        return isSent(id)
+    }
+
+    override suspend fun getLastMessageTime(): String {
+        return messageDao.getLastMessageTime()
+    }
+
 }
 
 fun Message.toDbMessage(userEmail: String, sendToServer: Boolean) = DbMessage(id, text, userId, chatId, userEmail, sendToServer, created_at.toString())
@@ -76,5 +84,9 @@ interface MessageDao{
     @Query("select * from messages where sendToServer = 0")
     suspend fun getUnsendedMessages(): List<DbMessage>
 
+    @Query("select sendToServer from messages where id= :id")
+    fun isSent(id:Int):Boolean
 
+    @Query("SELECT time from messages order by id desc limit 1")
+    suspend fun getLastMessageTime(): String
 }

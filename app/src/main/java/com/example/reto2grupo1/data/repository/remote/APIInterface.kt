@@ -91,4 +91,8 @@ interface APIInterface {
 
     @DELETE("chats/disassign")
     suspend fun dissasingUser(@Query("chatId") chatId: Int,@Query("userId")userId: Int) : Response<Void>
+
+    @GET("lastMessages")
+    suspend fun getLastMessages(@Query("created_at") date: String): Response<List<Message>>
+
 }

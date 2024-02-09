@@ -10,5 +10,7 @@ interface CommonMessageRepository {
     suspend fun changeToSent(message: Message)
     suspend fun deleteMessagesById(id: Int)
     suspend fun getUnsendedMessages():Resource<List<Message>>
+    fun isSent(id: Int?):Boolean
+    suspend fun getLastMessageTime():String
 
 }

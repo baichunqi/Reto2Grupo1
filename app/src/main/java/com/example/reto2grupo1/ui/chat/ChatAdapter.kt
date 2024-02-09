@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reto2grupo1.data.Message
+import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
 import com.example.reto2grupo1.databinding.ItemChatObjectRecieveBinding
 
 class ChatAdapter() : ListAdapter<Message, ChatAdapter.ChatViewHolder>(ChatDiffCallback()) {
@@ -41,7 +42,6 @@ class ChatAdapter() : ListAdapter<Message, ChatAdapter.ChatViewHolder>(ChatDiffC
     }
     inner class ChatViewHolder(private val binding: ItemChatObjectRecieveBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(message: Message) {
-
             val date = checkDate(message.created_at)
 
             if(isBase64(message.text)){

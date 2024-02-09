@@ -23,4 +23,7 @@ class RemoteChatDataSource : BaseDataSource(), ChatRepository {
     override suspend fun leaveChat(chatId: Int): Resource<Boolean> = getResult {
         RetrofitClient.apiInterface.leaveChat(chatId )
     }
+    override suspend fun getLastMessages(date: String): Resource<List<Message>> = getResult {
+        RetrofitClient.apiInterface.getLastMessages(date)
+    }
 }

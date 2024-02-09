@@ -58,7 +58,7 @@ class ChatActivity : ComponentActivity() {
     private val FILE_PICK_REQUEST_CODE = 1
     private var imageByteArray: ByteArray? = null
     private lateinit var socketService: SocketService
- 
+
     private lateinit var binding: ActivityChatBinding
     private var isBind = false
     private var imageBase64: String? = null

@@ -14,11 +14,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.reto2grupo1.MyApp
 import com.example.reto2grupo1.data.Message
 import com.example.reto2grupo1.data.repository.local.RoomMessageDataSource
@@ -27,9 +23,6 @@ import com.example.reto2grupo1.data.socket.SocketEvents
 import com.example.reto2grupo1.data.socket.SocketMessageReq
 import com.example.reto2grupo1.data.socket.SocketMessageRes
 import com.example.reto2grupo1.ui.chat.ChatActivity
-import com.example.reto2grupo1.ui.chat.ChatViewModel
-import com.example.reto2grupo1.ui.chat.ChatViewModelFactory
-import com.example.reto2grupo1.utils.Resource
 import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -37,7 +30,6 @@ import io.socket.emitter.Emitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -45,7 +37,6 @@ import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 class SocketService : Service() {
 
@@ -53,7 +44,7 @@ class SocketService : Service() {
     private val NOTIFICATION_ID = 321
     private val CHANNEL_ID = "my_channel"
     private val localMessageRepository = RoomMessageDataSource()
-
+    private val remoteChatRepository = RemoteChatDataSource()
 
     private lateinit var serviceScope: CoroutineScope
 
@@ -204,7 +195,9 @@ class SocketService : Service() {
         return Emitter.Listener {
             // Manejar el mensaje recibido
             Log.d(TAG, "conectado")
+
             sendUnsendedMessages()
+            getLastMessages()
             // no vale poner value por que da error al estar en otro hilo
             // IllegalStateException: Cannot invoke setValue on a background thread
             // en funcion asincrona obligado post
@@ -222,6 +215,18 @@ class SocketService : Service() {
                 message.id?.let { localMessageRepository.deleteMessagesById(it.toInt()) }
             }
 
+        }
+    }
+
+    private fun getLastMessages(){
+        Log.e(TAG, "lastMessages entrado")
+        CoroutineScope(Dispatchers.IO).launch{
+            Log.d(TAG, localMessageRepository.getLastMessageTime().toString())
+            val listOfMessages = remoteChatRepository.getLastMessages(localMessageRepository.getLastMessageTime())
+            listOfMessages.data?.forEach { message ->
+                Log.e(TAG, "lastMessages entrado $message")
+                localMessageRepository.createMessage(message)
+            }
         }
     }
     private fun onConnectError(): Emitter.Listener {
