@@ -22,6 +22,17 @@ class RoomMessageDataSource : CommonMessageRepository{
 
     override suspend fun createMessage(message: Message): Resource<Void> {
         try {
+            messageDao.addMessage(message.toDbMessage(userDao.getLoggedEmail(), true))
+            return Resource.success()
+        } catch (ex:SQLiteConstraintException){
+            ex.message?.let { Log.e("FFF", it) }
+            return Resource.error(ex.message!!)
+        }
+    }
+
+    override suspend fun createOfflineMessage(message: Message): Resource<Void> {
+        TODO("Not yet implemented")
+        try {
             messageDao.addMessage(message.toDbMessage(userDao.getLoggedEmail(), false))
             return Resource.success()
         } catch (ex:SQLiteConstraintException){

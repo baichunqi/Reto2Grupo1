@@ -5,7 +5,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -71,9 +75,42 @@ class SocketService : Service() {
             get() = this@SocketService
     }
 
+    private val networkReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val cm = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkInfo = cm.activeNetworkInfo
+            val isConnected = networkInfo != null && networkInfo.isConnected
+            Log.d(TAG, "Reconect")
+            if (isConnected) {
+                Log.d(TAG, "Reconecting")
+                reconnectToSocket()
+            } else if (!isConnected){
+                Log.d(TAG, "Disconecting")
+                diconectSocket()
+            }
+        }
+    }
+    private fun reconnectToSocket() {
+        if (!mSocket.connected()) {
+            // El socket no está conectado, intenta reconectar
+            Log.d(TAG, "Intentando reconexión al servidor socket...")
+            mSocket.connect()
+        }
+    }
+
+    private fun diconectSocket() {
+        if (mSocket.connected()) {
+            // El socket no está conectado, intenta reconectar
+            Log.d(TAG, "Intentando reconexión al servidor socket...")
+            mSocket.disconnect()
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
+
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkReceiver, filter)
 
         serviceScope = CoroutineScope(Dispatchers.Default)
         createNotificationChannel()
@@ -241,5 +278,10 @@ class SocketService : Service() {
         stopSocket()
         serviceScope.cancel()
         super.onDestroy()
+
+        unregisterReceiver(networkReceiver)
+
     }
+
+
 }

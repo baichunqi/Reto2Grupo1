@@ -222,6 +222,7 @@ class ChatActivity : ComponentActivity() {
             binding.editTextUsername2.setText("")
             socketService.onSendMessage(message,intent.getStringExtra("id").toString())
             onMessagesChange(binding)
+
         }
         binding.imageView10.setOnClickListener(){
             showPopupUtils(it)

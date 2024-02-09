@@ -170,8 +170,7 @@ class LoginActivity : ComponentActivity() {
                 }
 
             } catch (ex: Exception) {
-                Log.e(ContentValues.TAG, "Error during data synchronization: ${ex.message}", ex)
-                // Manejar el error de sincronización si es necesario
+                Log.e(ContentValues.TAG, "Error durante sicronizacion: ${ex.message}", ex)
             }
         }
     }
@@ -186,12 +185,9 @@ class LoginActivity : ComponentActivity() {
 
                 val isLoggedIn = localLoginRepository.login(email, password)
                 if (isLoggedIn) {
-                    // Cambiar a la pantalla principal o a donde corresponda
-                    // Esto se hace en el hilo principal, así que puede actualizarse la IU directamente
                     startActivity(Intent(this@LoginActivity, ChatListActivity::class.java))
                     finish()
                 } else {
-                    // El inicio de sesión falló
                     runOnUiThread {
                         Toast.makeText(
                             this@LoginActivity,
@@ -202,7 +198,6 @@ class LoginActivity : ComponentActivity() {
                 }
             } catch (ex: Exception) {
                 Log.e(ContentValues.TAG, "Error durante el inicio de sesión local: ${ex.message}", ex)
-                // Manejar el error de inicio de sesión local si es necesario
             }
         }
     }
