@@ -8,6 +8,7 @@ interface CommonMessageRepository {
     suspend fun createMessage(message: Message):Resource<Void>
     suspend fun createOfflineMessage(message: Message):Resource<Void>
     suspend fun changeToSent(message: Message)
-    suspend fun clearAllMessages()
+    suspend fun deleteMessagesById(id: Int)
+    suspend fun getUnsendedMessages():Resource<List<Message>>
 
 }

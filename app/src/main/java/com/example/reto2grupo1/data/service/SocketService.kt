@@ -106,7 +106,9 @@ class SocketService : Service() {
             mSocket.disconnect()
         }
     }
-
+    fun isConnected(): Boolean {
+        return mSocket.connected()
+    }
     override fun onCreate() {
         super.onCreate()
 
@@ -202,9 +204,24 @@ class SocketService : Service() {
         return Emitter.Listener {
             // Manejar el mensaje recibido
             Log.d(TAG, "conectado")
+            sendUnsendedMessages()
             // no vale poner value por que da error al estar en otro hilo
             // IllegalStateException: Cannot invoke setValue on a background thread
             // en funcion asincrona obligado post
+        }
+    }
+
+    private fun sendUnsendedMessages(){
+        Log.d(TAG, "unsend")
+        CoroutineScope(Dispatchers.IO).launch {
+            val listOfUnsendMessage = localMessageRepository.getUnsendedMessages()
+            listOfUnsendMessage.data?.forEach { message ->
+
+                Log.d(TAG, "unsend message: $message")
+                onSendMessage(message.text, message.chatId)
+                message.id?.let { localMessageRepository.deleteMessagesById(it.toInt()) }
+            }
+
         }
     }
     private fun onConnectError(): Emitter.Listener {

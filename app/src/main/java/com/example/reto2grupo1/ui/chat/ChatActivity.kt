@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.location.Location
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
@@ -47,6 +48,8 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ChatActivity : ComponentActivity() {
     var chatId : String = ""
@@ -62,6 +65,7 @@ class ChatActivity : ComponentActivity() {
     val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     private lateinit var chatAdapter: ChatAdapter
     private val localMessageRepository = RoomMessageDataSource()
+    private val localUserRepository = RoomUserDataSource()
     private val messageRepository = RemoteChatDataSource()
     private val viewModel: ChatViewModel by viewModels {
         ChatViewModelFactory(messageRepository)
@@ -123,6 +127,8 @@ class ChatActivity : ComponentActivity() {
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+
         if (requestCode == FILE_PICK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // El usuario ha seleccionado un archivo
             data?.data?.let { uri ->
@@ -215,13 +221,23 @@ class ChatActivity : ComponentActivity() {
     }
 
     private fun connectToSocket(binding: ActivityChatBinding) {
+
+
         binding.imageView9.setOnClickListener() {
+
+
             Log.e("pulsado", "enviar pulsado")
             val message = binding.editTextUsername2.text.toString();
             Log.i("EnviMessage", message)
             binding.editTextUsername2.setText("")
-            socketService.onSendMessage(message,intent.getStringExtra("id").toString())
-            onMessagesChange(binding)
+            if (socketService.isConnected()){
+                socketService.onSendMessage(message,intent.getStringExtra("id").toString())
+                onMessagesChange(binding)
+            } else if (!socketService.isConnected()){
+                addOfflineMessage(message)
+                onMessagesChange(binding)
+            }
+
 
         }
         binding.imageView10.setOnClickListener(){
@@ -310,6 +326,16 @@ class ChatActivity : ComponentActivity() {
         super.onBackPressed()
         finish()
     }
+
+    private fun addOfflineMessage(message: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+            val current = LocalDateTime.now().format(formatter)
+            val message = Message(null, message, localUserRepository.getLoggedId(), intent.getStringExtra("id").toString(),current )
+            localMessageRepository.createOfflineMessage(message)
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onNotificaionMessage(message : Message){
         onMessagesChange(binding)

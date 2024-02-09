@@ -31,7 +31,7 @@ class RoomMessageDataSource : CommonMessageRepository{
     }
 
     override suspend fun createOfflineMessage(message: Message): Resource<Void> {
-        TODO("Not yet implemented")
+
         try {
             messageDao.addMessage(message.toDbMessage(userDao.getLoggedEmail(), false))
             return Resource.success()
@@ -45,8 +45,13 @@ class RoomMessageDataSource : CommonMessageRepository{
         message.id?.let { messageDao.changeToSent(it) }
     }
 
-    override suspend fun clearAllMessages() {
-        messageDao.clearMessages()
+    override suspend fun deleteMessagesById(id: Int) {
+        messageDao.clearMessage(id)
+    }
+
+    override suspend fun getUnsendedMessages(): Resource<List<Message>> {
+        val response = messageDao.getUnsendedMessages().map { it.toMessage() }
+        return Resource.success(response)
     }
 
 }
@@ -62,10 +67,14 @@ interface MessageDao{
     @Insert
     suspend fun addMessage(message: DbMessage) :Long
 
-    @Query("DELETE FROM messages")
-    suspend fun clearMessages()
+    @Query("DELETE FROM messages where id = :id")
+    suspend fun clearMessage(id:Int)
 
     @Query("UPDATE messages SET sendToServer = 1 WHERE id = :id")
     suspend fun changeToSent(id: Int)
+
+    @Query("select * from messages where sendToServer = 0")
+    suspend fun getUnsendedMessages(): List<DbMessage>
+
 
 }
