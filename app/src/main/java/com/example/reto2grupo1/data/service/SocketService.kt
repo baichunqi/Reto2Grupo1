@@ -43,6 +43,7 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
@@ -249,7 +250,8 @@ class SocketService : Service() {
             val jsonObjectString = jsonObject.toString()
             val messageSocket = Gson().fromJson(jsonObjectString, SocketMessageRes::class.java)
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-            val current = LocalDateTime.now().format(formatter)
+            val madridZone = ZoneId.of("Europe/Madrid")
+            val current = LocalDateTime.now(madridZone).format(formatter)
             val date = current.replace(" ", "T")
             val message = Message(null, messageSocket.message, messageSocket.authorId.toString(), messageSocket.room, date);
             serviceScope.launch {
