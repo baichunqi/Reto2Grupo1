@@ -6,10 +6,6 @@
         android:title="Añadir usuario"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/delUser"
-        android:title="Borrar usuario"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/abandonar"
         android:title="Abandonar grupo"
         app:showAsAction="ifRoom" />
