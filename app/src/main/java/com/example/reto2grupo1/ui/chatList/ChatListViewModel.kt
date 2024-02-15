@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.repository.ChatListRepository
+import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +26,7 @@ class ChatListViewModel(
     private val chatListRepository: ChatListRepository
 ) : ViewModel(){
     private var _chats = MutableLiveData<Resource<List<Chat>>>()
-
+    private lateinit var localChatRepository:RoomChatDataSource
     val chats : LiveData<Resource<List<Chat>>> get() = _chats
 
     private val _deleted = MutableLiveData<Resource<Void>>()
@@ -38,6 +39,13 @@ class ChatListViewModel(
     fun getChats() {
         viewModelScope.launch {
             val repoResponse = getUserChatList()
+//                for (chat in repoResponse ){
+//                    withContext(Dispatchers.IO){
+//                        localChatRepository.createChat(chat)
+//                    }
+//                }
+
+
             _chats.value = repoResponse
         }
 

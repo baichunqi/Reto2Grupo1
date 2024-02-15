@@ -221,12 +221,15 @@ class SocketService : Service() {
     private fun getLastMessages(){
         Log.e(TAG, "lastMessages entrado")
         CoroutineScope(Dispatchers.IO).launch{
-            Log.d(TAG, localMessageRepository.getLastMessageTime().toString())
-            val listOfMessages = remoteChatRepository.getLastMessages(localMessageRepository.getLastMessageTime())
-            listOfMessages.data?.forEach { message ->
-                Log.e(TAG, "lastMessages entrado $message")
-                localMessageRepository.createMessage(message)
+            if(localMessageRepository.getLastMessageTime()!= null){
+                Log.d(TAG, localMessageRepository.getLastMessageTime().toString())
+                val listOfMessages = remoteChatRepository.getLastMessages(localMessageRepository.getLastMessageTime())
+                listOfMessages.data?.forEach { message ->
+                    Log.e(TAG, "lastMessages entrado $message")
+                    localMessageRepository.createMessage(message)
+                }
             }
+
         }
     }
     private fun onConnectError(): Emitter.Listener {

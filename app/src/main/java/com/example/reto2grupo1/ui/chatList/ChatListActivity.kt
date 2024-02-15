@@ -81,24 +81,24 @@ class ChatListActivity  : ComponentActivity()  {
             showPopupFilter(it, binding.editTextSearch.text.toString())
         }
 
-//        viewModel.chats.observe(this, Observer {
-//            when(it.status){
-//                Resource.Status.SUCCESS -> {
-//                    if (!it.data.isNullOrEmpty()) {
-//                        Log.i("PruebaChat", "Ha ocurrido un cambio en la lista")
-//                        chatListAdapter.submitList(it.data)
-//                        chatListAdapter.submitChatList(it.data)
-//                        chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
-//                    }
-//                }
-//                Resource.Status.ERROR -> {
-//                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-//                }
-//                Resource.Status.LOADING -> {
-//                    // No implementado
-//                }
-//            }
-//        })
+        viewModel.chats.observe(this, Observer {
+            when(it.status){
+                Resource.Status.SUCCESS -> {
+                    if (!it.data.isNullOrEmpty()) {
+                        Log.i("PruebaChat", "Ha ocurrido un cambio en la lista")
+                        chatListAdapter.submitList(it.data)
+                        chatListAdapter.submitChatList(it.data)
+                        chatListAdapter.filter(binding.editTextSearch.text.toString(), esPublico)
+                    }
+                }
+                Resource.Status.ERROR -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                }
+                Resource.Status.LOADING -> {
+                    // No implementado
+                }
+            }
+        })
         viewModel.deleted.observe(this, Observer {
             if (it != null) {
                 when (it.status) {

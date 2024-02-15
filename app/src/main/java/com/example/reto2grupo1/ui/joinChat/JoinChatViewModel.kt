@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.reto2grupo1.data.Chat
 import com.example.reto2grupo1.data.Rol
 import com.example.reto2grupo1.data.repository.ChatListRepository
+import com.example.reto2grupo1.data.repository.local.RoomChatDataSource
 import com.example.reto2grupo1.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class JoinChatViewModelFactory(
 class JoinChatViewModel(
     private val chatListRepository: ChatListRepository
 ) : ViewModel() {
-
+    private lateinit var localChatList : RoomChatDataSource
     private val _chats = MutableLiveData<Resource<List<Chat>>>()
     val chats: LiveData<Resource<List<Chat>>> get() = _chats
 
